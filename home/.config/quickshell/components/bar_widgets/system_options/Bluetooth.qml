@@ -2,6 +2,7 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Layouts
+import Quickshell
 import Quickshell.Bluetooth
 import "../../"
 
@@ -188,17 +189,29 @@ Rectangle {
                                 }
                             }
 
-                            Text {
-                                id: connectedDeviceName
+                            Image {
+                                id: connectedDeviceIcon
                                 anchors.left: parent.left
                                 anchors.leftMargin: 10
+                                anchors.verticalCenter: parent.verticalCenter
+                                source: Quickshell.iconPath(parent.modelData.icon)
+                                width: Theme.font_size_icon
+                                height: Theme.font_size_icon
+                                fillMode: Image.PreserveAspectFit
+                            }
+
+                            Text {
+                                id: connectedDeviceName
+                                anchors.left: connectedDeviceIcon.right
+                                anchors.leftMargin: 8
+                                anchors.right: parent.right
+                                anchors.rightMargin: 10
                                 anchors.verticalCenter: parent.verticalCenter
                                 text: parent.modelData.name
                                 color: Theme.color_text
                                 font.pixelSize: Theme.font_size
                                 font.family: Theme.font_family
                                 elide: Text.ElideRight
-                                width: parent.width - 20
                             }
 
                             MouseArea {
@@ -258,17 +271,29 @@ Rectangle {
                                 }
                             }
 
-                            Text {
-                                id: availableDeviceName
+                            Image {
+                                id: availableDeviceIcon
                                 anchors.left: parent.left
                                 anchors.leftMargin: 10
+                                anchors.verticalCenter: parent.verticalCenter
+                                source: Quickshell.iconPath(parent.modelData.icon)
+                                width: Theme.font_size_icon
+                                height: Theme.font_size_icon
+                                fillMode: Image.PreserveAspectFit
+                            }
+
+                            Text {
+                                id: availableDeviceName
+                                anchors.left: availableDeviceIcon.right
+                                anchors.leftMargin: 8
+                                anchors.right: parent.right
+                                anchors.rightMargin: 10
                                 anchors.verticalCenter: parent.verticalCenter
                                 text: parent.modelData.name
                                 color: Theme.color_text
                                 font.pixelSize: Theme.font_size
                                 font.family: Theme.font_family
                                 elide: Text.ElideRight
-                                width: parent.width - 20
                             }
 
                             MouseArea {
