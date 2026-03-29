@@ -119,7 +119,7 @@ Rectangle {
 
                         Text {
                             anchors.centerIn: parent
-                            text: !root.sink || !root.sink.audio ? "" : (root.sink.audio.muted ? "" : (root.currentVolume > 66 ? "" : (root.currentVolume > 33 ? "" : "")))
+                            text: !root.sink || !root.sink.audio ? "" : (root.sink.audio.muted ? "" : "")
                             color: Theme.color_text
                             font.pixelSize: Theme.font_size_icon
                             font.family: Theme.font_family_icon
