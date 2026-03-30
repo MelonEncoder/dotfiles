@@ -199,6 +199,15 @@ Scope {
                 return;
             }
 
+            if (root.currentWallpaper.length > 0) {
+                for (var j = 0; j < wallpaperModel.count; j++) {
+                    if (wallpaperModel.get(j).fileName === root.currentWallpaper) {
+                        root.selectedIndex = j;
+                        root.carouselIndex = j;
+                        break;
+                    }
+                }
+            }
             root.clampSelection();
             root.recenterCarousel();
         }
