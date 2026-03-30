@@ -72,14 +72,9 @@ Item {
         color: "transparent"
 
         // Backdrop — click outside to dismiss
-        Rectangle {
-            anchors.fill: parent
-            color: "transparent"
-            MouseArea {
-                anchors.fill: parent
-                enabled: root.expanded
-                onClicked: root.expanded = false
-            }
+        PopupBackdrop {
+            expanded: root.expanded
+            onClose: root.expanded = false
         }
 
         Rectangle {

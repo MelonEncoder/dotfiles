@@ -52,15 +52,9 @@ Rectangle {
         implicitHeight: dropdown.screen.height
         color: "transparent"
 
-        Rectangle {
-            width: parent.width
-            height: parent.height
-            color: "transparent"
-            MouseArea {
-                anchors.fill: parent
-                enabled: root.expanded
-                onClicked: root.expanded = false
-            }
+        PopupBackdrop {
+            expanded: root.expanded
+            onClose: root.expanded = false
         }
 
         Rectangle {

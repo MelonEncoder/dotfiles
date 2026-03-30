@@ -3,6 +3,7 @@ singleton Animations 1.0 Animations.qml
 singleton Strings 1.0 Strings.qml
 
 Bar 1.0 Bar.qml
+PopupBackdrop 1.0 PopupBackdrop.qml
 Launcher 1.0 Launcher.qml
 Lock 1.0 Lock.qml
 Wallpaper 1.0 Wallpaper.qml

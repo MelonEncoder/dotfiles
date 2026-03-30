@@ -126,15 +126,10 @@ Item {
         implicitHeight: dropdown.screen.height
         color: "transparent"
 
-        // Backdrop — click outside to dismiss
-        Rectangle {
-            anchors.fill: parent
-            color: "transparent"
-            MouseArea {
-                anchors.fill: parent
-                enabled: root.expanded
-                onClicked: root.expanded = false
-            }
+        // Backdrop — click outside or ESC to dismiss
+        PopupBackdrop {
+            expanded: root.expanded
+            onClose: root.expanded = false
         }
 
         Rectangle {
