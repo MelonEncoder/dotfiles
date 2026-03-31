@@ -217,10 +217,20 @@ Scope {
                                     anchors.horizontalCenter: parent.horizontalCenter
                                     text: Services.ClockService.time
                                     horizontalAlignment: Text.AlignHCenter
-                                    color: Theme.color_text
                                     font.family: Theme.lock_time_font_family
                                     font.pixelSize: Theme.lock_time_font_size
                                     font.bold: true
+
+                                    SequentialAnimation on color {
+                                        loops: Animation.Infinite
+                                        ColorAnimation { from: "#ff6b6b"; to: "#ffb347"; duration: 700 }
+                                        ColorAnimation { to: "#ffff66"; duration: 700 }
+                                        ColorAnimation { to: "#6bff6b"; duration: 700 }
+                                        ColorAnimation { to: "#6bd5ff"; duration: 700 }
+                                        ColorAnimation { to: "#8b5cf6"; duration: 700 }
+                                        ColorAnimation { to: "#ff6bff"; duration: 700 }
+                                        ColorAnimation { to: "#ff6b6b"; duration: 700 }
+                                    }
                                 }
                             }
 
@@ -246,7 +256,7 @@ Scope {
 
                             Rectangle {
                                 id: inputFrame
-                                property color frameBorderColor: root.failedAttempt ? Theme.lock_error : Theme.color_background
+                                property color frameBorderColor: root.failedAttempt ? Theme.lock_error : Theme.color_accent_primary
 
                                 anchors.fill: parent
                                 radius: Theme.lock_input_radius

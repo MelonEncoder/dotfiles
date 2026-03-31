@@ -4,6 +4,10 @@ import QtQuick
 import "."
 
 QtObject {
+    // Accent colors
+    readonly property color color_accent_primary: "#8b5cf6"
+    readonly property color color_accent_secondary: "#06b6d4"
+
     // Base colors
     readonly property color color_background: Qt.rgba(0, 0, 0, 1)
     readonly property color color_surface: Qt.rgba(0.184, 0.184, 0.184, 1)
@@ -85,7 +89,7 @@ QtObject {
     // Lock screen input
     readonly property int lock_input_height: 50
     readonly property int lock_input_radius: radius_normal * 2
-    readonly property int lock_input_border_width: 3
+    readonly property int lock_input_border_width: 5
     readonly property int lock_input_padding: 18
     readonly property int lock_status_height: 24
 
