@@ -87,14 +87,14 @@ Item {
             spacing: Theme.bar_widget_padding
 
             Text {
-                text: DateTime.time
+                text: ClockService.time
                 color: Theme.color_text
                 font.pixelSize: Theme.font_size
                 font.family: Theme.font_family
             }
 
             Text {
-                text: DateTime.date
+                text: ClockService.date
                 color: Theme.color_text_subtle
                 font.pixelSize: Theme.font_size
                 font.family: Theme.font_family

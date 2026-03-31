@@ -62,11 +62,33 @@ QtObject {
     readonly property color notification_accent_critical: Qt.rgba(0.937, 0.420, 0.420, 1)
 
     // Lock screen colors
-    readonly property color lock_shadow: Qt.rgba(0, 0, 0, 0.6)
     readonly property color lock_base: Qt.rgba(0.098, 0.078, 0.078, 1)
     readonly property color lock_scrim: Qt.rgba(0.098, 0.078, 0.078, 0.302)
     readonly property color lock_error: Qt.rgba(0.8, 0.133, 0.133, 1)
     readonly property color lock_placeholder: Qt.rgba(0, 0, 0, 0.651)
+
+    // Lock screen layout
+    readonly property int lock_screen_margin: 48
+    readonly property int lock_column_width: 400
+    readonly property int lock_column_spacing: 50
+    readonly property int lock_header_spacing: 0
+    readonly property int lock_column_offset: -90
+
+    // Lock screen typography
+    readonly property string lock_time_font_family: "JetBrains Mono"
+    readonly property string lock_body_font_family: "JetBrains Mono"
+    readonly property int lock_time_font_size: 68
+    readonly property int lock_date_font_size: 18
+    readonly property int lock_input_font_size: 16
+    readonly property int lock_status_font_size: 14
+
+    // Lock screen input
+    readonly property int lock_input_height: 50
+    readonly property int lock_input_radius: radius_normal * 2
+    readonly property int lock_input_border_width: 3
+    readonly property int lock_input_padding: 18
+    readonly property int lock_status_height: 24
+
 
     // Wallpaper picker colors
     readonly property color wallpaper_window_border: Qt.rgba(1, 1, 1, 0.333)

@@ -5,51 +5,18 @@ import Quickshell.Io
 import Quickshell.Wayland
 import Quickshell.Services.Pam
 import Quickshell.Hyprland
-import QtCore
 import QtQuick
-import QtQuick.Effects
 import "."
-import "../services"
+import "../services" as Services
 
 Scope {
     id: root
-
-    // margin + padding
-    readonly property int screen_margin: 48
-    readonly property int column_width: 400
-    readonly property int column_spacing: 50
-    readonly property int header_spacing: 0
-    readonly property int column_offset: -90
-    readonly property int time_font_size: 68
-    readonly property int date_font_size: 18
-    // input
-    readonly property int input_height: 50
-    readonly property int input_radius: Theme.radius_normal * 2
-    readonly property int input_border_width: 3
-    readonly property int input_padding: 18
-    readonly property int input_font_size: 16
-    readonly property int status_font_size: 14
-    readonly property int status_height: 24
-    // bg
-    readonly property int background_blur_max: 40
-    readonly property real background_blur_strength: 0.6
-    // shadow
-    readonly property real text_shadow_blur: 0.5
-    readonly property real text_shadow_horizontal_offset: 0
-    readonly property real text_shadow_vertical_offset: 0
-    readonly property real input_shadow_blur: 0.6
-    readonly property real input_shadow_horizontal_offset: 0
-    readonly property real input_shadow_vertical_offset: 0
-
-    readonly property string time_font_family: "JetBrains Mono"
-    readonly property string body_font_family: "JetBrains Mono"
 
     property bool locked: false
     property bool authenticating: false
     property bool failedAttempt: false
     property string statusText: ""
     property string submittedSecret: ""
-    readonly property string wallpaperPath: StandardPaths.writableLocation(StandardPaths.HomeLocation) + "/.local/share/wallpapers/apartment.jpg"
     readonly property string currentUser: (Quickshell.env("USER") || "") + ""
 
     function activateLock(): void {
@@ -115,6 +82,26 @@ Scope {
         }
     }
 
+    Process {
+        id: suspendProcess
+        command: ["systemctl", "suspend"]
+    }
+
+    Process {
+        id: sleepProcess
+        command: ["systemctl", "hibernate"]
+    }
+
+    Process {
+        id: shutdownProcess
+        command: ["systemctl", "poweroff"]
+    }
+
+    Process {
+        id: rebootProcess
+        command: ["systemctl", "reboot"]
+    }
+
     WlSessionLock {
         id: sessionLock
         locked: root.locked
@@ -172,26 +159,6 @@ Scope {
                 anchors.fill: parent
                 color: Theme.lock_base
 
-                Image {
-                    id: wallpaper
-                    anchors.fill: parent
-                    source: root.wallpaperPath
-                    fillMode: Image.PreserveAspectCrop
-                    asynchronous: true
-                    cache: true
-                    smooth: true
-                    opacity: 0
-                }
-
-                MultiEffect {
-                    anchors.fill: parent
-                    source: wallpaper
-                    autoPaddingEnabled: false
-                    blurEnabled: true
-                    blur: root.background_blur_strength
-                    blurMax: root.background_blur_max
-                }
-
                 Rectangle {
                     anchors.fill: parent
                     color: Theme.lock_scrim
@@ -213,12 +180,33 @@ Scope {
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.verticalCenterOffset: 0
-                        width: Math.min(parent.width - (root.screen_margin * 2), root.column_width)
-                        spacing: root.column_spacing
+                        width: Math.min(parent.width - (Theme.lock_screen_margin * 2), Theme.lock_column_width)
+                        spacing: Theme.lock_column_spacing
+
+                        Row {
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            spacing: 10
+
+                            Text {
+                                anchors.verticalCenter: parent.verticalCenter
+                                text: "󰌾"
+                                color: Theme.color_text
+                                font.family: Theme.font_family_icon
+                                font.pixelSize: Theme.lock_date_font_size + 6
+                            }
+
+                            Text {
+                                anchors.verticalCenter: parent.verticalCenter
+                                text: "Locked"
+                                color: Theme.color_text
+                                font.family: Theme.lock_body_font_family
+                                font.pixelSize: Theme.lock_date_font_size + 6
+                            }
+                        }
 
                         Column {
                             width: parent.width
-                            spacing: root.header_spacing
+                            spacing: Theme.lock_header_spacing
 
                             Item {
                                 width: parent.width
@@ -227,23 +215,12 @@ Scope {
                                 Text {
                                     id: timeText
                                     anchors.horizontalCenter: parent.horizontalCenter
-                                    text: DateTime.time
+                                    text: Services.ClockService.time
                                     horizontalAlignment: Text.AlignHCenter
                                     color: Theme.color_text
-                                    font.family: root.time_font_family
-                                    font.pixelSize: root.time_font_size
+                                    font.family: Theme.lock_time_font_family
+                                    font.pixelSize: Theme.lock_time_font_size
                                     font.bold: true
-                                }
-
-                                MultiEffect {
-                                    anchors.fill: timeText
-                                    source: timeText
-                                    autoPaddingEnabled: true
-                                    shadowEnabled: true
-                                    shadowColor: Theme.lock_shadow
-                                    shadowBlur: root.text_shadow_blur
-                                    shadowHorizontalOffset: root.text_shadow_horizontal_offset
-                                    shadowVerticalOffset: root.text_shadow_vertical_offset
                                 }
                             }
 
@@ -254,38 +231,27 @@ Scope {
                                 Text {
                                     id: dateText
                                     anchors.horizontalCenter: parent.horizontalCenter
-                                    text: DateTime.fullDate
+                                    text: Services.ClockService.fullDate
                                     horizontalAlignment: Text.AlignHCenter
                                     color: Theme.color_text
-                                    font.family: root.body_font_family
-                                    font.pixelSize: root.date_font_size
-                                }
-
-                                MultiEffect {
-                                    anchors.fill: dateText
-                                    source: dateText
-                                    autoPaddingEnabled: true
-                                    shadowEnabled: true
-                                    shadowColor: Theme.lock_shadow
-                                    shadowBlur: root.text_shadow_blur
-                                    shadowHorizontalOffset: root.text_shadow_horizontal_offset
-                                    shadowVerticalOffset: root.text_shadow_vertical_offset
+                                    font.family: Theme.lock_body_font_family
+                                    font.pixelSize: Theme.lock_date_font_size
                                 }
                             }
                         }
 
                         Item {
                             width: parent.width
-                            height: root.input_height
+                            height: Theme.lock_input_height
 
                             Rectangle {
                                 id: inputFrame
                                 property color frameBorderColor: root.failedAttempt ? Theme.lock_error : Theme.color_background
 
                                 anchors.fill: parent
-                                radius: root.input_radius
+                                radius: Theme.lock_input_radius
                                 color: Theme.color_text
-                                border.width: root.input_border_width
+                                border.width: Theme.lock_input_border_width
                                 border.color: frameBorderColor
 
                                 Behavior on frameBorderColor {
@@ -298,12 +264,12 @@ Scope {
                                 TextInput {
                                     id: passwordInput
                                     anchors.fill: parent
-                                    anchors.leftMargin: root.input_padding
-                                    anchors.rightMargin: root.input_padding
+                                    anchors.leftMargin: Theme.lock_input_padding
+                                    anchors.rightMargin: Theme.lock_input_padding
                                     verticalAlignment: TextInput.AlignVCenter
                                     color: Theme.color_background
-                                    font.family: root.body_font_family
-                                    font.pixelSize: root.input_font_size
+                                    font.family: Theme.lock_body_font_family
+                                    font.pixelSize: Theme.lock_input_font_size
                                     echoMode: TextInput.Password
                                     passwordCharacter: "•"
                                     selectByMouse: false
@@ -329,38 +295,105 @@ Scope {
 
                                 Text {
                                     anchors.fill: parent
-                                    anchors.leftMargin: root.input_padding
-                                    anchors.rightMargin: root.input_padding
+                                    anchors.leftMargin: Theme.lock_input_padding
+                                    anchors.rightMargin: Theme.lock_input_padding
                                     verticalAlignment: Text.AlignVCenter
                                     text: passwordInput.text.length === 0 ? "Input Password..." : ""
                                     color: Theme.lock_placeholder
-                                    font.family: root.body_font_family
-                                    font.pixelSize: root.input_font_size
+                                    font.family: Theme.lock_body_font_family
+                                    font.pixelSize: Theme.lock_input_font_size
                                     font.italic: true
                                 }
                             }
 
-                            MultiEffect {
-                                anchors.fill: inputFrame
-                                source: inputFrame
-                                autoPaddingEnabled: true
-                                shadowEnabled: true
-                                shadowColor: Theme.lock_shadow
-                                shadowBlur: root.input_shadow_blur
-                                shadowHorizontalOffset: root.input_shadow_horizontal_offset
-                                shadowVerticalOffset: root.input_shadow_vertical_offset
-                            }
+
                         }
 
                         Text {
                             width: parent.width
-                            height: root.status_height
+                            height: Theme.lock_status_height
                             text: root.authenticating ? "Checking password..." : root.statusText
                             visible: text.length > 0
                             horizontalAlignment: Text.AlignHCenter
                             color: root.failedAttempt ? Theme.lock_error : Theme.color_text
-                            font.family: root.body_font_family
-                            font.pixelSize: root.status_font_size
+                            font.family: Theme.lock_body_font_family
+                            font.pixelSize: Theme.lock_status_font_size
+                        }
+
+                        Row {
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            spacing: 16
+
+                            Repeater {
+                                model: [
+                                    {
+                                        icon: "󰒲",
+                                        label: "Suspend",
+                                        process: suspendProcess
+                                    },
+                                    {
+                                        icon: "󰤄",
+                                        label: "Sleep",
+                                        process: sleepProcess
+                                    },
+                                    {
+                                        icon: "󰑓",
+                                        label: "Restart",
+                                        process: rebootProcess
+                                    },
+                                    {
+                                        icon: "󰐥",
+                                        label: "Shutdown",
+                                        process: shutdownProcess
+                                    }
+                                ]
+
+                                Rectangle {
+                                    id: powerOption
+                                    required property var modelData
+                                    property bool hovered: powerMouse.containsMouse
+                                    width: 90
+                                    height: 64
+                                    radius: Theme.radius_normal * 2
+                                    color: hovered ? Theme.color_overlay_light : "transparent"
+
+                                    Behavior on color {
+                                        ColorAnimation {
+                                            duration: Animations.duration_hover
+                                            easing.type: Animations.easing_standard
+                                        }
+                                    }
+
+                                    Column {
+                                        anchors.centerIn: parent
+                                        spacing: 6
+
+                                        Text {
+                                            anchors.horizontalCenter: parent.horizontalCenter
+                                            text: powerOption.modelData.icon
+                                            color: Theme.color_text
+                                            font.family: Theme.font_family_icon
+                                            font.pixelSize: 22
+                                        }
+
+                                        Text {
+                                            anchors.horizontalCenter: parent.horizontalCenter
+                                            text: powerOption.modelData.label
+                                            color: Theme.color_text
+                                            font.family: Theme.lock_body_font_family
+                                            font.pixelSize: Theme.lock_status_font_size
+                                        }
+                                    }
+
+                                    MouseArea {
+                                        id: powerMouse
+                                        anchors.fill: parent
+                                        hoverEnabled: true
+                                        cursorShape: Qt.PointingHandCursor
+                                        onClicked: powerOption.modelData.process.running = true
+                                    }
+                                }
+                            }
                         }
                     }
 
