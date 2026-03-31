@@ -123,7 +123,7 @@ Scope {
 
     PamContext {
         id: pam
-        config: "swaylock"
+        config: "quickshell"
         user: root.currentUser
 
         onPamMessage: {
