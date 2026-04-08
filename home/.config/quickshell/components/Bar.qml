@@ -20,7 +20,7 @@ Scope {
             readonly property int inner_spacing: 6
             readonly property int popup_offset_y: Theme.bar_widget_height + (Theme.bar_padding * 2)
             readonly property int tray_item_size: 22
-            readonly property int tray_icon_size: 16
+			readonly property int tray_icon_size: 16
 
             anchors {
                 top: true
