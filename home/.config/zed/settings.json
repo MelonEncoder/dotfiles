@@ -7,7 +7,20 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+    "project_panel": {
+        "dock": "left",
+    },
+    "outline_panel": {
+        "dock": "left",
+    },
+    "collaboration_panel": {
+        "dock": "left",
+    },
+    "git_panel": {
+        "dock": "left",
+    },
     "agent": {
+        "dock": "right",
         "default_model": {
             "provider": "zed.dev",
             "model": "claude-sonnet-4-5",
@@ -23,7 +36,6 @@
             "proxy": null,
             "proxy_no_verify": null,
         },
-        "enabled_in_text_threads": false,
     },
     "vim_mode": true,
     "ui_font_size": 16,
@@ -36,9 +48,6 @@
     },
     "tab_size": 4,
     "languages": {
-        "Nix": {
-            "tab_size": 2,
-        },
         "Shell Script": {
             "tab_size": 2,
         },
