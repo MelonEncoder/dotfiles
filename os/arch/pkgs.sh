@@ -39,11 +39,9 @@ pacman_system=(
   hyprtoolkit
   hyprutils
   hyprwayland-scanner
-  inkscape
   iw
   iwd
   jdk-openjdk
-  kdenlive
   ktorrent
   loupe
   man-db
@@ -123,9 +121,12 @@ aur_pkgs=(
 )
 
 flatpak_pkgs=(
+  app.zen_browser.zen
   com.discordapp.Discord
-  org.prismlauncher.PrismLauncher
   com.obsproject.Studio
   com.spotify.Client
-  app.zen_browser.zen
+  org.gimp.GIMP
+  org.inkscape.Inkscape
+  org.kde.krita
+  org.prismlauncher.PrismLauncher
 )
