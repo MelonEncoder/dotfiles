@@ -25,6 +25,10 @@ QtObject {
             // System info labels
             kernel:           "Kernel",
             version:          "Version",
+            cpu:              "CPU",
+            gpu:              "GPU",
+            ram:              "RAM",
+            storage:          "Storage",
 
             // Screenshot buttons
             fullscreen:       "Fullscreen",
@@ -80,6 +84,10 @@ QtObject {
             // System info labels
             kernel:           "カーネル",
             version:          "バージョン",
+            cpu:              "CPU",
+            gpu:              "GPU",
+            ram:              "RAM",
+            storage:          "ストレージ",
 
             // Screenshot buttons
             fullscreen:       "全画面",

@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
+import Quickshell.Hyprland
 import Quickshell.Widgets
 import Quickshell.Services.SystemTray
 import ".."
@@ -44,6 +45,12 @@ Rectangle {
         onClicked: root.expanded = !root.expanded
     }
 
+    HyprlandFocusGrab {
+        active: root.expanded
+        windows: [dropdown]
+        onCleared: root.expanded = false
+    }
+
     PopupWindow {
         id: dropdown
         anchor.item: root
@@ -69,6 +76,8 @@ Rectangle {
             border.color: Theme.color_border
             opacity: root.expanded ? 1 : 0
             scale: root.expanded ? 1 : Animations.dropdown_scale_closed
+            focus: root.expanded
+            Keys.onEscapePressed: root.expanded = false
 
             Behavior on opacity {
                 NumberAnimation {

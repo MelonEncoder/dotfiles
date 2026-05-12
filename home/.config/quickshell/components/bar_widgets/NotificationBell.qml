@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
+import Quickshell.Hyprland
 import Quickshell.Services.Notifications
 import ".."
 import "../../services"
@@ -61,6 +62,12 @@ Item {
 
     // ── Notification history popup ──────────────────────────────────────────
 
+    HyprlandFocusGrab {
+        active: root.expanded
+        windows: [dropdown]
+        onCleared: root.expanded = false
+    }
+
     PopupWindow {
         id: dropdown
         anchor.item: root
@@ -93,6 +100,8 @@ Item {
             scale: root.expanded ? 1 : Animations.dropdown_scale_closed
             transformOrigin: Item.Top
             clip: true
+            focus: root.expanded
+            Keys.onEscapePressed: root.expanded = false
 
             Behavior on opacity {
                 NumberAnimation {

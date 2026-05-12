@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
+import Quickshell.Hyprland
 import Quickshell.Services.Mpris
 import Quickshell.Widgets
 import ".."
@@ -424,6 +425,12 @@ Item {
 
     // ── Media player popup ─────────────────────────────────────────────────────
 
+    HyprlandFocusGrab {
+        active: root.expanded
+        windows: [dropdown]
+        onCleared: root.expanded = false
+    }
+
     PopupWindow {
         id: dropdown
         anchor.item: root
@@ -451,6 +458,8 @@ Item {
             border.color: Theme.color_border
             opacity: root.expanded ? 1 : 0
             scale: root.expanded ? 1 : Animations.dropdown_scale_closed
+            focus: root.expanded
+            Keys.onEscapePressed: root.expanded = false
             transformOrigin: Item.Top
 
             Behavior on opacity {

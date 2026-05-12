@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
+import Quickshell.Hyprland
 import ".."
 import "../../services"
 
@@ -116,6 +117,12 @@ Item {
 
     // ── Calendar popup ──────────────────────────────────────────────────────
 
+    HyprlandFocusGrab {
+        active: root.expanded
+        windows: [dropdown]
+        onCleared: root.expanded = false
+    }
+
     PopupWindow {
         id: dropdown
         anchor.item: root
@@ -143,6 +150,8 @@ Item {
             radius: Theme.radius_background
             color: Theme.color_background
             border.width: Theme.border_width
+            focus: root.expanded
+            Keys.onEscapePressed: root.expanded = false
             border.color: Theme.color_border
             opacity: root.expanded ? 1 : 0
             scale: root.expanded ? 1 : Animations.dropdown_scale_closed
