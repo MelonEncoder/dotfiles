@@ -386,6 +386,7 @@ hl.bind(mainMod .. " + W", hl.dsp.global("quickshell:wallpaper-selector"))
 hl.bind(mainMod .. " + SPACE", hl.dsp.global("quickshell:app-launcher"))
 hl.bind(mainMod .. " + L", hl.dsp.global("quickshell:lock-screen"))
 hl.bind(mainMod .. " + SHIFT + E", hl.dsp.global("quickshell:power-menu"))
+hl.bind(mainMod .. " + SHIFT + O", hl.dsp.global("quickshell:system-options"))
 
 -- Clipse
 hl.bind(mainMod .. " + O", hl.dsp.exec_cmd(terminal .. " --title=clipse -e clipse"))
