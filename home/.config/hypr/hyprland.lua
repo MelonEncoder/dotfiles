@@ -385,6 +385,7 @@ hl.bind(mainMod .. " + ALT + S", hl.dsp.exec_cmd("hyprshot -z -m output -o ~/Pic
 hl.bind(mainMod .. " + W", hl.dsp.global("quickshell:wallpaper-selector"))
 hl.bind(mainMod .. " + SPACE", hl.dsp.global("quickshell:app-launcher"))
 hl.bind(mainMod .. " + L", hl.dsp.global("quickshell:lock-screen"))
+hl.bind(mainMod .. " + SHIFT + E", hl.dsp.global("quickshell:power-menu"))
 
 -- Clipse
 hl.bind(mainMod .. " + O", hl.dsp.exec_cmd(terminal .. " --title=clipse -e clipse"))
