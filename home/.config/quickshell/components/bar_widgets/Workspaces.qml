@@ -29,11 +29,6 @@ Rectangle {
 		return null
 	}
 
-	function focusWorkspace(workspaceId: int): void {
-		if (workspaceId <= 0) return
-		if (Hyprland.focusedWorkspace && (Hyprland.focusedWorkspace.id === workspaceId)) return
-		Hyprland.dispatch("workspace " + workspaceId)
-	}
 
 	RowLayout {
 		id: workspaceRow
@@ -45,6 +40,7 @@ Rectangle {
 			model: 10
 
 			Item {
+				id: workspaceSlot
 				required property int index
 				readonly property int workspaceId: index + 1
 				readonly property var workspace: root.workspaceForId(workspaceId)
@@ -65,10 +61,10 @@ Rectangle {
 				Rectangle {
 					id: itemBackground
 					anchors.centerIn: parent
-					width: parent.indicatorWidth
-					height: parent.indicatorHeight
-					radius: parent.isActive ? root.radius : height / 4
-	 				color: parent.isActive ? Theme.color_text : (parent.hasWindows ? Theme.workspace_dot_occupied : Theme.workspace_dot_empty)
+					width: workspaceSlot.indicatorWidth
+					height: workspaceSlot.indicatorHeight
+					radius: workspaceSlot.isActive ? root.radius : height / 4
+	 				color: workspaceSlot.isActive ? Theme.color_text : (workspaceSlot.hasWindows ? Theme.workspace_dot_occupied : Theme.workspace_dot_empty)
 					opacity: 1
 
 					Behavior on width {
@@ -102,9 +98,9 @@ Rectangle {
 
 				Text {
 					anchors.centerIn: parent
-					text: root.toJapaneseNumber(parent.workspaceId)
+					text: root.toJapaneseNumber(workspaceSlot.workspaceId)
 					visible: opacity > 0.01
-					opacity: parent.isActive ? 1 : 0
+					opacity: workspaceSlot.isActive ? 1 : 0
 					color: Theme.color_background
 					font.pixelSize: Theme.font_size
 					font.family: Theme.font_family
@@ -122,7 +118,12 @@ Rectangle {
 					anchors.fill: parent
 					hoverEnabled: true
 					cursorShape: Qt.PointingHandCursor
-					onClicked: root.focusWorkspace(parent.workspaceId)
+					onClicked: {
+					if (workspaceSlot.workspace)
+						workspaceSlot.workspace.activate()
+					else
+						Quickshell.execDetached(["hyprctl", "dispatch", "workspace", workspaceSlot.workspaceId.toString()])
+				}
 				}
 			}
 		}
