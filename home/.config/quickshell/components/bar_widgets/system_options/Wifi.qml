@@ -2,77 +2,51 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Layouts
-import Quickshell.Io
+import Quickshell.Networking
 import "../../"
 
 Rectangle {
     id: root
     property bool expanded: false
-    property bool loading: false
-    property var wifiNetworks: []
     readonly property int sectionMargin: Math.round(Theme.bar_widget_padding / 2)
-    readonly property string wifiScanCommand: "nmcli -t -f IN-USE,SSID,SIGNAL,SECURITY device wifi list --rescan no 2>/dev/null | awk -F: '{inuse=$1; signal=$(NF-1); sec=$NF; ssid=$2; for(i=3;i<=NF-2;i++) ssid=ssid \":\" $i; gsub(/^[ \\t]+|[ \\t]+$/, \"\", ssid); if (ssid != \"\") printf \"%s\\t%s\\t%s\\t%s\\n\", inuse, ssid, signal, sec;}'"
-    readonly property var connectedNetworks: getConnectedWifiNetworks()
-    readonly property var availableNetworks: getAvailableWifiNetworks()
+
+    readonly property var wifiDevice: {
+        var devs = Networking.devices.values;
+        for (var i = 0; i < devs.length; i++) {
+            if (devs[i].type === DeviceType.Wifi)
+                return devs[i];
+        }
+        return null;
+    }
+
+    readonly property var connectedNetworks: {
+        if (!root.wifiDevice) return [];
+        return root.wifiDevice.networks.values.filter(function(n) { return n.connected; });
+    }
+
+    readonly property var availableNetworks: {
+        if (!root.wifiDevice) return [];
+        return root.wifiDevice.networks.values.filter(function(n) { return !n.connected; });
+    }
+
     readonly property int expandedContentHeight: wifiExpandedContent.implicitHeight
 
     function wifiName(network: var): string {
-        if (!network)
-            return "Unknown Network";
-        if (network.ssid && network.ssid.length > 0)
-            return network.ssid;
+        if (!network) return "Unknown Network";
+        if (network.name && network.name.length > 0) return network.name;
         return "Hidden Network";
     }
 
     function currentWifiSubtitle(): string {
-        if (root.loading)
-            return "loading...";
-        if (root.connectedNetworks.length > 0)
-            return root.wifiName(root.connectedNetworks[0]);
+        if (!root.wifiDevice) return "unavailable";
+        if (root.wifiDevice.state === ConnectionState.Connecting) return "connecting...";
+        if (root.connectedNetworks.length > 0) return root.wifiName(root.connectedNetworks[0]);
         return "none connected";
     }
 
-    function shellQuote(value: string): string {
-        if (!value)
-            return "''";
-        return "'" + value.replace(/'/g, "'\"'\"'") + "'";
-    }
-
-    function getConnectedWifiNetworks(): var {
-        var connected = [];
-        for (var i = 0; i < wifiNetworks.length; i++) {
-            if (wifiNetworks[i] && wifiNetworks[i].connected)
-                connected.push(wifiNetworks[i]);
-        }
-        return connected;
-    }
-
-    function getAvailableWifiNetworks(): var {
-        var available = [];
-        for (var i = 0; i < wifiNetworks.length; i++) {
-            var net = wifiNetworks[i];
-            if (!net || net.connected)
-                continue;
-            available.push(net);
-        }
-        return available;
-    }
-
-    function connectWifi(network: var): void {
-        if (!network || !network.ssid)
-            return;
-        wifiCtl.exec(["sh", "-c", "nmcli dev wifi connect " + shellQuote(network.ssid) + " >/dev/null 2>&1 || true"]);
-        wifiRefresh.restart();
-    }
-
-    function disconnectWifi(): void {
-        wifiCtl.exec(["sh", "-c", "conn=\"$(nmcli -t -f NAME,TYPE connection show --active 2>/dev/null | awk -F: '$2==\"802-11-wireless\"{print $1; exit}')\"; [ -n \"$conn\" ] && nmcli connection down id \"$conn\" >/dev/null 2>&1 || true"]);
-        wifiRefresh.restart();
-    }
-
-    function refreshWifi(): void {
-        root.loading = true;
-        wifiScan.exec(["sh", "-c", root.wifiScanCommand]);
+    onExpandedChanged: {
+        if (root.wifiDevice)
+            root.wifiDevice.scannerEnabled = root.expanded;
     }
 
     implicitWidth: 280
@@ -167,11 +141,7 @@ Rectangle {
                     anchors.fill: parent
                     hoverEnabled: true
                     cursorShape: Qt.PointingHandCursor
-                    onClicked: {
-                        root.expanded = !root.expanded;
-                        if (root.expanded)
-                            root.refreshWifi();
-                    }
+                    onClicked: root.expanded = !root.expanded
                 }
             }
 
@@ -249,7 +219,7 @@ Rectangle {
                                 anchors.fill: parent
                                 hoverEnabled: true
                                 cursorShape: Qt.PointingHandCursor
-                                onClicked: root.disconnectWifi()
+                                onClicked: connectedWifiItem.modelData.disconnect()
                             }
                         }
                     }
@@ -265,7 +235,7 @@ Rectangle {
                             anchors.left: parent.left
                             anchors.leftMargin: 10
                             anchors.verticalCenter: parent.verticalCenter
-                            text: root.loading ? Strings.tr.loading : Strings.tr.none_connected
+                            text: Strings.tr.none_connected
                             color: Theme.color_text_subtle
                             font.pixelSize: Theme.font_size
                             font.family: Theme.font_family
@@ -318,7 +288,7 @@ Rectangle {
                                 anchors.fill: parent
                                 hoverEnabled: true
                                 cursorShape: Qt.PointingHandCursor
-                                onClicked: root.connectWifi(availableWifiItem.modelData)
+                                onClicked: availableWifiItem.modelData.connect()
                             }
                         }
                     }
@@ -328,13 +298,13 @@ Rectangle {
                         Layout.preferredHeight: Theme.bar_widget_height
                         radius: Theme.radius_normal
                         color: "transparent"
-                        visible: root.loading || root.availableNetworks.length === 0
+                        visible: root.availableNetworks.length === 0
 
                         Text {
                             anchors.left: parent.left
                             anchors.leftMargin: 10
                             anchors.verticalCenter: parent.verticalCenter
-                            text: root.loading ? Strings.tr.loading : Strings.tr.none_available
+                            text: Strings.tr.none_available
                             color: Theme.color_text_subtle
                             font.pixelSize: Theme.font_size
                             font.family: Theme.font_family
@@ -343,58 +313,5 @@ Rectangle {
                 }
             }
         }
-    }
-
-    Process {
-        id: wifiCtl
-    }
-
-    StdioCollector {
-        id: wifiScanOut
-        waitForEnd: true
-        onStreamFinished: {
-            var raw = text.trim();
-            if (raw.length === 0) {
-                root.wifiNetworks = [];
-                root.loading = false;
-                return;
-            }
-
-            var lines = raw.split("\n");
-            var parsed = [];
-            for (var i = 0; i < lines.length; i++) {
-                var line = lines[i];
-                if (!line || line.length === 0)
-                    continue;
-                var parts = line.split("\t");
-                if (parts.length < 4)
-                    continue;
-                var inUse = parts[0];
-                var ssid = parts[1];
-                var signal = parseInt(parts[2]);
-                var security = parts[3];
-                parsed.push({
-                    ssid: ssid,
-                    signal: isNaN(signal) ? 0 : signal,
-                    security: security,
-                    connected: inUse === "*"
-                });
-            }
-            root.wifiNetworks = parsed;
-            root.loading = false;
-        }
-    }
-
-    Process {
-        id: wifiScan
-        stdout: wifiScanOut
-    }
-
-    Timer {
-        id: wifiRefresh
-        interval: 1200
-        running: false
-        repeat: false
-        onTriggered: root.refreshWifi()
     }
 }
