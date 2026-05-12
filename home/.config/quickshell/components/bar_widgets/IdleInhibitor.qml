@@ -1,5 +1,5 @@
 import QtQuick
-import Quickshell.Io
+import Quickshell.Wayland as QsWayland
 import ".."
 
 Rectangle {
@@ -30,6 +30,7 @@ Rectangle {
         font.pixelSize: Theme.font_size
         font.family: Theme.font_family_icon
     }
+
     MouseArea {
         id: clickArea
         anchors.fill: parent
@@ -38,13 +39,8 @@ Rectangle {
         onClicked: toggleButton.inhibited = !toggleButton.inhibited
     }
 
-    Process {
-        id: inhibitor
-        running: toggleButton.inhibited
-        command: ["systemd-inhibit", "--what=idle", "--mode=block", "--why=Quickshell idle inhibitor", "sleep", "infinity"]
-        onRunningChanged: {
-            if (!running && toggleButton.inhibited)
-                toggleButton.inhibited = false;
-        }
+    QsWayland.IdleInhibitor {
+        window: toggleButton.Window.window
+        enabled: toggleButton.inhibited
     }
 }

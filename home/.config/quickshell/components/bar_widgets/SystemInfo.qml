@@ -22,29 +22,6 @@ Rectangle {
     property string kernelDisplay: formatKernel(root.kernelInfo)
     property string versionDisplay: formatVersion(root.osVersionRaw)
     readonly property int popupWidth: 240
-    readonly property var powerActions: [
-        {
-            action: "lock",
-            icon: "",
-        },
-        {
-            action: "logout",
-            icon: "󰍃",
-        },
-        {
-            action: "suspend",
-            icon: "",
-        },
-        {
-            action: "reboot",
-            icon: "",
-        },
-        {
-            action: "poweroff",
-            icon: "",
-        }
-    ]
-
     function formatDistro(value: string): string {
         var text = value.trim();
         if (text.length === 0)
@@ -118,24 +95,6 @@ Rectangle {
             icon: "",
             name: formatDistro(pretty)
         };
-    }
-
-    function runPowerAction(action: string): void {
-        var args = [];
-        if (action === "poweroff")
-            args = ["systemctl", "poweroff"];
-        else if (action === "reboot")
-            args = ["systemctl", "reboot"];
-        else if (action === "suspend")
-            args = ["systemctl", "suspend"];
-        else if (action === "logout")
-            args = ["hyprctl", "dispatch", "exit"];
-        else if (action === "lock")
-            args = ["qs", "ipc", "call", "lock", "lock"];
-        if (args.length === 0)
-            return;
-        root.expanded = false;
-        powerControl.exec(args);
     }
 
     implicitWidth: osIcon.implicitWidth + (Theme.bar_widget_padding * 2)
@@ -304,63 +263,8 @@ Rectangle {
                         }
                     }
                 }
-
-                Rectangle {
-                    Layout.fillWidth: true
-                    implicitHeight: 1
-                    color: Theme.color_border_subtle
-                }
-
-                Repeater {
-                    model: root.powerActions
-
-                    Rectangle {
-                        id: option
-                        required property var modelData
-                        property bool hovered: optionArea.containsMouse
-                        property bool pressed: optionArea.pressed
-                        Layout.fillWidth: true
-                        Layout.preferredHeight: Theme.bar_widget_height
-                        radius: Theme.radius_normal
-                        color: pressed ? Theme.color_surface_pressed : (hovered ? Theme.color_surface_hover : "transparent")
-
-                        RowLayout {
-                            anchors.fill: parent
-                            anchors.leftMargin: Theme.bar_widget_padding
-                            anchors.rightMargin: Theme.bar_widget_padding
-                            spacing: 8
-
-                            Text {
-                                text: option.modelData.icon
-                                color: Theme.color_text
-                                font.pixelSize: Theme.font_size_icon
-                                font.family: Theme.font_family_icon
-                            }
-
-                            Text {
-                                Layout.fillWidth: true
-                                text: Strings.tr["power_" + option.modelData.action]
-                                color: Theme.color_text
-                                font.pixelSize: Theme.font_size
-                                font.family: Theme.font_family
-                            }
-                        }
-
-                        MouseArea {
-                            id: optionArea
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            cursorShape: Qt.PointingHandCursor
-                            onClicked: root.runPowerAction(option.modelData.action)
-                        }
-                    }
-                }
             }
         }
-    }
-
-    Process {
-        id: powerControl
     }
 
     StdioCollector {
