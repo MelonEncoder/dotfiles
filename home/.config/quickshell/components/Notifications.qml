@@ -299,20 +299,27 @@ Scope {
                                         }
                                     }
 
-                                    Flow {
+                                    RowLayout {
                                         visible: repeater.count > 0
                                         Layout.fillWidth: true
                                         spacing: root.action_spacing
+                                        property var doClose: notificationItem.beginClose
+                                        property bool hasIcons: notificationItem.notification.hasActionIcons
 
                                         Repeater {
                                             id: repeater
                                             model: notificationItem.visibleActions
 
                                             delegate: Rectangle {
+                                                id: actionBtn
                                                 required property var modelData
 
-                                                property var action: modelData
-                                                implicitWidth: actionLabel.implicitWidth + (root.padding * 2)
+                                                readonly property var action: modelData
+                                                readonly property string iconSource: parent.hasIcons
+                                                    ? Quickshell.iconPath(action.identifier, "")
+                                                    : ""
+
+                                                implicitWidth: actionBtnContent.implicitWidth + (root.padding * 2)
                                                 implicitHeight: root.action_height
                                                 radius: Theme.radius_normal
                                                 color: actionMouse.pressed ? Theme.notification_action_pressed : (actionMouse.containsMouse ? Theme.notification_action_hover : Theme.notification_action)
@@ -324,13 +331,26 @@ Scope {
                                                     }
                                                 }
 
-                                                Text {
-                                                    id: actionLabel
+                                                RowLayout {
+                                                    id: actionBtnContent
                                                     anchors.centerIn: parent
-                                                    text: parent.action.text
-                                                    color: Theme.color_text
-                                                    font.pixelSize: Theme.font_size
-                                                    font.family: Theme.font_family
+                                                    spacing: 4
+
+                                                    Image {
+                                                        visible: actionBtn.iconSource !== ""
+                                                        source: actionBtn.iconSource
+                                                        Layout.preferredWidth: Theme.font_size
+                                                        Layout.preferredHeight: Theme.font_size
+                                                        fillMode: Image.PreserveAspectFit
+                                                        smooth: true
+                                                    }
+
+                                                    Text {
+                                                        text: actionBtn.action.text
+                                                        color: Theme.color_text
+                                                        font.pixelSize: Theme.font_size
+                                                        font.family: Theme.font_family
+                                                    }
                                                 }
 
                                                 MouseArea {
@@ -338,8 +358,8 @@ Scope {
                                                     anchors.fill: parent
                                                     hoverEnabled: true
                                                     onClicked: {
-                                                        parent.action.invoke();
-                                                        notificationItem.beginClose(false);
+                                                        actionBtn.action.invoke();
+                                                        parent.parent.doClose();
                                                     }
                                                 }
                                             }

@@ -292,6 +292,25 @@ Item {
                                     elide: Text.ElideRight
                                     width: parent.width
                                 }
+
+                                Rectangle {
+                                    visible: bellImage.source.toString() !== ""
+                                    width: parent.width
+                                    height: visible ? 80 : 0
+                                    radius: Theme.radius_normal
+                                    color: Theme.color_overlay_dark
+                                    clip: true
+
+                                    Image {
+                                        id: bellImage
+                                        anchors.fill: parent
+                                        source: notifCard.modelData.image || ""
+                                        fillMode: Image.PreserveAspectFit
+                                        asynchronous: true
+                                        smooth: true
+                                        mipmap: true
+                                    }
+                                }
                             }
 
                             // Click card to dismiss
