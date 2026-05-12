@@ -9,3 +9,4 @@ Lock 1.0 Lock.qml
 Wallpaper 1.0 Wallpaper.qml
 Notifications 1.0 Notifications.qml
 PowerOptions 1.0 PowerOptions.qml
+SystemOptions 1.0 SystemOptions.qml

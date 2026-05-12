@@ -3,7 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Quickshell.Io
-import "../../"
+import "../"
 
 Rectangle {
     id: root

@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell.Io
-import "../../"
+import "../"
 
 Item {
     id: root

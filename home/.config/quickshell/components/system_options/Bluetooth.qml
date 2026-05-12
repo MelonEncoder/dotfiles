@@ -4,7 +4,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Bluetooth
-import "../../"
+import "../"
 
 Rectangle {
     id: root

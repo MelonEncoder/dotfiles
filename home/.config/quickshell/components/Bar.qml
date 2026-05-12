@@ -114,7 +114,6 @@ Scope {
                         }
                         SystemOptions {
                             Layout.alignment: Qt.AlignVCenter
-                            panelScreenName: root.modelData && root.modelData.name ? root.modelData.name : ""
                         }
                     }
                 }

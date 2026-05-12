@@ -3,7 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Quickshell.Services.Pipewire
-import "../../"
+import "../"
 
 Rectangle {
     id: root

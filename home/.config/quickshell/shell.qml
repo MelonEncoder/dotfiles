@@ -11,5 +11,6 @@ ShellRoot {
     }
     Notifications {}
     PowerOptions {}
+    SystemOptions {}
     Wallpaper {}
 }
