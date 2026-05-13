@@ -5,7 +5,8 @@ import "."
 
 QtObject {
     // Accent colors
-    readonly property color color_accent_primary: "#8b5cf6"
+    readonly property color color_purple: "#8b5cf6"
+    readonly property color color_accent_primary: color_purple
     readonly property color color_accent_secondary: "#06b6d4"
 
     // Base colors

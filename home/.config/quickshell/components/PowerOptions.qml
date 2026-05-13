@@ -12,6 +12,8 @@ Scope {
     id: root
 
     property bool visible: false
+    property int focusedIndex: -1
+    readonly property int gridColumns: 3
 
     readonly property var actions: [
         {
@@ -38,10 +40,12 @@ Scope {
 
     function open(): void {
         root.visible = true;
+        root.focusedIndex = 0;
     }
 
     function close(): void {
         root.visible = false;
+        root.focusedIndex = -1;
     }
 
     function runAction(action: string): void {
@@ -168,7 +172,38 @@ Scope {
                     }
                 }
 
-                Keys.onEscapePressed: root.close()
+                Keys.onPressed: event => {
+                    var count = root.actions.length;
+                    var cols = root.gridColumns;
+                    var idx = root.focusedIndex < 0 ? 0 : root.focusedIndex;
+                    switch (event.key) {
+                    case Qt.Key_Right:
+                    case Qt.Key_Tab:
+                        root.focusedIndex = (idx + 1) % count;
+                        break;
+                    case Qt.Key_Left:
+                    case Qt.Key_Backtab:
+                        root.focusedIndex = (idx - 1 + count) % count;
+                        break;
+                    case Qt.Key_Down:
+                        root.focusedIndex = Math.min(idx + cols, count - 1);
+                        break;
+                    case Qt.Key_Up:
+                        root.focusedIndex = Math.max(idx - cols, 0);
+                        break;
+                    case Qt.Key_Return:
+                    case Qt.Key_Enter:
+                        if (root.focusedIndex >= 0)
+                            root.runAction(root.actions[root.focusedIndex].action);
+                        break;
+                    case Qt.Key_Escape:
+                        root.close();
+                        break;
+                    default:
+                        return;
+                    }
+                    event.accepted = true;
+                }
 
                 GridLayout {
                     id: panelContent
@@ -206,18 +241,38 @@ Scope {
                         Rectangle {
                             id: optionItem
                             required property var modelData
+                            required property int index
+                            readonly property bool focused: root.focusedIndex === index
                             property bool hovered: optionMouse.containsMouse
                             property bool pressed: optionMouse.pressed
 
                             Layout.fillWidth: true
                             Layout.preferredHeight: 144
                             radius: Theme.radius_normal
-                            color: pressed ? Theme.color_surface_pressed : (hovered ? Theme.color_surface_hover : "transparent")
+                            color: pressed ? Theme.color_surface_pressed : (hovered || focused ? Theme.color_surface_hover : "transparent")
+                            clip: true
 
                             Behavior on color {
                                 ColorAnimation {
                                     duration: Animations.duration_hover
                                     easing.type: Animations.easing_standard
+                                }
+                            }
+
+                            // Keyboard focus accent bar
+                            Rectangle {
+                                anchors.bottom: parent.bottom
+                                anchors.left: parent.left
+                                anchors.right: parent.right
+                                height: 2
+                                color: Theme.color_purple
+                                opacity: optionItem.focused ? 1 : 0
+
+                                Behavior on opacity {
+                                    NumberAnimation {
+                                        duration: Animations.duration_hover
+                                        easing.type: Animations.easing_standard
+                                    }
                                 }
                             }
 
@@ -246,6 +301,7 @@ Scope {
                                 anchors.fill: parent
                                 hoverEnabled: true
                                 cursorShape: Qt.PointingHandCursor
+                                onEntered: root.focusedIndex = optionItem.index
                                 onClicked: root.runAction(optionItem.modelData.action)
                             }
                         }
