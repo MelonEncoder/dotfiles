@@ -42,12 +42,12 @@ Scope {
             readonly property bool hasNotifications: notificationRepeater.count > 0
 
             screen: modelData
-            visible: hasNotifications
+            visible: hasNotifications && notificationColumn.implicitHeight > 0
             color: "transparent"
             aboveWindows: true
             focusable: false
             exclusionMode: ExclusionMode.Ignore
-            implicitHeight: hasNotifications ? notificationColumn.implicitHeight + root.margin : 0
+            implicitHeight: notificationColumn.implicitHeight > 0 ? notificationColumn.implicitHeight + root.margin : 0
 
             anchors {
                 top: true
