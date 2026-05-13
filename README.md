@@ -13,7 +13,7 @@ cd ~/.local/share/dotfiles
 
 ## Layout
 
-- `home/.config/`: user config (`nvim`, `hypr`, `quickshell`, `zed`, `fcitx5`, etc.)
+- `configs/`: user config (`nvim`, `hypr`, `quickshell`, `zed`, `fcitx5`, etc.)
 - `home/.local/share/`: user local data (`wallpapers`, etc.)
 - `os/arch/`: Arch Linux bootstrap (`setup.sh`, package lists, configure scripts) 
 - `os/macos/`: macOS bootstrap (`setup.sh`)
