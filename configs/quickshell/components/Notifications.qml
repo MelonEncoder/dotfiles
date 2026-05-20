@@ -38,16 +38,15 @@ Scope {
         PanelWindow {
             id: panel
             required property var modelData
-            readonly property int topOffset: root.margin + Theme.bar_widget_height + (Theme.bar_padding * 2) + root.stack_gap_below_bar
-            readonly property bool hasNotifications: notificationRepeater.count > 0
+            property int activeToastCount: 0
 
             screen: modelData
-            visible: hasNotifications && notificationColumn.implicitHeight > 0
+            visible: activeToastCount > 0
             color: "transparent"
             aboveWindows: true
             focusable: false
             exclusionMode: ExclusionMode.Ignore
-            implicitHeight: notificationColumn.implicitHeight > 0 ? notificationColumn.implicitHeight + root.margin : 0
+            implicitHeight: activeToastCount > 0 ? notificationColumn.implicitHeight + root.margin : 0
 
             anchors {
                 top: true
@@ -105,6 +104,10 @@ Scope {
                             width: implicitWidth
                             height: implicitHeight
                             visible: !toastHidden
+
+                            Component.onCompleted: panel.activeToastCount++
+                            Component.onDestruction: if (!toastHidden) panel.activeToastCount--
+                            onToastHiddenChanged: if (toastHidden) panel.activeToastCount--
 
                             function beginClose() {
                                 if (closing)

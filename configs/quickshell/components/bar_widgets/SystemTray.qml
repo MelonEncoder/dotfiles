@@ -6,11 +6,13 @@ import Quickshell
 import Quickshell.Hyprland
 import Quickshell.Widgets
 import Quickshell.Services.SystemTray
+import Quickshell.DBusMenu
 import ".."
 
 Rectangle {
     id: root
     property bool expanded: false
+    property bool menuOpen: false
     property bool hovered: clickArea.containsMouse
     property bool pressed: clickArea.pressed
 
@@ -46,7 +48,7 @@ Rectangle {
     }
 
     HyprlandFocusGrab {
-        active: root.expanded
+        active: root.expanded && !root.menuOpen
         windows: [dropdown]
         onCleared: root.expanded = false
     }
@@ -180,6 +182,14 @@ Rectangle {
                             }
                         }
 
+                        QsMenuAnchor {
+                            id: trayMenu
+                            menu: trayItem.modelData && trayItem.modelData.hasMenu ? trayItem.modelData.menu : null
+                            anchor.item: trayItem
+                            anchor.edges: Edges.Bottom
+                            onClosed: root.menuOpen = false
+                        }
+
                         MouseArea {
                             id: trayHover
                             anchors.fill: parent
@@ -189,15 +199,16 @@ Rectangle {
                             onClicked: function (mouse) {
                                 if (!trayItem.modelData)
                                     return;
-                                if (mouse.button == Qt.LeftButton) {
+                                if (mouse.button === Qt.RightButton && trayItem.modelData.hasMenu) {
+                                    root.menuOpen = true;
+                                    trayMenu.open();
+                                } else if (mouse.button === Qt.LeftButton) {
                                     if (!trayItem.modelData.onlyMenu) {
                                         trayItem.modelData.activate();
+                                    } else if (trayItem.modelData.hasMenu) {
+                                        root.menuOpen = true;
+                                        trayMenu.open();
                                     }
-                                }
-
-                                if (mouse.button == Qt.RightButton && trayItem.modelData.hasMenu) {
-                                    var point = trayItem.mapToItem(null, Math.round(trayItem.width / 2), trayItem.height);
-                                    trayItem.modelData.display(dropdown, Math.round(point.x), Math.round(point.y));
                                 }
                             }
                         }
