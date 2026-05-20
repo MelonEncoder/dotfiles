@@ -19,6 +19,7 @@ pacman_system=(
   dnsmasq
   flatpak
   ghostty
+  gimp
   git
   go
   gvfs
@@ -39,9 +40,11 @@ pacman_system=(
   hyprtoolkit
   hyprutils
   hyprwayland-scanner
+  inkscape
   iw
   iwd
   jdk-openjdk
+  krita
   ktorrent
   loupe
   man-db
@@ -125,8 +128,5 @@ flatpak_pkgs=(
   com.discordapp.Discord
   com.obsproject.Studio
   com.spotify.Client
-  org.gimp.GIMP
-  org.inkscape.Inkscape
-  org.kde.krita
   org.prismlauncher.PrismLauncher
 )
