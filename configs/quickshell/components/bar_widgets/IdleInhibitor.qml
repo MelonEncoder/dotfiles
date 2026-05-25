@@ -39,8 +39,10 @@ Rectangle {
         onClicked: toggleButton.inhibited = !toggleButton.inhibited
     }
 
-    QsWayland.IdleInhibitor {
-        window: toggleButton.Window.window
-        enabled: toggleButton.inhibited
+    Loader {
+        active: toggleButton.inhibited
+        sourceComponent: QsWayland.IdleInhibitor {
+            window: toggleButton.Window.window
+        }
     }
 }
