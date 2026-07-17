@@ -2,7 +2,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR/../../pkgs.sh"
+source "$SCRIPT_DIR/../pkgs.sh"
 
 pacman_installed() {
   pacman -Qi "$1" >/dev/null 2>&1
