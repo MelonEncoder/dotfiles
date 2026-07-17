@@ -13,8 +13,9 @@ pacman_system=(
   cmake
   cups
   curl
-  decibels
   ddcutil
+  decibels
+  discord
   docker
   dnsmasq
   flatpak
@@ -125,8 +126,9 @@ aur_pkgs=(
 
 flatpak_pkgs=(
   app.zen_browser.zen
-  com.discordapp.Discord
   com.obsproject.Studio
   com.spotify.Client
+  io.github.kolunmi.Bazaar
+  org.gimp.GIMP
   org.prismlauncher.PrismLauncher
 )
