@@ -11,7 +11,7 @@ declare -A DIRS=(
   ["Templates"]="$HOME/Templates"
   ["Public"]="$HOME/Public"
   ["Screenshots"]="$HOME/Pictures/Screenshots"
-  ["Apps"]="$HOME/Apps"
+  ["Applications"]="$HOME/Applications"
   ["Projects"]="$HOME/Projects"
 )
 
