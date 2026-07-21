@@ -102,14 +102,14 @@ Rectangle {
                         spacing: 1
 
                         Text {
-                            text: Strings.tr.bluetooth
+                            text: Strings.tr(Strings.keys.bluetooth)
                             color: Theme.color_text
                             font.pixelSize: Theme.font_size
                             font.family: Theme.font_family
                         }
 
                         Text {
-                            text: Bluetooth.defaultAdapter.enabled ? Strings.tr.bt_on : Strings.tr.bt_off
+                            text: Bluetooth.defaultAdapter.enabled ? Strings.tr(Strings.keys.bt_on) : Strings.tr(Strings.keys.bt_off)
                             color: Theme.color_text_subtle
                             font.pixelSize: Theme.font_size
                             font.family: Theme.font_family
@@ -161,7 +161,7 @@ Rectangle {
                     spacing: 3
 
                     Text {
-                        text: Strings.tr.connected
+                        text: Strings.tr(Strings.keys.connected)
                         color: Theme.color_text_subtle
                         font.pixelSize: Theme.font_size
                         font.family: Theme.font_family
@@ -235,7 +235,7 @@ Rectangle {
                             anchors.left: parent.left
                             anchors.leftMargin: 10
                             anchors.verticalCenter: parent.verticalCenter
-                            text: !Bluetooth.defaultAdapter ? Strings.tr.bt_unavailable : (Bluetooth.defaultAdapter.enabled ? Strings.tr.none_connected : Strings.tr.bt_disabled)
+                            text: !Bluetooth.defaultAdapter ? Strings.tr(Strings.keys.bt_unavailable) : (Bluetooth.defaultAdapter.enabled ? Strings.tr(Strings.keys.none_connected) : Strings.tr(Strings.keys.bt_disabled))
                             color: Theme.color_text_subtle
                             font.pixelSize: Theme.font_size
                             font.family: Theme.font_family
@@ -243,7 +243,7 @@ Rectangle {
                     }
 
                     Text {
-                        text: Strings.tr.available
+                        text: Strings.tr(Strings.keys.available)
                         color: Theme.color_text_subtle
                         font.pixelSize: Theme.font_size
                         font.family: Theme.font_family
@@ -317,7 +317,7 @@ Rectangle {
                             anchors.left: parent.left
                             anchors.leftMargin: 10
                             anchors.verticalCenter: parent.verticalCenter
-                            text: !Bluetooth.defaultAdapter ? Strings.tr.bt_unavailable : (Bluetooth.defaultAdapter.enabled ? (root.discovering ? Strings.tr.scanning : Strings.tr.none_available) : Strings.tr.bt_disabled)
+                            text: !Bluetooth.defaultAdapter ? Strings.tr(Strings.keys.bt_unavailable) : (Bluetooth.defaultAdapter.enabled ? (root.discovering ? Strings.tr(Strings.keys.scanning) : Strings.tr(Strings.keys.none_available)) : Strings.tr(Strings.keys.bt_disabled))
                             color: Theme.color_text_subtle
                             font.pixelSize: Theme.font_size
                             font.family: Theme.font_family

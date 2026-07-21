@@ -138,7 +138,7 @@ Scope {
 
                         Text {
                             Layout.fillWidth: true
-                            text: Strings.tr.quick_settings
+                            text: Strings.tr(Strings.keys.quick_settings)
                             color: Theme.color_text
                             font.pixelSize: Theme.font_size
                             font.family: Theme.font_family

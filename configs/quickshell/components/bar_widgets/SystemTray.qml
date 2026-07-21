@@ -6,7 +6,6 @@ import Quickshell
 import Quickshell.Hyprland
 import Quickshell.Widgets
 import Quickshell.Services.SystemTray
-import Quickshell.DBusMenu
 import ".."
 
 Rectangle {
@@ -109,7 +108,7 @@ Rectangle {
 
                 Text {
                     Layout.fillWidth: true
-                    text: Strings.tr.system_tray
+                    text: Strings.tr(Strings.keys.system_tray)
                     color: Theme.color_text_subtle
                     font.pixelSize: Theme.font_size_xs
                     font.family: Theme.font_family

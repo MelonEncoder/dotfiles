@@ -260,7 +260,7 @@ Rectangle {
 
                 Text {
                     Layout.fillWidth: true
-                    text: Strings.tr.system
+                    text: Strings.tr(Strings.keys.system)
                     color: Theme.color_text_subtle
                     font.pixelSize: Theme.font_size_xs
                     font.family: Theme.font_family
@@ -308,7 +308,7 @@ Rectangle {
 
                                 Text {
                                     Layout.fillWidth: true
-                                    text: root.kernelDisplay.length > 0 ? (Strings.tr.kernel + " " + root.kernelDisplay) : ""
+                                    text: root.kernelDisplay.length > 0 ? (Strings.tr(Strings.keys.kernel) + " " + root.kernelDisplay) : ""
                                     visible: text.length > 0
                                     color: Theme.color_text_subtle
                                     font.pixelSize: Theme.font_size
@@ -317,7 +317,7 @@ Rectangle {
 
                                 Text {
                                     Layout.fillWidth: true
-                                    text: root.versionDisplay.length > 0 ? (Strings.tr.version + " " + root.versionDisplay) : ""
+                                    text: root.versionDisplay.length > 0 ? (Strings.tr(Strings.keys.version) + " " + root.versionDisplay) : ""
                                     visible: text.length > 0
                                     color: Theme.color_text_subtle
                                     font.pixelSize: Theme.font_size
@@ -351,25 +351,25 @@ Rectangle {
 
                         HwRow {
                             icon: "󰻠"
-                            label: Strings.tr.cpu
+                            label: Strings.tr(Strings.keys.cpu)
                             value: root.cpuDisplay
                         }
 
                         HwRow {
                             icon: "󰢮"
-                            label: Strings.tr.gpu
+                            label: Strings.tr(Strings.keys.gpu)
                             value: root.gpuDisplay
                         }
 
                         HwRow {
                             icon: "󰍛"
-                            label: Strings.tr.ram
+                            label: Strings.tr(Strings.keys.ram)
                             value: root.ramDisplay
                         }
 
                         HwRow {
                             icon: "󰆼"
-                            label: Strings.tr.storage
+                            label: Strings.tr(Strings.keys.storage)
                             value: root.storageDisplay
                         }
                     }

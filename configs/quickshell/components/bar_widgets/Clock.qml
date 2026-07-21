@@ -186,7 +186,7 @@ Item {
                 // ── Section label ───────────────────────────────────────────
 
                 Text {
-                    text: Strings.tr.calendar
+                    text: Strings.tr(Strings.keys.calendar)
                     color: Theme.color_text_subtle
                     font.pixelSize: Theme.font_size_xs
                     font.family: Theme.font_family

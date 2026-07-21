@@ -104,7 +104,7 @@ Rectangle {
                         spacing: 1
 
                         Text {
-                            text: Strings.tr.power_profiles
+                            text: Strings.tr(Strings.keys.power_profiles)
                             color: Theme.color_text
                             font.pixelSize: Theme.font_size
                             font.family: Theme.font_family

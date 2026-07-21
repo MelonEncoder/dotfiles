@@ -218,7 +218,7 @@ Scope {
                     Text {
                         Layout.columnSpan: root.gridColumns
                         Layout.fillWidth: true
-                        text: Strings.tr.system
+                        text: Strings.tr(Strings.keys.system)
                         color: Theme.color_text_subtle
                         font.pixelSize: Theme.font_size_xs
                         font.family: Theme.font_family
@@ -289,7 +289,7 @@ Scope {
 
                                 Text {
                                     Layout.alignment: Qt.AlignHCenter
-                                    text: Strings.tr["power_" + optionItem.modelData.action]
+                                    text: Strings.tr(Strings.keys["power_" + optionItem.modelData.action])
                                     color: Theme.color_text
                                     font.pixelSize: Theme.font_size
                                     font.family: Theme.font_family
