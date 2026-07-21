@@ -4,7 +4,6 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Hyprland
-import Quickshell.Services.Notifications
 import ".."
 import "../../services"
 
@@ -136,7 +135,7 @@ Item {
                     spacing: 0
 
                     Text {
-                        text: Strings.tr.notifications
+                        text: Locale.tr.notifications
                         color: Theme.color_text_subtle
                         font.pixelSize: Theme.font_size_xs
                         font.family: Theme.font_family
@@ -151,7 +150,7 @@ Item {
 
                     Text {
                         visible: countRepeater.count > 0
-                        text: Strings.tr.clear_all
+                        text: Locale.tr.clear_all
                         color: clearMouse.containsMouse ? Theme.color_text : Theme.color_text_subtle
                         font.pixelSize: Theme.font_size_xs
                         font.family: Theme.font_family
@@ -209,7 +208,7 @@ Item {
                     Text {
                         visible: countRepeater.count === 0
                         width: parent.width
-                        text: Strings.tr.no_notifications
+                        text: Locale.tr.no_notifications
                         color: Theme.color_text_subtle
                         font.pixelSize: Theme.font_size_sm
                         font.family: Theme.font_family
@@ -226,8 +225,6 @@ Item {
                             id: notifCard
                             required property var modelData
 
-                            readonly property color accentColor: modelData.urgency === NotificationUrgency.Critical ? Theme.notification_accent_critical : (modelData.urgency === NotificationUrgency.Low ? Theme.notification_accent_low : Theme.notification_accent_normal)
-
                             width: notifList.width
                             implicitHeight: cardContent.implicitHeight + 18
                             radius: Theme.radius_normal
@@ -241,15 +238,6 @@ Item {
                                 }
                             }
 
-                            // Urgency accent stripe
-                            Rectangle {
-                                anchors.top: parent.top
-                                anchors.left: parent.left
-                                anchors.right: parent.right
-                                height: 2
-                                color: notifCard.accentColor
-                            }
-
                             Column {
                                 id: cardContent
                                 anchors.left: parent.left
@@ -260,24 +248,12 @@ Item {
                                 anchors.topMargin: 10
                                 spacing: 2
 
-                                Text {
-                                    visible: text.length > 0
-                                    text: notifCard.modelData.appName || ""
-                                    color: Theme.color_text_subtle
-                                    font.pixelSize: Theme.font_size_xs
-                                    font.family: Theme.font_family
-                                    elide: Text.ElideRight
+                                NotificationCard {
                                     width: parent.width
-                                }
-
-                                Text {
-                                    text: notifCard.modelData.summary || ""
-                                    color: Theme.color_text
-                                    font.pixelSize: Theme.font_size_sm
-                                    font.family: Theme.font_family
-                                    font.bold: true
-                                    wrapMode: Text.Wrap
-                                    width: parent.width
+                                    notification: notifCard.modelData
+                                    iconSize: 24
+                                    summaryFontSize: Theme.font_size_sm
+                                    rowSpacing: 4
                                 }
 
                                 Text {

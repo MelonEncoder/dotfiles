@@ -139,7 +139,6 @@ Scope {
                             Rectangle {
                                 id: card
                                 property bool entered: false
-                                readonly property color accentColor: notificationItem.notification.urgency === NotificationUrgency.Critical ? Theme.notification_accent_critical : (notificationItem.notification.urgency === NotificationUrgency.Low ? Theme.notification_accent_low : Theme.notification_accent_normal)
 
                                 width: parent.width
                                 height: parent.height
@@ -152,15 +151,6 @@ Scope {
                                 y: entered ? 0 : -(root.slide_offset + height)
                                 scale: entered ? 1.0 : 0.97
                                 transformOrigin: Item.Top
-
-                                // Top accent stripe — fills left→right over the timeout
-                                Rectangle {
-                                    anchors.top: parent.top
-                                    anchors.left: parent.left
-                                    height: root.top_accent_height
-                                    width: notificationItem.shouldAutoExpire ? parent.width * notificationItem.barProgress : parent.width
-                                    color: card.accentColor
-                                }
 
                                 Behavior on y {
                                     NumberAnimation {
@@ -203,65 +193,19 @@ Scope {
                                 ColumnLayout {
                                     id: content
                                     anchors.fill: parent
-                                    anchors.topMargin: root.padding + root.top_accent_height
+                                    anchors.topMargin: root.padding
                                     anchors.leftMargin: root.padding
                                     anchors.rightMargin: root.padding
                                     anchors.bottomMargin: root.padding
                                     spacing: root.inner_spacing
 
-                                    RowLayout {
+                                    NotificationCard {
                                         Layout.fillWidth: true
-                                        spacing: root.inner_spacing
-
-                                        Item {
-                                            id: iconContainer
-                                            readonly property string iconSource: notificationItem.notification.appIcon || ""
-                                            visible: iconSource !== ""
-                                            Layout.preferredWidth: visible ? root.image_size : 0
-                                            Layout.preferredHeight: visible ? root.image_size : 0
-                                            Layout.alignment: Qt.AlignTop
-
-                                            Rectangle {
-                                                anchors.fill: parent
-                                                radius: root.radius
-                                                color: Theme.notification_icon_background
-                                                clip: true
-
-                                                Image {
-                                                    anchors.fill: parent
-                                                    anchors.margins: 3
-                                                    source: iconContainer.iconSource
-                                                    fillMode: Image.PreserveAspectFit
-                                                    asynchronous: true
-                                                    smooth: true
-                                                }
-                                            }
-                                        }
-
-                                        ColumnLayout {
-                                            Layout.fillWidth: true
-                                            spacing: 2
-
-                                            Text {
-                                                visible: text.length > 0
-                                                text: notificationItem.notification.appName || ""
-                                                color: Theme.color_text_subtle
-                                                font.pixelSize: Theme.font_size_sm
-                                                font.family: Theme.font_family
-                                                elide: Text.ElideRight
-                                                Layout.fillWidth: true
-                                            }
-
-                                            Text {
-                                                text: notificationItem.notification.summary || ""
-                                                color: Theme.color_text
-                                                font.pixelSize: Theme.font_size
-                                                font.family: Theme.font_family
-                                                font.bold: true
-                                                wrapMode: Text.Wrap
-                                                Layout.fillWidth: true
-                                            }
-                                        }
+                                        notification: notificationItem.notification
+                                        progress: notificationItem.shouldAutoExpire ? notificationItem.barProgress : 1.0
+                                        iconSize: root.image_size
+                                        barHeight: root.top_accent_height
+                                        rowSpacing: root.inner_spacing
                                     }
 
                                     Text {
