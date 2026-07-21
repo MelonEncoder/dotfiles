@@ -6,7 +6,6 @@ import Quickshell.Wayland
 import Quickshell.Services.Pam
 import Quickshell.Hyprland
 import QtQuick
-import "."
 import "../services" as Services
 
 Scope {

@@ -6,7 +6,6 @@ import Quickshell.Wayland
 import Quickshell.Hyprland
 import QtQuick
 import QtQuick.Layouts
-import "."
 import "system_options"
 
 Scope {

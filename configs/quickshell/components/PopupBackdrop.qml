@@ -1,5 +1,4 @@
 import QtQuick
-import Quickshell.Wayland
 
 // Full-screen transparent backdrop for popup windows.
 // Closes the popup when clicking outside or pressing ESC.

@@ -6,14 +6,14 @@ import Quickshell.Wayland
 import Quickshell.Hyprland
 import QtQuick
 import QtQuick.Layouts
-import "."
 
 Scope {
     id: root
 
     property bool visible: false
     property int focusedIndex: -1
-    readonly property int gridColumns: 3
+    readonly property int gridColumns: 5
+    readonly property int cellSize: 150
 
     readonly property var actions: [
         {
@@ -146,7 +146,7 @@ Scope {
             Rectangle {
                 id: panel
                 anchors.centerIn: parent
-                width: 420
+                width: root.cellSize * 5
                 height: panelContent.implicitHeight + (Theme.bar_widget_padding * 2)
                 radius: Theme.radius_background
                 color: Theme.color_background
@@ -211,12 +211,12 @@ Scope {
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.margins: Theme.bar_widget_padding
-                    columns: 3
+                    columns: root.gridColumns
                     rowSpacing: 4
                     columnSpacing: 4
 
                     Text {
-                        Layout.columnSpan: 3
+                        Layout.columnSpan: root.gridColumns
                         Layout.fillWidth: true
                         text: Strings.tr.system
                         color: Theme.color_text_subtle
@@ -229,7 +229,7 @@ Scope {
                     }
 
                     Rectangle {
-                        Layout.columnSpan: 3
+                        Layout.columnSpan: root.gridColumns
                         Layout.fillWidth: true
                         implicitHeight: 1
                         color: Theme.color_border_subtle
@@ -247,7 +247,7 @@ Scope {
                             property bool pressed: optionMouse.pressed
 
                             Layout.fillWidth: true
-                            Layout.preferredHeight: 144
+                            Layout.preferredHeight: root.cellSize
                             radius: Theme.radius_normal
                             color: pressed ? Theme.color_surface_pressed : (hovered || focused ? Theme.color_surface_hover : "transparent")
                             clip: true
