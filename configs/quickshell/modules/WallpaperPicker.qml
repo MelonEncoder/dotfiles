@@ -268,6 +268,43 @@ Scope {
                     anchors.fill: parent
                 }
 
+                Keys.onPressed: event => {
+                    var count = WallpaperService.wallpaperModel.count;
+                    var cols = root.grid_columns;
+                    var idx = root.selectedIndex < 0 ? 0 : root.selectedIndex;
+
+                    if (count <= 0) {
+                        event.accepted = false;
+                        return;
+                    }
+
+                    switch (event.key) {
+                    case Qt.Key_Right:
+                        root.selectedIndex = (idx + 1) % count;
+                        break;
+                    case Qt.Key_Left:
+                        root.selectedIndex = (idx - 1 + count) % count;
+                        break;
+                    case Qt.Key_Down:
+                        root.selectedIndex = Math.min(idx + cols, count - 1);
+                        break;
+                    case Qt.Key_Up:
+                        root.selectedIndex = Math.max(idx - cols, 0);
+                        break;
+                    case Qt.Key_Return:
+                    case Qt.Key_Enter:
+                        root.applySelectedWallpaper();
+                        break;
+                    case Qt.Key_Escape:
+                        root.closeSelector();
+                        break;
+                    default:
+                        event.accepted = false;
+                        return;
+                    }
+                    event.accepted = true;
+                }
+
                 ColumnLayout {
                     id: panelContent
                     anchors.top: parent.top
@@ -315,7 +352,6 @@ Scope {
                         keyNavigationWraps: true
                         boundsBehavior: Flickable.StopAtBounds
                         clip: true
-                        focus: root.selectorVisible
 
                         onCurrentIndexChanged: {
                             if (currentIndex < 0)
@@ -331,10 +367,6 @@ Scope {
                                     gridView.currentIndex = root.selectedIndex;
                             }
                         }
-
-                        Keys.onReturnPressed: root.applySelectedWallpaper()
-                        Keys.onEnterPressed: root.applySelectedWallpaper()
-                        Keys.onEscapePressed: root.closeSelector()
 
                         // ---------------------------------------------
                         // Wallpaper thumbnail
