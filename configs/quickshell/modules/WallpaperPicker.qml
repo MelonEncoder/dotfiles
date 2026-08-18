@@ -4,7 +4,9 @@ import Quickshell
 import Quickshell.Wayland
 import Quickshell.Hyprland
 import Quickshell.Io
+import Quickshell.Widgets
 import QtQuick
+import "../components/popups"
 import "../theme"
 import "../services"
 
@@ -21,15 +23,7 @@ Scope {
 
     property bool selectorVisible: false
     property int selectedIndex: 0
-    property int carouselIndex: 0
     property string statusText: ""
-
-    readonly property int carouselLoopCount: 200
-
-    readonly property int virtualWallpaperCount:
-        WallpaperService.wallpaperModel.count > 0
-            ? WallpaperService.wallpaperModel.count * carouselLoopCount
-            : 0
 
     // -------------------------------------------------------------------------
     // Picker layout
@@ -37,36 +31,13 @@ Scope {
 
     readonly property int window_margin: 24
     readonly property int content_padding: 8
-    readonly property int content_spacing: 10
 
-    readonly property int visible_preview_count: 3
-    readonly property int preview_spacing: 12
+    readonly property int grid_columns: 3
+    readonly property int max_visible_rows: 3
+    readonly property int grid_spacing: 12
 
-    readonly property int preview_width: 345
-    readonly property int preview_height: 230
-
-    readonly property real selected_preview_scale: 1.16
-    readonly property real inactive_preview_scale:
-        1 / selected_preview_scale
-
-    readonly property int selected_preview_width:
-        Math.round(
-            preview_width * selected_preview_scale
-        )
-
-    readonly property int selected_preview_height:
-        Math.round(
-            preview_height * selected_preview_scale
-        )
-
-    readonly property int preview_slot_width:
-        selected_preview_width
-
-    readonly property int preview_slot_height:
-        selected_preview_height
-
-    readonly property int list_surface_height:
-        preview_slot_height + (content_padding * 2)
+    readonly property int thumbnail_width: 300
+    readonly property int thumbnail_height: 200
 
     readonly property int preview_margin: 6
     readonly property int caption_height: 28
@@ -80,10 +51,18 @@ Scope {
     readonly property int selected_border_width: 2
     readonly property int default_border_width: 0
 
+    // GridView reserves a full cellWidth/cellHeight (thumbnail + spacing) per
+    // column/row -- including a trailing gap after the last one -- so the
+    // panel must size for that, not just the visible content.
     readonly property int windowContentWidth:
-        (visible_preview_count * preview_slot_width) +
-        ((visible_preview_count - 1) * preview_spacing) +
+        (grid_columns * (thumbnail_width + grid_spacing)) +
         (content_padding * 2)
+
+    readonly property int gridViewHeight:
+        max_visible_rows * (thumbnail_height + grid_spacing)
+
+    readonly property int panelContentHeight:
+        gridViewHeight + (content_padding * 2)
 
     // -------------------------------------------------------------------------
     // Initialization
@@ -114,73 +93,37 @@ Scope {
         for (var j = 0; j < model.count; j++) {
             if (model.get(j).fileName === WallpaperService.currentWallpaper) {
                 root.selectedIndex = j;
-                root.carouselIndex = j;
                 break;
             }
         }
 
         root.clampSelection();
-        root.recenterCarousel();
     }
 
     // -------------------------------------------------------------------------
     // Wallpaper helpers
     // -------------------------------------------------------------------------
 
-    function wrappedIndex(index: int): int {
-        var count = WallpaperService.wallpaperModel.count;
-
-        if (count <= 0)
-            return 0;
-
-        var wrapped = index % count;
-
-        return wrapped < 0
-            ? wrapped + count
-            : wrapped;
-    }
-
-    function baseCarouselIndex(): int {
-        var count = WallpaperService.wallpaperModel.count;
-
-        if (count <= 0)
-            return 0;
-
-        return Math.floor(carouselLoopCount / 2) * count;
-    }
-
-    function recenterCarousel(): void {
-        if (WallpaperService.wallpaperModel.count <= 0) {
-            carouselIndex = 0;
-            return;
-        }
-
-        carouselIndex =
-            baseCarouselIndex() +
-            wrappedIndex(carouselIndex);
-    }
-
     function clampSelection(): void {
-        if (WallpaperService.wallpaperModel.count <= 0) {
+        var count = WallpaperService.wallpaperModel.count;
+
+        if (count <= 0) {
             selectedIndex = 0;
-            carouselIndex = 0;
             return;
         }
 
-        selectedIndex = wrappedIndex(selectedIndex);
+        selectedIndex = Math.min(Math.max(selectedIndex, 0), count - 1);
     }
 
     function selectedWallpaperName(): string {
         if (WallpaperService.wallpaperModel.count <= 0)
             return "";
 
-        var selectedWallpaper =
-            WallpaperService.wallpaperModel.get(selectedIndex);
+        var selectedWallpaper = WallpaperService.wallpaperModel.get(selectedIndex);
 
-        return selectedWallpaper &&
-            selectedWallpaper.fileName
-                ? selectedWallpaper.fileName
-                : "";
+        return selectedWallpaper && selectedWallpaper.fileName
+            ? selectedWallpaper.fileName
+            : "";
     }
 
     // -------------------------------------------------------------------------
@@ -198,23 +141,6 @@ Scope {
     function closeSelector(): void {
         selectorVisible = false;
         statusText = "";
-    }
-
-    function moveSelection(delta: int): void {
-        var count = WallpaperService.wallpaperModel.count;
-
-        if (count <= 0)
-            return;
-
-        carouselIndex += delta;
-        selectedIndex = wrappedIndex(carouselIndex);
-
-        if (
-            carouselIndex < count ||
-            carouselIndex >= (virtualWallpaperCount - count)
-        ) {
-            recenterCarousel();
-        }
     }
 
     // -------------------------------------------------------------------------
@@ -242,15 +168,10 @@ Scope {
 
     GlobalShortcut {
         appid: "quickshell"
-
         name: "wallpaper-selector"
-
         description: "Open wallpaper selector"
-
-        triggerDescription: "SUPER+SHIFT+W"
-
-        onPressed:
-            root.toggleSelector()
+        triggerDescription: "SUPER+W"
+        onPressed: root.toggleSelector()
     }
 
     // -------------------------------------------------------------------------
@@ -259,11 +180,8 @@ Scope {
 
     HyprlandFocusGrab {
         active: root.selectorVisible
-
         windows: selectorWindows.instances
-
-        onCleared:
-            root.closeSelector()
+        onCleared: root.closeSelector()
     }
 
     // -------------------------------------------------------------------------
@@ -272,11 +190,7 @@ Scope {
 
     Variants {
         id: selectorWindows
-
-        model:
-            root.selectorVisible
-                ? Quickshell.screens
-                : []
+        model: root.selectorVisible ? Quickshell.screens : []
 
         PanelWindow {
             id: selectorWindow
@@ -284,20 +198,12 @@ Scope {
             required property var modelData
 
             visible: root.selectorVisible
-
             screen: modelData
-
             color: "transparent"
-
             focusable: root.selectorVisible
-
             exclusiveZone: 0
-
-            WlrLayershell.layer:
-                WlrLayer.Overlay
-
-            WlrLayershell.keyboardFocus:
-                WlrKeyboardFocus.Exclusive
+            WlrLayershell.layer: WlrLayer.Overlay
+            WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
 
             anchors {
                 left: true
@@ -310,27 +216,12 @@ Scope {
             implicitHeight: modelData.height
 
             // -------------------------------------------------------------
-            // Overlay
+            // Backdrop
             // -------------------------------------------------------------
 
-            Rectangle {
-                anchors.fill: parent
-
-                color: Colors.background
-
-                opacity: root.selectorVisible
-                    ? 1
-                    : 0
-
-                Behavior on opacity {
-                    NumberAnimation {
-                        duration:
-                            Animations.duration_normal
-
-                        easing.type:
-                            Animations.easingStandard
-                    }
-                }
+            Backdrop {
+                expanded: root.selectorVisible
+                onClose: root.closeSelector()
             }
 
             // -------------------------------------------------------------
@@ -338,372 +229,150 @@ Scope {
             // -------------------------------------------------------------
 
             Rectangle {
-                anchors.horizontalCenter:
-                    parent.horizontalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
 
-                anchors.verticalCenter:
-                    parent.verticalCenter
+                width: Math.min(root.windowContentWidth, parent.width - (root.window_margin * 2))
+                implicitHeight: root.panelContentHeight
 
-                width: Math.min(
-                    root.windowContentWidth,
-                    parent.width -
-                        (root.window_margin * 2)
-                )
+                radius: root.window_radius
+                color: Colors.background
+                border.width: root.window_border_width
+                border.color: WallpaperTheme.windowBorder
 
-                implicitHeight:
-                    root.list_surface_height
+                // Absorb clicks so the backdrop doesn't fire through the panel
+                MouseArea {
+                    anchors.fill: parent
+                }
 
-                radius:
-                    root.window_radius
+                // -----------------------------------------------------
+                // Wallpaper grid
+                // -----------------------------------------------------
 
-                color:
-                    Colors.background
+                GridView {
+                    id: gridView
 
-                border.width:
-                    root.window_border_width
+                    anchors.fill: parent
+                    anchors.margins: root.content_padding
 
-                border.color:
-                    WallpaperTheme.windowBorder
+                    cellWidth: root.thumbnail_width + root.grid_spacing
+                    cellHeight: root.thumbnail_height + root.grid_spacing
 
-                Rectangle {
-                    id: listSurface
+                    model: WallpaperService.wallpaperModel
+                    currentIndex: root.selectedIndex
+                    keyNavigationWraps: true
+                    boundsBehavior: Flickable.StopAtBounds
+                    clip: true
+                    focus: root.selectorVisible
 
-                    anchors.centerIn: parent
+                    onCurrentIndexChanged: {
+                        if (currentIndex < 0)
+                            return;
 
-                    width: parent.width
-                    height: root.list_surface_height
+                        root.selectedIndex = currentIndex;
+                    }
 
-                    radius: root.window_radius
-
-                    color: "transparent"
-
-                    border.width: 0
-
-                    clip: false
-
-                    // -----------------------------------------------------
-                    // Wallpaper carousel
-                    // -----------------------------------------------------
-
-                    ListView {
-                        id: listView
-
-                        anchors.left: parent.left
-                        anchors.right: parent.right
-                        anchors.verticalCenter:
-                            parent.verticalCenter
-
-                        anchors.leftMargin:
-                            root.content_padding
-
-                        anchors.rightMargin:
-                            root.content_padding
-
-                        height:
-                            root.preview_slot_height
-
-                        model:
-                            root.virtualWallpaperCount
-
-                        orientation:
-                            ListView.Horizontal
-
-                        spacing:
-                            root.preview_spacing
-
-                        snapMode:
-                            ListView.SnapToItem
-
-                        clip: false
-
-                        currentIndex:
-                            root.carouselIndex
-
-                        boundsBehavior:
-                            Flickable.StopAtBounds
-
-                        onCurrentIndexChanged: {
-                            if (
-                                currentIndex < 0 ||
-                                WallpaperService.wallpaperModel.count <= 0
-                            )
-                                return;
-
-                            root.carouselIndex =
-                                currentIndex;
-
-                            root.selectedIndex =
-                                root.wrappedIndex(
-                                    currentIndex
-                                );
-
-                            if (
-                                currentIndex <
-                                    WallpaperService.wallpaperModel.count ||
-                                currentIndex >=
-                                    (
-                                        root.virtualWallpaperCount -
-                                        WallpaperService.wallpaperModel.count
-                                    )
-                            ) {
-                                root.recenterCarousel();
-
-                                positionViewAtIndex(
-                                    root.carouselIndex,
-                                    ListView.Center
-                                );
-                            }
+                    Connections {
+                        target: root
+                        function onSelectedIndexChanged() {
+                            if (gridView.currentIndex !== root.selectedIndex)
+                                gridView.currentIndex = root.selectedIndex;
                         }
+                    }
 
-                        Component.onCompleted:
-                            positionViewAtIndex(
-                                root.carouselIndex,
-                                ListView.Center
-                            )
+                    Keys.onReturnPressed: root.applySelectedWallpaper()
+                    Keys.onEnterPressed: root.applySelectedWallpaper()
+                    Keys.onEscapePressed: root.closeSelector()
 
-                        Connections {
-                            target: root
+                    // -------------------------------------------------
+                    // Wallpaper thumbnail
+                    // -------------------------------------------------
 
-                            function onCarouselIndexChanged() {
-                                listView.positionViewAtIndex(
-                                    root.carouselIndex,
-                                    ListView.Center
-                                );
-                            }
-                        }
+                    delegate: Item {
+                        id: wallpaper
 
-                        // -------------------------------------------------
-                        // Wallpaper preview
-                        // -------------------------------------------------
+                        required property int index
+                        required property string fileName
 
-                        delegate: Item {
-                            id: wallpaper
+                        readonly property bool selected: GridView.isCurrentItem
+                        property bool hovered: mouseArea.containsMouse
 
-                            required property int index
+                        width: root.thumbnail_width
+                        height: root.thumbnail_height
 
-                            readonly property int wallpaperIndex:
-                                root.wrappedIndex(index)
+                        ClippingRectangle {
+                            anchors.fill: parent
 
-                            readonly property var wallpaperItem:
-                                WallpaperService.wallpaperModel.count > 0
-                                    ? WallpaperService.wallpaperModel.get(
-                                        wallpaperIndex
-                                    )
-                                    : null
+                            radius: root.preview_radius
+                            color: (wallpaper.selected || wallpaper.hovered) ? Colors.overlayLight : Colors.overlayDark
+                            border.width: wallpaper.selected ? root.selected_border_width : root.default_border_width
+                            border.color: Colors.accentPrimary
+                            clip: true
 
-                            readonly property string fileName:
-                                wallpaperItem &&
-                                wallpaperItem.fileName
-                                    ? wallpaperItem.fileName
-                                    : ""
-
-                            readonly property bool selected:
-                                root.selectedIndex ===
-                                wallpaperIndex
-
-                            width:
-                                root.preview_slot_width
-
-                            height:
-                                root.preview_slot_height
-
-                            Rectangle {
-                                anchors.centerIn: parent
-
-                                width:
-                                    root.selected_preview_width
-
-                                height:
-                                    root.selected_preview_height
-
-                                radius:
-                                    root.preview_radius
-
-                                color:
-                                    wallpaper.selected
-                                        ? Colors.overlayLight
-                                        : Colors.overlayDark
-
-                                border.width:
-                                    wallpaper.selected
-                                        ? root.selected_border_width
-                                        : root.default_border_width
-
-                                border.color:
-                                    wallpaper.selected
-                                        ? Colors.text
-                                        : Colors.borderSubtle
-
-                                z:
-                                    wallpaper.selected
-                                        ? 1
-                                        : 0
-
-                                scale:
-                                    wallpaper.selected
-                                        ? 1
-                                        : root.inactive_preview_scale
-
-                                transformOrigin:
-                                    Item.Bottom
-
-                                Behavior on scale {
-                                    enabled:
-                                        !wallpaper.selected
-
-                                    NumberAnimation {
-                                        duration:
-                                            Animations.duration_slow
-
-                                        easing.type:
-                                            Animations.easingEmphasized
-                                    }
+                            Behavior on color {
+                                ColorAnimation {
+                                    duration: Animations.duration_hover
+                                    easing.type: Animations.easingStandard
                                 }
+                            }
+
+                            ClippingRectangle {
+                                anchors.fill: parent
+                                anchors.margins: root.preview_margin
+
+                                radius: Math.max(root.preview_radius - root.preview_margin, 0)
+                                color: "transparent"
+                                clip: true
 
                                 Image {
                                     anchors.fill: parent
 
-                                    anchors.margins:
-                                        root.preview_margin
-
-                                    source:
-                                        WallpaperService.pathFor(
-                                            wallpaper.fileName
-                                        )
-
-                                    fillMode:
-                                        Image.PreserveAspectCrop
-
+                                    source: WallpaperService.pathFor(wallpaper.fileName)
+                                    fillMode: Image.PreserveAspectCrop
                                     asynchronous: true
                                     cache: false
-
-                                    clip: true
-                                }
-
-                                Rectangle {
-                                    anchors.left: parent.left
-                                    anchors.right: parent.right
-                                    anchors.bottom: parent.bottom
-
-                                    anchors.margins:
-                                        root.preview_margin
-
-                                    height:
-                                        root.caption_height
-
-                                    radius:
-                                        root.caption_radius
-
-                                    color:
-                                        WallpaperTheme.caption
-
-                                    Text {
-                                        anchors.fill: parent
-
-                                        anchors.leftMargin:
-                                            root.caption_padding
-
-                                        anchors.rightMargin:
-                                            root.caption_padding
-
-                                        text:
-                                            wallpaper.fileName
-
-                                        color:
-                                            Colors.text
-
-                                        font.pixelSize:
-                                            Typography.size
-
-                                        font.family:
-                                            Typography.family
-
-                                        verticalAlignment:
-                                            Text.AlignVCenter
-
-                                        elide:
-                                            Text.ElideRight
-                                    }
                                 }
                             }
 
-                            MouseArea {
-                                anchors.fill: parent
+                            Rectangle {
+                                anchors.left: parent.left
+                                anchors.right: parent.right
+                                anchors.bottom: parent.bottom
+                                anchors.margins: root.preview_margin
 
-                                hoverEnabled: true
+                                height: root.caption_height
+                                radius: root.caption_radius
+                                color: WallpaperTheme.caption
 
-                                cursorShape:
-                                    Qt.PointingHandCursor
+                                Text {
+                                    anchors.fill: parent
+                                    anchors.leftMargin: root.caption_padding
+                                    anchors.rightMargin: root.caption_padding
 
-                                onClicked: {
-                                    root.carouselIndex =
-                                        wallpaper.index
-
-                                    root.selectedIndex =
-                                        wallpaper.wallpaperIndex
+                                    text: wallpaper.fileName
+                                    color: Colors.text
+                                    font.pixelSize: Typography.size
+                                    font.family: Typography.family
+                                    verticalAlignment: Text.AlignVCenter
+                                    elide: Text.ElideRight
                                 }
+                            }
+                        }
 
-                                onDoubleClicked: {
-                                    root.carouselIndex =
-                                        wallpaper.index
+                        MouseArea {
+                            id: mouseArea
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
 
-                                    root.selectedIndex =
-                                        wallpaper.wallpaperIndex
-
-                                    root.applySelectedWallpaper()
-                                }
+                            onClicked: gridView.currentIndex = wallpaper.index
+                            onDoubleClicked: {
+                                gridView.currentIndex = wallpaper.index;
+                                root.applySelectedWallpaper();
                             }
                         }
                     }
                 }
-
-                // ---------------------------------------------------------
-                // Keyboard controls
-                // ---------------------------------------------------------
-
-                Keys.onLeftPressed: function(event) {
-                    root.moveSelection(-1);
-                    event.accepted = true;
-                }
-
-                Keys.onRightPressed: function(event) {
-                    root.moveSelection(1);
-                    event.accepted = true;
-                }
-
-                Keys.onPressed: function(event) {
-                    if (
-                        event.key === Qt.Key_Return ||
-                        event.key === Qt.Key_Enter
-                    ) {
-                        root.applySelectedWallpaper();
-                        event.accepted = true;
-                    }
-                }
-
-                Keys.onEscapePressed: function(event) {
-                    root.closeSelector();
-                    event.accepted = true;
-                }
-
-                focus:
-                    root.selectorVisible
-            }
-
-            // -------------------------------------------------------------
-            // Click outside to close
-            // -------------------------------------------------------------
-
-            MouseArea {
-                anchors.fill: parent
-
-                acceptedButtons:
-                    Qt.LeftButton
-
-                z: -1
-
-                onClicked:
-                    root.closeSelector()
             }
         }
     }

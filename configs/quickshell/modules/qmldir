@@ -1,6 +1,4 @@
 Bar 1.0 Bar.qml
-Brightness 1.0 Brightness.qml
-Clock 1.0 Clock.qml
 ControlPanel 1.0 ControlPanel.qml
 Launcher 1.0 Launcher.qml
 Lock 1.0 Lock.qml

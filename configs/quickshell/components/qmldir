@@ -1,5 +1,7 @@
 BatteryStatus 1.0 BatteryStatus.qml
 Bluetooth 1.0 Bluetooth.qml
+Brightness 1.0 Brightness.qml
+Clock 1.0 Clock.qml
 CurrentWindow 1.0 CurrentWindow.qml
 IdleInhibitor 1.0 IdleInhibitor.qml
 MediaPlayer 1.0 MediaPlayer.qml
