@@ -207,7 +207,7 @@ Rectangle {
         implicitHeight: dropdown.screen.height
         color: "transparent"
 
-        PopupBackdrop {
+        Backdrop {
             expanded: root.expanded
             onClose: root.expanded = false
         }

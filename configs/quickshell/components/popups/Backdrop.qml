@@ -4,7 +4,7 @@ import QtQuick
 // Closes the popup when clicking outside or pressing ESC.
 //
 // Usage inside a PopupWindow:
-//   PopupBackdrop {
+//   Backdrop {
 //       expanded: root.expanded
 //       onClose: root.expanded = false
 //   }

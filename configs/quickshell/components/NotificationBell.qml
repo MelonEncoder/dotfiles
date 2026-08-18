@@ -79,7 +79,7 @@ Item {
         color: "transparent"
 
         // Backdrop — click outside to dismiss
-        PopupBackdrop {
+        Backdrop {
             expanded: root.expanded
             onClose: root.expanded = false
         }
