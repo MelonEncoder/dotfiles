@@ -1,8 +1,9 @@
 pragma Singleton
 
+import Quickshell
 import QtQuick
 
-QtObject {
+Singleton {
     // Accent colors
     readonly property color color_purple: "#8b5cf6"
     readonly property color color_accent_primary: color_purple

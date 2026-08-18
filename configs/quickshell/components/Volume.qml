@@ -2,65 +2,36 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Layouts
-import Quickshell.Services.Pipewire
-import "../"
+import "../theme"
+import "../services/"
+// Adjust this import to wherever Slider.qml lives relative to this file
+// (e.g. "../" or your shared widgets module) if it isn't in the same dir.
 
 Rectangle {
     id: root
 
-    readonly property int trackHeight: 14
-    readonly property int thumbDiameter: 22
     readonly property int sectionMargin: Math.round(Theme.bar_widget_padding / 2)
-
-    readonly property var sink: Pipewire.defaultAudioSink
-    readonly property int pipewireVolume: {
-        if (!sink || !sink.audio)
-            return 0;
-        return Math.max(0, Math.min(150, Math.round(sink.audio.volume * 100)));
-    }
     readonly property int expandedContentHeight: deviceColumn.implicitHeight
 
-    readonly property var audioSinks: {
-        var result = [];
-        var nodes = Pipewire.nodes.values;
-        for (var i = 0; i < nodes.length; i++) {
-            var node = nodes[i];
-            if (node.isSink && !node.isStream)
-                result.push(node);
-        }
-        return result;
-    }
-
+    // Local mirror of VolumeService.volume so dragging feels instant and
+    // isn't fighting the (possibly slightly-lagged) Pipewire readback.
     property int currentVolume: 0
     property bool expanded: false
 
-    onPipewireVolumeChanged: {
-        if (!sliderMouse.pressed)
-            currentVolume = pipewireVolume;
-    }
-
-    function setVolumeFromTrack(mouseX: real, trackWidth: real): void {
-        currentVolume = Math.round(Math.max(0, Math.min(100, mouseX / Math.max(1, trackWidth) * 100)));
-        if (sink && sink.audio)
-            sink.audio.volume = root.currentVolume / 100;
+    Connections {
+        target: VolumeService
+        function onVolumeChanged() {
+            if (!volumeSlider.dragging)
+                root.currentVolume = VolumeService.volume;
+        }
     }
 
     function setDefaultSink(node: var): void {
-        Pipewire.preferredDefaultAudioSink = node;
+        VolumeService.setDefaultSink(node);
         root.expanded = false;
     }
 
-    PwObjectTracker {
-        id: sinkTracker
-    }
-
-    onSinkChanged: sinkTracker.objects = root.sink ? [root.sink] : []
-
-    Component.onCompleted: {
-        currentVolume = pipewireVolume;
-        if (root.sink)
-            sinkTracker.objects = [root.sink];
-    }
+    Component.onCompleted: root.currentVolume = VolumeService.volume
 
     implicitWidth: 280
     implicitHeight: volumeFrame.implicitHeight + (root.sectionMargin * 2)
@@ -119,7 +90,7 @@ Rectangle {
 
                         Text {
                             anchors.centerIn: parent
-                            text: !root.sink || !root.sink.audio ? "" : (root.sink.audio.muted ? "" : "")
+                            text: !VolumeService.sink ? "" : (VolumeService.muted ? "" : "")
                             color: Theme.color_text
                             font.pixelSize: Theme.font_size_icon
                             font.family: Theme.font_family_icon
@@ -130,84 +101,18 @@ Rectangle {
                             anchors.fill: parent
                             hoverEnabled: true
                             cursorShape: Qt.PointingHandCursor
-                            onClicked: {
-                                if (root.sink && root.sink.audio)
-                                    root.sink.audio.muted = !root.sink.audio.muted;
-                            }
+                            onClicked: VolumeService.toggleMute()
                         }
                     }
 
-                    Item {
-                        id: sliderContainer
+                    Slider {
+                        id: volumeSlider
                         Layout.fillWidth: true
-                        implicitHeight: root.thumbDiameter
                         Layout.alignment: Qt.AlignVCenter
-
-                        Rectangle {
-                            id: sliderTrack
-                            anchors.verticalCenter: parent.verticalCenter
-                            width: parent.width
-                            height: root.trackHeight
-                            radius: root.trackHeight / 2
-                            color: Theme.color_surface_hover
-
-                            Rectangle {
-                                id: sliderFill
-                                width: Math.max(radius * 2, Math.round(sliderTrack.width * root.currentVolume / 100))
-                                height: parent.height
-                                radius: parent.radius
-                                color: Theme.color_text
-
-                                Behavior on width {
-                                    enabled: !sliderMouse.pressed
-                                    NumberAnimation {
-                                        duration: Animations.duration_fast
-                                        easing.type: Animations.easing_standard
-                                    }
-                                }
-                            }
-                        }
-
-                        Rectangle {
-                            id: sliderThumb
-                            width: root.thumbDiameter
-                            height: root.thumbDiameter
-                            radius: root.thumbDiameter / 2
-                            color: Theme.color_text
-                            anchors.verticalCenter: sliderTrack.verticalCenter
-                            x: Math.max(0, Math.min(sliderTrack.width - width, Math.round(sliderTrack.width * root.currentVolume / 100) - width / 2))
-
-                            Behavior on x {
-                                enabled: !sliderMouse.pressed
-                                NumberAnimation {
-                                    duration: Animations.duration_fast
-                                    easing.type: Animations.easing_standard
-                                }
-                            }
-
-                            Rectangle {
-                                anchors.centerIn: parent
-                                width: parent.width * 0.38
-                                height: parent.width * 0.38
-                                radius: width / 2
-                                color: Theme.color_surface
-                                opacity: 0.5
-                            }
-                        }
-
-                        MouseArea {
-                            id: sliderMouse
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            cursorShape: Qt.PointingHandCursor
-                            onPressed: function (mouse) {
-                                root.setVolumeFromTrack(mouse.x, sliderTrack.width);
-                            }
-                            onPositionChanged: function (mouse) {
-                                if (!pressed)
-                                    return;
-                                root.setVolumeFromTrack(mouse.x, sliderTrack.width);
-                            }
+                        value: root.currentVolume
+                        onMoved: function (percent) {
+                            root.currentVolume = percent;
+                            VolumeService.setVolume(percent);
                         }
                     }
 
@@ -285,12 +190,12 @@ Rectangle {
                     }
 
                     Repeater {
-                        model: root.audioSinks
+                        model: VolumeService.audioSinks
 
                         Rectangle {
                             id: deviceItem
                             required property var modelData
-                            readonly property bool isDefault: !!root.sink && modelData.id === root.sink.id
+                            readonly property bool isDefault: !!VolumeService.sink && modelData.id === VolumeService.sink.id
                             property bool hovered: deviceMouse.containsMouse
                             property bool pressed: deviceMouse.pressed
 

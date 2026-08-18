@@ -1,8 +1,9 @@
 pragma Singleton
 
+import Quickshell
 import QtQuick
 
-QtObject {
+Singleton {
     readonly property int duration_fast: 140
     readonly property int duration_hover: 100
     readonly property int duration_normal: 220

@@ -4,7 +4,7 @@ import Quickshell
 import Quickshell.Wayland
 import QtQuick
 import QtQuick.Layouts
-import "bar_widgets"
+import "../components/bar_widgets"
 
 Scope {
     Variants {

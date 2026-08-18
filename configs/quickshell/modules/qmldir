@@ -1,0 +1,10 @@
+Bar 1.0 Bar.qml
+Brightness 1.0 Brightness.qml
+Clock 1.0 Clock.qml
+ControlPanel 1.0 ControlPanel.qml
+Launcher 1.0 Launcher.qml
+Lock 1.0 Lock.qml
+NotificationCenter 1.0 NotificationCenter.qml
+PowerOptions 1.0 PowerOptions.qml
+Wallpaper 1.0 Wallpaper.qml
+WallpaperPicker 1.0 WallpaperPicker.qml

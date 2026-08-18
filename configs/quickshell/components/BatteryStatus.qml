@@ -2,7 +2,6 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import Quickshell.Services.UPower
-import ".."
 
 Rectangle {
     id: root

@@ -6,6 +6,7 @@ import Quickshell.Wayland
 import Quickshell.Hyprland
 import QtQuick
 import QtQuick.Layouts
+import "../services" as Services
 
 Scope {
     id: root
@@ -15,29 +16,6 @@ Scope {
     readonly property int gridColumns: 5
     readonly property int cellSize: 150
 
-    readonly property var actions: [
-        {
-            action: "lock",
-            iconName: "system-lock-screen"
-        },
-        {
-            action: "logout",
-            iconName: "system-log-out"
-        },
-        {
-            action: "suspend",
-            iconName: "system-suspend"
-        },
-        {
-            action: "reboot",
-            iconName: "system-reboot"
-        },
-        {
-            action: "poweroff",
-            iconName: "system-shutdown"
-        },
-    ]
-
     function open(): void {
         root.visible = true;
         root.focusedIndex = 0;
@@ -46,20 +24,6 @@ Scope {
     function close(): void {
         root.visible = false;
         root.focusedIndex = -1;
-    }
-
-    function runAction(action: string): void {
-        root.close();
-        if (action === "poweroff")
-            poweroffProcess.running = true;
-        else if (action === "reboot")
-            rebootProcess.running = true;
-        else if (action === "suspend")
-            suspendProcess.running = true;
-        else if (action === "logout")
-            logoutProcess.running = true;
-        else if (action === "lock")
-            lockProcess.running = true;
     }
 
     GlobalShortcut {
@@ -75,27 +39,6 @@ Scope {
         function open(): void {
             root.open();
         }
-    }
-
-    Process {
-        id: poweroffProcess
-        command: ["systemctl", "poweroff"]
-    }
-    Process {
-        id: rebootProcess
-        command: ["systemctl", "reboot"]
-    }
-    Process {
-        id: suspendProcess
-        command: ["systemctl", "suspend"]
-    }
-    Process {
-        id: logoutProcess
-        command: ["hyprctl", "dispatch", "exit"]
-    }
-    Process {
-        id: lockProcess
-        command: ["qs", "ipc", "call", "lock", "lock"]
     }
 
     HyprlandFocusGrab {
@@ -302,7 +245,7 @@ Scope {
                                 hoverEnabled: true
                                 cursorShape: Qt.PointingHandCursor
                                 onEntered: root.focusedIndex = optionItem.index
-                                onClicked: root.runAction(optionItem.modelData.action)
+                                onClicked: PowerService.runAction(optionItem.modelData.action)
                             }
                         }
                     }

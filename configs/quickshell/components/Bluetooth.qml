@@ -2,83 +2,62 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Layouts
-import Quickshell.Networking
-import "../"
+import Quickshell
+import "../theme" as Theme
 
 Rectangle {
     id: root
+
     property bool expanded: false
-    readonly property int sectionMargin: Math.round(Theme.bar_widget_padding / 2)
 
-    readonly property var wifiDevice: {
-        var devs = Networking.devices.values;
-        for (var i = 0; i < devs.length; i++) {
-            if (devs[i].type === DeviceType.Wifi)
-                return devs[i];
-        }
-        return null;
-    }
+    readonly property int sectionMargin:
+        Math.round(Theme.bar_widget_padding / 2)
 
-    readonly property var connectedNetworks: {
-        if (!root.wifiDevice) return [];
-        return root.wifiDevice.networks.values.filter(function(n) { return n.connected; });
-    }
-
-    readonly property var availableNetworks: {
-        if (!root.wifiDevice) return [];
-        return root.wifiDevice.networks.values.filter(function(n) { return !n.connected; });
-    }
-
-    readonly property int expandedContentHeight: wifiExpandedContent.implicitHeight
-
-    function wifiName(network: var): string {
-        if (!network) return "Unknown Network";
-        if (network.name && network.name.length > 0) return network.name;
-        return "Hidden Network";
-    }
-
-    function currentWifiSubtitle(): string {
-        if (!root.wifiDevice) return "unavailable";
-        if (root.wifiDevice.state === ConnectionState.Connecting) return "connecting...";
-        if (root.connectedNetworks.length > 0) return root.wifiName(root.connectedNetworks[0]);
-        return "none connected";
-    }
-
-    onExpandedChanged: {
-        if (root.wifiDevice)
-            root.wifiDevice.scannerEnabled = root.expanded;
-    }
+    readonly property int expandedContentHeight:
+        bluetoothExpandedContent.implicitHeight
 
     implicitWidth: 280
-    implicitHeight: wifiFrame.implicitHeight + (root.sectionMargin * 2)
+    implicitHeight: btFrame.implicitHeight + (sectionMargin * 2)
+
     width: implicitWidth
     height: implicitHeight
+
     Layout.fillWidth: true
     Layout.preferredWidth: implicitWidth
     Layout.preferredHeight: implicitHeight
+
     radius: Theme.radius_normal
     color: Theme.color_surface
 
     Item {
-        id: wifiFrame
+        id: btFrame
+
         x: root.sectionMargin
         y: root.sectionMargin
+
         width: parent.width - (root.sectionMargin * 2)
-        implicitHeight: wifiMenu.implicitHeight
+
+        implicitHeight: btMenu.implicitHeight
 
         ColumnLayout {
-            id: wifiMenu
+            id: btMenu
+
             width: parent.width
             spacing: 4
 
             Rectangle {
-                id: wifiHeader
-                property bool hovered: wifiHeaderMouse.containsMouse
-                property bool pressed: wifiHeaderMouse.pressed
+                id: bluetoothHeader
+
+                property bool hovered: bluetoothHeaderMouse.containsMouse
+                property bool pressed: bluetoothHeaderMouse.pressed
+
                 Layout.fillWidth: true
                 Layout.preferredHeight: Theme.bar_widget_height * 1.5
+
                 radius: Theme.radius_normal
-                color: pressed ? Theme.color_surface_pressed : Theme.color_surface_hover
+                color: pressed
+                    ? Theme.color_surface_pressed
+                    : Theme.color_surface_hover
 
                 Behavior on color {
                     ColorAnimation {
@@ -92,64 +71,79 @@ Rectangle {
                         left: parent.left
                         right: parent.right
                         verticalCenter: parent.verticalCenter
+
                         leftMargin: 10
                         rightMargin: 10
                     }
+
                     spacing: 12
 
                     Text {
-                        text: "󰖩"
+                        text: BluetoothService.enabled ? "󰂱" : "󰂲"
+
                         color: Theme.color_text
                         font.pixelSize: Theme.font_size_icon
                         font.family: Theme.font_family_icon
+
                         Layout.alignment: Qt.AlignVCenter
                     }
 
                     Column {
                         Layout.fillWidth: true
                         Layout.alignment: Qt.AlignVCenter
+
                         spacing: 1
 
                         Text {
-                            text: Strings.tr(Strings.keys.wifi)
+                            text: Strings.tr(Strings.keys.bluetooth)
+
                             color: Theme.color_text
                             font.pixelSize: Theme.font_size
                             font.family: Theme.font_family
                         }
 
                         Text {
-                            text: root.currentWifiSubtitle()
+                            text: BluetoothService.enabled
+                                ? Strings.tr(Strings.keys.bt_on)
+                                : Strings.tr(Strings.keys.bt_off)
+
                             color: Theme.color_text_subtle
                             font.pixelSize: Theme.font_size
                             font.family: Theme.font_family
-                            elide: Text.ElideRight
-                            width: Math.max(0, wifiHeader.width - 60)
-                        }
-                    }
 
-                    Text {
-                        text: root.expanded ? "" : ""
-                        color: Theme.color_text_subtle
-                        font.pixelSize: Theme.font_size_xs
-                        font.family: Theme.font_family_icon
-                        Layout.alignment: Qt.AlignVCenter
+                            elide: Text.ElideRight
+                            width: Math.max(0, bluetoothHeader.width - 60)
+                        }
                     }
                 }
 
                 MouseArea {
-                    id: wifiHeaderMouse
+                    id: bluetoothHeaderMouse
+
                     anchors.fill: parent
+
                     hoverEnabled: true
                     cursorShape: Qt.PointingHandCursor
-                    onClicked: root.expanded = !root.expanded
+
+                    onClicked: {
+                        root.expanded = !root.expanded;
+
+                        if (root.expanded)
+                            BluetoothService.discover();
+                    }
                 }
             }
 
             Item {
                 visible: root.expanded || opacity > 0.01
+
                 Layout.fillWidth: true
-                Layout.preferredHeight: root.expanded ? root.expandedContentHeight : 0
-                implicitHeight: root.expanded ? root.expandedContentHeight : 0
+                Layout.preferredHeight:
+                    root.expanded ? root.expandedContentHeight : 0
+
+                implicitHeight:
+                    root.expanded ? root.expandedContentHeight : 0
+
                 opacity: root.expanded ? 1 : 0
                 clip: true
 
@@ -168,32 +162,48 @@ Rectangle {
                 }
 
                 ColumnLayout {
-                    id: wifiExpandedContent
+                    id: bluetoothExpandedContent
+
                     anchors.left: parent.left
                     anchors.right: parent.right
+
                     spacing: 3
 
                     Text {
                         text: Strings.tr(Strings.keys.connected)
+
                         color: Theme.color_text_subtle
                         font.pixelSize: Theme.font_size
                         font.family: Theme.font_family
+
                         Layout.fillWidth: true
                         Layout.topMargin: 4
                     }
 
                     Repeater {
-                        model: root.connectedNetworks
+                        model: BluetoothService.getConnectedDevices()
 
                         Rectangle {
-                            id: connectedWifiItem
+                            id: connectedBtDevice
+
                             required property var modelData
-                            property bool hovered: connectedWifiMouse.containsMouse
-                            property bool pressed: connectedWifiMouse.pressed
+
+                            property bool hovered:
+                                connectedDeviceMouse.containsMouse
+
+                            property bool pressed:
+                                connectedDeviceMouse.pressed
+
                             Layout.fillWidth: true
                             Layout.preferredHeight: Theme.bar_widget_height
+
                             radius: Theme.radius_normal
-                            color: pressed ? Theme.color_surface_pressed : (hovered ? Theme.color_surface_hover : "transparent")
+
+                            color: pressed
+                                ? Theme.color_surface_pressed
+                                : hovered
+                                    ? Theme.color_surface_hover
+                                    : "transparent"
 
                             Behavior on color {
                                 ColorAnimation {
@@ -202,24 +212,51 @@ Rectangle {
                                 }
                             }
 
-                            Text {
+                            Image {
+                                id: connectedDeviceIcon
+
                                 anchors.left: parent.left
                                 anchors.leftMargin: 10
                                 anchors.verticalCenter: parent.verticalCenter
-                                text: root.wifiName(connectedWifiItem.modelData)
+
+                                source: Quickshell.iconPath(
+                                    connectedBtDevice.modelData.icon
+                                )
+
+                                width: Theme.font_size_icon
+                                height: Theme.font_size_icon
+
+                                fillMode: Image.PreserveAspectFit
+                            }
+
+                            Text {
+                                anchors.left: connectedDeviceIcon.right
+                                anchors.leftMargin: 8
+                                anchors.right: parent.right
+                                anchors.rightMargin: 10
+                                anchors.verticalCenter: parent.verticalCenter
+
+                                text: connectedBtDevice.modelData.name
+
                                 color: Theme.color_text
                                 font.pixelSize: Theme.font_size
                                 font.family: Theme.font_family
+
                                 elide: Text.ElideRight
-                                width: parent.width - 20
                             }
 
                             MouseArea {
-                                id: connectedWifiMouse
+                                id: connectedDeviceMouse
+
                                 anchors.fill: parent
+
                                 hoverEnabled: true
                                 cursorShape: Qt.PointingHandCursor
-                                onClicked: connectedWifiItem.modelData.disconnect()
+
+                                onClicked:
+                                    BluetoothService.disconnect(
+                                        connectedBtDevice.modelData
+                                    )
                             }
                         }
                     }
@@ -227,15 +264,25 @@ Rectangle {
                     Rectangle {
                         Layout.fillWidth: true
                         Layout.preferredHeight: Theme.bar_widget_height
+
                         radius: Theme.radius_normal
                         color: "transparent"
-                        visible: root.connectedNetworks.length === 0
+
+                        visible:
+                            BluetoothService.getConnectedDevices().length === 0
 
                         Text {
                             anchors.left: parent.left
                             anchors.leftMargin: 10
                             anchors.verticalCenter: parent.verticalCenter
-                            text: Strings.tr(Strings.keys.none_connected)
+
+                            text:
+                                !BluetoothService.available
+                                    ? Strings.tr(Strings.keys.bt_unavailable)
+                                    : BluetoothService.enabled
+                                        ? Strings.tr(Strings.keys.none_connected)
+                                        : Strings.tr(Strings.keys.bt_disabled)
+
                             color: Theme.color_text_subtle
                             font.pixelSize: Theme.font_size
                             font.family: Theme.font_family
@@ -244,25 +291,39 @@ Rectangle {
 
                     Text {
                         text: Strings.tr(Strings.keys.available)
+
                         color: Theme.color_text_subtle
                         font.pixelSize: Theme.font_size
                         font.family: Theme.font_family
+
                         Layout.fillWidth: true
                         Layout.topMargin: 4
                     }
 
                     Repeater {
-                        model: root.availableNetworks
+                        model: BluetoothService.getAvailableDevices()
 
                         Rectangle {
-                            id: availableWifiItem
+                            id: availableBtDevice
+
                             required property var modelData
-                            property bool hovered: availableWifiMouse.containsMouse
-                            property bool pressed: availableWifiMouse.pressed
+
+                            property bool hovered:
+                                availableDeviceMouse.containsMouse
+
+                            property bool pressed:
+                                availableDeviceMouse.pressed
+
                             Layout.fillWidth: true
                             Layout.preferredHeight: Theme.bar_widget_height
+
                             radius: Theme.radius_normal
-                            color: pressed ? Theme.color_surface_pressed : (hovered ? Theme.color_surface_hover : "transparent")
+
+                            color: pressed
+                                ? Theme.color_surface_pressed
+                                : hovered
+                                    ? Theme.color_surface_hover
+                                    : "transparent"
 
                             Behavior on color {
                                 ColorAnimation {
@@ -271,24 +332,51 @@ Rectangle {
                                 }
                             }
 
-                            Text {
+                            Image {
+                                id: availableDeviceIcon
+
                                 anchors.left: parent.left
                                 anchors.leftMargin: 10
                                 anchors.verticalCenter: parent.verticalCenter
-                                text: root.wifiName(availableWifiItem.modelData)
+
+                                source: Quickshell.iconPath(
+                                    availableBtDevice.modelData.icon
+                                )
+
+                                width: Theme.font_size_icon
+                                height: Theme.font_size_icon
+
+                                fillMode: Image.PreserveAspectFit
+                            }
+
+                            Text {
+                                anchors.left: availableDeviceIcon.right
+                                anchors.leftMargin: 8
+                                anchors.right: parent.right
+                                anchors.rightMargin: 10
+                                anchors.verticalCenter: parent.verticalCenter
+
+                                text: availableBtDevice.modelData.name
+
                                 color: Theme.color_text
                                 font.pixelSize: Theme.font_size
                                 font.family: Theme.font_family
+
                                 elide: Text.ElideRight
-                                width: parent.width - 20
                             }
 
                             MouseArea {
-                                id: availableWifiMouse
+                                id: availableDeviceMouse
+
                                 anchors.fill: parent
+
                                 hoverEnabled: true
                                 cursorShape: Qt.PointingHandCursor
-                                onClicked: availableWifiItem.modelData.connect()
+
+                                onClicked:
+                                    BluetoothService.connect(
+                                        availableBtDevice.modelData
+                                    )
                             }
                         }
                     }
@@ -296,15 +384,27 @@ Rectangle {
                     Rectangle {
                         Layout.fillWidth: true
                         Layout.preferredHeight: Theme.bar_widget_height
+
                         radius: Theme.radius_normal
                         color: "transparent"
-                        visible: root.availableNetworks.length === 0
+
+                        visible:
+                            BluetoothService.getAvailableDevices().length === 0
 
                         Text {
                             anchors.left: parent.left
                             anchors.leftMargin: 10
                             anchors.verticalCenter: parent.verticalCenter
-                            text: Strings.tr(Strings.keys.none_available)
+
+                            text:
+                                !BluetoothService.available
+                                    ? Strings.tr(Strings.keys.bt_unavailable)
+                                    : BluetoothService.enabled
+                                        ? BluetoothService.discovering
+                                            ? Strings.tr(Strings.keys.scanning)
+                                            : Strings.tr(Strings.keys.none_available)
+                                        : Strings.tr(Strings.keys.bt_disabled)
+
                             color: Theme.color_text_subtle
                             font.pixelSize: Theme.font_size
                             font.family: Theme.font_family
