@@ -9,6 +9,7 @@ NotificationBell 1.0 NotificationBell.qml
 NotificationCard 1.0 NotificationCard.qml
 PowerProfiles 1.0 PowerProfiles.qml
 PrivacyIndicator 1.0 PrivacyIndicator.qml
+RoundedScreenCorners 1.0 RoundedScreenCorners.qml
 ScreenshotControls 1.0 ScreenshotControls.qml
 SystemInfo 1.0 SystemInfo.qml
 SystemOptions 1.0 SystemOptions.qml
