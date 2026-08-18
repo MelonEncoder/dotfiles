@@ -4,7 +4,9 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Hyprland
-import "../../services"
+import "../services"
+import "../components/popups"
+import "../theme"
 
 Item {
     id: root
@@ -12,7 +14,7 @@ Item {
     property int calYear: new Date().getFullYear()
     property int calMonth: new Date().getMonth() + 1
     implicitWidth: widget.implicitWidth
-    implicitHeight: Theme.bar_widget_height
+    implicitHeight: LayoutTheme.barWidgetHeight
 
     function daysInMonth(year: int, month: int): int {
         return new Date(year, month, 0).getDate();
@@ -67,37 +69,37 @@ Item {
 
     Rectangle {
         id: widget
-        radius: Theme.radius_normal
-        color: widgetMouse.pressed ? Theme.color_surface_pressed : (widgetMouse.containsMouse ? Theme.color_surface_hover : Theme.color_surface)
-        border.width: Theme.border_width
-        border.color: Theme.color_border
-        implicitWidth: row.implicitWidth + (Theme.bar_widget_padding * 2)
-        implicitHeight: Theme.bar_widget_height
+        radius: Shape.radiusNormal
+        color: widgetMouse.pressed ? Colors.surfacePressed : (widgetMouse.containsMouse ? Colors.surfaceHover : Colors.surface)
+        border.width: Shape.borderWidth
+        border.color: Colors.border
+        implicitWidth: row.implicitWidth + (LayoutTheme.barWidgetPadding * 2)
+        implicitHeight: LayoutTheme.barWidgetHeight
 
         Behavior on color {
             ColorAnimation {
                 duration: Animations.duration_hover
-                easing.type: Animations.easing_standard
+                easing.type: Animations.easingStandard
             }
         }
 
         RowLayout {
             id: row
             anchors.centerIn: parent
-            spacing: Theme.bar_widget_padding
+            spacing: LayoutTheme.barWidgetPadding
 
             Text {
                 text: ClockService.date
-                color: Theme.color_text_subtle
-                font.pixelSize: Theme.font_size
-                font.family: Theme.font_family
+                color: Colors.textSubtle
+                font.pixelSize: Typography.size
+                font.family: Typography.family
             }
 
             Text {
                 text: ClockService.time
-                color: Theme.color_text
-                font.pixelSize: Theme.font_size
-                font.family: Theme.font_family
+                color: Colors.text
+                font.pixelSize: Typography.size
+                font.family: Typography.family
             }
         }
 
@@ -126,7 +128,7 @@ Item {
         id: dropdown
         anchor.item: root
         anchor.rect.x: 0
-        anchor.rect.y: Theme.bar_widget_height + (Theme.bar_padding * 2)
+        anchor.rect.y: LayoutTheme.barWidgetHeight + (LayoutTheme.barPadding * 2)
         visible: root.expanded
         implicitWidth: dropdown.screen.width
         implicitHeight: dropdown.screen.height
@@ -140,33 +142,33 @@ Item {
 
         Rectangle {
             id: popupPanel
-            readonly property int contentWidth: Theme.calendar_cell_width * 7
+            readonly property int contentWidth: CalendarTheme.cellWidth * 7
 
             x: (dropdown.width - width) / 2
-            y: Theme.bar_widget_height + (Theme.bar_padding * 2)
-            width: contentWidth + (Theme.bar_widget_padding * 2)
-            height: popupContent.implicitHeight + (Theme.bar_widget_padding * 2)
-            radius: Theme.radius_background
-            color: Theme.color_background
-            border.width: Theme.border_width
+            y: LayoutTheme.barWidgetHeight + (LayoutTheme.barPadding * 2)
+            width: contentWidth + (LayoutTheme.barWidgetPadding * 2)
+            height: popupContent.implicitHeight + (LayoutTheme.barWidgetPadding * 2)
+            radius: Shape.radiusBackground
+            color: Colors.background
+            border.width: Shape.borderWidth
             focus: root.expanded
             Keys.onEscapePressed: root.expanded = false
-            border.color: Theme.color_border
+            border.color: Colors.border
             opacity: root.expanded ? 1 : 0
-            scale: root.expanded ? 1 : Animations.dropdown_scale_closed
+            scale: root.expanded ? 1 : Animations.dropdownScaleClosed
             transformOrigin: Item.Top
 
             Behavior on opacity {
                 NumberAnimation {
-                    duration: Animations.duration_dropdown
-                    easing.type: Animations.easing_emphasized
+                    duration: Animations.dropdown
+                    easing.type: Animations.easingEmphasized
                 }
             }
 
             Behavior on scale {
                 NumberAnimation {
-                    duration: Animations.duration_dropdown
-                    easing.type: Animations.easing_emphasized
+                    duration: Animations.dropdown
+                    easing.type: Animations.easingEmphasized
                 }
             }
 
@@ -177,18 +179,18 @@ Item {
 
             Column {
                 id: popupContent
-                x: Theme.bar_widget_padding
-                y: Theme.bar_widget_padding
+                x: LayoutTheme.barWidgetPadding
+                y: LayoutTheme.barWidgetPadding
                 width: popupPanel.contentWidth
-                spacing: Theme.calendar_content_spacing
+                spacing: CalendarTheme.contentSpacing
 
                 // ── Section label ───────────────────────────────────────────
 
                 Text {
                     text: Strings.tr(Strings.keys.calendar)
-                    color: Theme.color_text_subtle
-                    font.pixelSize: Theme.font_size_xs
-                    font.family: Theme.font_family
+                    color: Colors.textSubtle
+                    font.pixelSize: Typography.xs
+                    font.family: Typography.family
                     font.letterSpacing: 1
                     leftPadding: 2
                     bottomPadding: 2
@@ -197,29 +199,29 @@ Item {
                 Rectangle {
                     width: parent.width
                     height: 1
-                    color: Theme.color_border_subtle
+                    color: Colors.borderSubtle
                 }
 
                 // ── Month navigation ────────────────────────────────────────
 
                 Item {
                     width: parent.width
-                    height: Theme.calendar_nav_height
+                    height: CalendarTheme.navigationHeight
 
                     Text {
                         id: prevBtn
                         anchors.left: parent.left
                         anchors.verticalCenter: parent.verticalCenter
                         text: "‹"
-                        color: prevMonthMouse.containsMouse ? Theme.color_text : Theme.color_text_subtle
-                        font.pixelSize: Theme.font_size_title
-                        font.family: Theme.font_family
+                        color: prevMonthMouse.containsMouse ? Colors.text : Colors.textSubtle
+                        font.pixelSize: Typography.title
+                        font.family: Typography.family
                         leftPadding: 4
 
                         Behavior on color {
                             ColorAnimation {
                                 duration: Animations.duration_hover
-                                easing.type: Animations.easing_standard
+                                easing.type: Animations.easingStandard
                             }
                         }
 
@@ -235,9 +237,9 @@ Item {
                     Text {
                         anchors.centerIn: parent
                         text: root.calYear + "年" + root.calMonth + "月"
-                        color: Theme.color_text
-                        font.pixelSize: Theme.font_size
-                        font.family: Theme.font_family
+                        color: Colors.text
+                        font.pixelSize: Typography.size
+                        font.family: Typography.family
                     }
 
                     Text {
@@ -245,15 +247,15 @@ Item {
                         anchors.right: parent.right
                         anchors.verticalCenter: parent.verticalCenter
                         text: "›"
-                        color: nextMonthMouse.containsMouse ? Theme.color_text : Theme.color_text_subtle
-                        font.pixelSize: Theme.font_size_title
-                        font.family: Theme.font_family
+                        color: nextMonthMouse.containsMouse ? Colors.text : Colors.textSubtle
+                        font.pixelSize: Typography.title
+                        font.family: Typography.family
                         rightPadding: 4
 
                         Behavior on color {
                             ColorAnimation {
                                 duration: Animations.duration_hover
-                                easing.type: Animations.easing_standard
+                                easing.type: Animations.easingStandard
                             }
                         }
 
@@ -278,15 +280,15 @@ Item {
                         delegate: Text {
                             required property string modelData
                             required property int index
-                            width: Theme.calendar_cell_width
-                            height: Theme.calendar_header_height
+                            width: CalendarTheme.cellWidth
+                            height: CalendarTheme.headerHeight
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
                             text: modelData
                             // Sunday red, Saturday blue
-                            color: index === 0 ? Theme.calendar_color_sunday : (index === 6 ? Theme.calendar_color_saturday : Theme.color_text_subtle)
-                            font.pixelSize: Theme.font_size_xs
-                            font.family: Theme.font_family
+                            color: index === 0 ? CalendarTheme.sunday : (index === 6 ? CalendarTheme.saturday : Colors.textSubtle)
+                            font.pixelSize: Typography.xs
+                            font.family: Typography.family
                         }
                     }
                 }
@@ -294,7 +296,7 @@ Item {
                 Rectangle {
                     width: parent.width
                     height: 1
-                    color: Theme.color_border_subtle
+                    color: Colors.borderSubtle
                 }
 
                 // ── Calendar day grid ───────────────────────────────────────
@@ -309,16 +311,16 @@ Item {
                         delegate: Item {
                             required property var modelData
 
-                            width: Theme.calendar_cell_width
-                            height: Theme.calendar_cell_height
+                            width: CalendarTheme.cellWidth
+                            height: CalendarTheme.cellHeight
 
                             // Today highlight circle
                             Rectangle {
                                 anchors.centerIn: parent
-                                width: Theme.calendar_today_size
-                                height: Theme.calendar_today_size
-                                radius: Theme.calendar_today_size / 2
-                                color: Theme.color_text
+                                width: CalendarTheme.todaySize
+                                height: CalendarTheme.todaySize
+                                radius: CalendarTheme.todaySize / 2
+                                color: Colors.text
                                 visible: parent.modelData.isToday
                             }
 
@@ -329,15 +331,15 @@ Item {
                                     if (!parent.modelData.isValid)
                                         return "transparent";
                                     if (parent.modelData.isToday)
-                                        return Theme.color_background;
+                                        return Colors.background;
                                     if (parent.modelData.weekCol === 0)
-                                        return Theme.calendar_color_sunday;
+                                        return CalendarTheme.sunday;
                                     if (parent.modelData.weekCol === 6)
-                                        return Theme.calendar_color_saturday;
-                                    return Theme.color_text;
+                                        return CalendarTheme.saturday;
+                                    return Colors.text;
                                 }
-                                font.pixelSize: Theme.font_size_xs
-                                font.family: Theme.font_family
+                                font.pixelSize: Typography.xs
+                                font.family: Typography.family
                                 horizontalAlignment: Text.AlignHCenter
                             }
                         }

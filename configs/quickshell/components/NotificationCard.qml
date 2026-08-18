@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell.Services.Notifications
+import "../theme"
 
 // Shared notification header block: app name on top, an accent bar below it
 // (a lighter track filled with the urgency color), then the app icon and
@@ -22,8 +23,8 @@ ColumnLayout {
     property int iconSize: 28
 
     // Font sizes — callers can shrink these to fit tighter spaces
-    property real appNameFontSize: Theme.font_size_xl
-    property real summaryFontSize: Theme.font_size
+    property real appNameFontSize: Typography.xl
+    property real summaryFontSize: Typography.size
 
     // Height of the accent/expiration bar
     property int barHeight: 2
@@ -34,7 +35,7 @@ ColumnLayout {
     // Extra spacing between the accent bar and the summary text, on top of rowSpacing
     property int summaryTopPadding: 4
 
-    readonly property color accentColor: notification.urgency === NotificationUrgency.Critical ? Theme.notification_accent_critical : (notification.urgency === NotificationUrgency.Low ? Theme.notification_accent_low : Theme.notification_accent_normal)
+    readonly property color accentColor: notification.urgency === NotificationUrgency.Critical ? NotificationTheme.accentCritical : (notification.urgency === NotificationUrgency.Low ? NotificationTheme.accentLow : NotificationTheme.accentNormal)
 
     spacing: root.rowSpacing
 
@@ -53,8 +54,8 @@ ColumnLayout {
 
             Rectangle {
                 anchors.fill: parent
-                radius: Theme.radius_normal
-                color: Theme.notification_icon_background
+                radius: Shape.radiusNormal
+                color: NotificationTheme.iconBackground
                 clip: true
 
                 Image {
@@ -71,9 +72,9 @@ ColumnLayout {
         Text {
             visible: text.length > 0
             text: root.notification.appName || ""
-            color: Theme.color_text
+            color: Colors.text
             font.pixelSize: root.appNameFontSize
-            font.family: Theme.font_family
+            font.family: Typography.family
             font.bold: true
             elide: Text.ElideRight
             Layout.fillWidth: true
@@ -85,7 +86,7 @@ ColumnLayout {
         Layout.fillWidth: true
         Layout.preferredHeight: root.barHeight
         radius: root.barHeight / 2
-        color: Theme.color_overlay_light
+        color: Colors.overlayLight
         clip: true
 
         Rectangle {
@@ -103,9 +104,9 @@ ColumnLayout {
         Layout.fillWidth: true
         Layout.topMargin: root.summaryTopPadding
         text: root.notification.summary || ""
-        color: Theme.color_text
+        color: Colors.text
         font.pixelSize: root.summaryFontSize
-        font.family: Theme.font_family
+        font.family: Typography.family
         font.bold: true
         wrapMode: Text.Wrap
     }

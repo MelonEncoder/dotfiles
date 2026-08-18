@@ -3,11 +3,13 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Quickshell.Services.UPower
+import "../theme"
+import "../services"
 
 Rectangle {
     id: root
     property bool expanded: false
-    readonly property int sectionMargin: Math.round(Theme.bar_widget_padding / 2)
+    readonly property int sectionMargin: Math.round(LayoutTheme.barWidgetPadding / 2)
     readonly property int expandedContentHeight: powerProfilesExpandedContent.implicitHeight
 
     readonly property var profiles: [
@@ -48,8 +50,8 @@ Rectangle {
     Layout.fillWidth: true
     Layout.preferredWidth: implicitWidth
     Layout.preferredHeight: implicitHeight
-    radius: Theme.radius_normal
-    color: Theme.color_surface
+    radius: Shape.radiusNormal
+    color: Colors.surface
 
     Item {
         id: powerProfilesFrame
@@ -68,14 +70,14 @@ Rectangle {
                 property bool hovered: powerProfilesHeaderMouse.containsMouse
                 property bool pressed: powerProfilesHeaderMouse.pressed
                 Layout.fillWidth: true
-                Layout.preferredHeight: Theme.bar_widget_height * 1.5
-                radius: Theme.radius_normal
-                color: pressed ? Theme.color_surface_pressed : Theme.color_surface_hover
+                Layout.preferredHeight: LayoutTheme.barWidgetHeight * 1.5
+                radius: Shape.radiusNormal
+                color: pressed ? Colors.surfacePressed : Colors.surfaceHover
 
                 Behavior on color {
                     ColorAnimation {
                         duration: Animations.duration_hover
-                        easing.type: Animations.easing_standard
+                        easing.type: Animations.easingStandard
                     }
                 }
 
@@ -91,9 +93,9 @@ Rectangle {
 
                     Text {
                         text: "󰔐"
-                        color: Theme.color_text
-                        font.pixelSize: Theme.font_size_icon
-                        font.family: Theme.font_family_icon
+                        color: Colors.text
+                        font.pixelSize: Typography.icon
+                        font.family: Typography.iconFamily
                         Layout.alignment: Qt.AlignVCenter
                     }
 
@@ -104,24 +106,24 @@ Rectangle {
 
                         Text {
                             text: Strings.tr(Strings.keys.power_profiles)
-                            color: Theme.color_text
-                            font.pixelSize: Theme.font_size
-                            font.family: Theme.font_family
+                            color: Colors.text
+                            font.pixelSize: Typography.size
+                            font.family: Typography.family
                         }
 
                         Text {
                             text: root.profileLabel(PowerProfiles.profile)
-                            color: Theme.color_text_subtle
-                            font.pixelSize: Theme.font_size
-                            font.family: Theme.font_family
+                            color: Colors.textSubtle
+                            font.pixelSize: Typography.size
+                            font.family: Typography.family
                         }
                     }
 
                     Text {
                         text: root.expanded ? "" : ""
-                        color: Theme.color_text_subtle
-                        font.pixelSize: Theme.font_size_xs
-                        font.family: Theme.font_family_icon
+                        color: Colors.textSubtle
+                        font.pixelSize: Typography.xs
+                        font.family: Typography.iconFamily
                         Layout.alignment: Qt.AlignVCenter
                     }
                 }
@@ -145,15 +147,15 @@ Rectangle {
 
                 Behavior on Layout.preferredHeight {
                     NumberAnimation {
-                        duration: Animations.duration_dropdown_section
-                        easing.type: Animations.easing_emphasized
+                        duration: Animations.dropdownSection
+                        easing.type: Animations.easingEmphasized
                     }
                 }
 
                 Behavior on opacity {
                     NumberAnimation {
-                        duration: Animations.duration_dropdown_section
-                        easing.type: Animations.easing_emphasized
+                        duration: Animations.dropdownSection
+                        easing.type: Animations.easingEmphasized
                     }
                 }
 
@@ -173,15 +175,15 @@ Rectangle {
                             property bool pressed: profileMouse.pressed
                             readonly property bool active: PowerProfiles.profile === modelData.profile
                             Layout.fillWidth: true
-                            Layout.preferredHeight: Theme.bar_widget_height
+                            Layout.preferredHeight: LayoutTheme.barWidgetHeight
                             Layout.topMargin: index === 0 ? 4 : 0
-                            radius: Theme.radius_normal
-                            color: active ? Theme.color_surface_hover : (pressed ? Theme.color_surface_pressed : (hovered ? Theme.color_surface_hover : "transparent"))
+                            radius: Shape.radiusNormal
+                            color: active ? Colors.surfaceHover : (pressed ? Colors.surfacePressed : (hovered ? Colors.surfaceHover : "transparent"))
 
                             Behavior on color {
                                 ColorAnimation {
                                     duration: Animations.duration_hover
-                                    easing.type: Animations.easing_standard
+                                    easing.type: Animations.easingStandard
                                 }
                             }
 
@@ -190,9 +192,9 @@ Rectangle {
                                 anchors.leftMargin: 10
                                 anchors.verticalCenter: parent.verticalCenter
                                 text: parent.modelData.available ? parent.modelData.label : parent.modelData.label + " - unavailable"
-                                color: parent.modelData.available ? Theme.color_text : Theme.color_text_subtle
-                                font.pixelSize: Theme.font_size
-                                font.family: Theme.font_family
+                                color: parent.modelData.available ? Colors.text : Colors.textSubtle
+                                font.pixelSize: Typography.size
+                                font.family: Typography.family
                                 elide: Text.ElideRight
                                 width: parent.width - 36
                             }
@@ -203,9 +205,9 @@ Rectangle {
                                 anchors.verticalCenter: parent.verticalCenter
                                 visible: parent.active
                                 text: "󰄬"
-                                color: Theme.color_text
-                                font.pixelSize: Theme.font_size
-                                font.family: Theme.font_family_icon
+                                color: Colors.text
+                                font.pixelSize: Typography.size
+                                font.family: Typography.iconFamily
                             }
 
                             MouseArea {

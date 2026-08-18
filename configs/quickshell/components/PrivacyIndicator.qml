@@ -1,5 +1,6 @@
 import QtQuick
 import Quickshell.Io
+import "../theme"
 
 Rectangle {
     id: root
@@ -8,12 +9,12 @@ Rectangle {
     readonly property bool anyInUse: root.micInUse || root.screenInUse
 
     visible: anyInUse
-    implicitWidth: iconsRow.implicitWidth + (Theme.bar_widget_padding * 2)
-    implicitHeight: Theme.bar_widget_height
-    radius: Theme.radius_normal
-    color: Theme.color_privacy
-    border.width: Theme.border_width
-    border.color: Theme.color_border
+    implicitWidth: iconsRow.implicitWidth + (LayoutTheme.barWidgetPadding * 2)
+    implicitHeight: LayoutTheme.barWidgetHeight
+    radius: Shape.radiusNormal
+    color: Colors.privacy
+    border.width: Shape.borderWidth
+    border.color: Colors.border
 
     Row {
         id: iconsRow
@@ -23,17 +24,17 @@ Rectangle {
         Text {
             visible: root.micInUse
             text: ""
-            color: Theme.color_text
-            font.pixelSize: Theme.font_size
-            font.family: Theme.font_family_icon
+            color: Colors.text
+            font.pixelSize: Typography.size
+            font.family: Typography.iconFamily
         }
 
         Text {
             visible: root.screenInUse
             text: "󰍺"
-            color: Theme.color_text
-            font.pixelSize: Theme.font_size
-            font.family: Theme.font_family_icon
+            color: Colors.text
+            font.pixelSize: Typography.size
+            font.family: Typography.iconFamily
         }
     }
 

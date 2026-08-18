@@ -5,13 +5,15 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Hyprland
 import "../services"
+import "popups"
+import "../theme"
 
 Item {
     id: root
     property bool expanded: false
 
     implicitWidth: widget.implicitWidth
-    implicitHeight: Theme.bar_widget_height
+    implicitHeight: LayoutTheme.barWidgetHeight
     visible: countRepeater.count > 0
 
     // Reactive notification count — .length on a QML model list is not reactive,
@@ -26,17 +28,17 @@ Item {
 
     Rectangle {
         id: widget
-        radius: Theme.radius_normal
-        color: widgetMouse.pressed ? Theme.color_surface_pressed : (widgetMouse.containsMouse ? Theme.color_surface_hover : Theme.color_surface)
-        border.width: Theme.border_width
-        border.color: Theme.color_border
-        implicitWidth: bellIcon.implicitWidth + (Theme.bar_widget_padding * 2)
-        implicitHeight: Theme.bar_widget_height
+        radius: Shape.radiusNormal
+        color: widgetMouse.pressed ? Colors.surfacePressed : (widgetMouse.containsMouse ? Colors.surfaceHover : Colors.surface)
+        border.width: Shape.borderWidth
+        border.color: Colors.border
+        implicitWidth: bellIcon.implicitWidth + (LayoutTheme.barWidgetPadding * 2)
+        implicitHeight: LayoutTheme.barWidgetHeight
 
         Behavior on color {
             ColorAnimation {
                 duration: Animations.duration_hover
-                easing.type: Animations.easing_standard
+                easing.type: Animations.easingStandard
             }
         }
 
@@ -44,9 +46,9 @@ Item {
             id: bellIcon
             anchors.centerIn: parent
             text: ""
-            color: Theme.color_text
-            font.pixelSize: Theme.font_size_icon
-            font.family: Theme.font_family_icon
+            color: Colors.text
+            font.pixelSize: Typography.icon
+            font.family: Typography.iconFamily
         }
 
         MouseArea {
@@ -70,7 +72,7 @@ Item {
         id: dropdown
         anchor.item: root
         anchor.rect.x: 0
-        anchor.rect.y: Theme.bar_widget_height + (Theme.bar_padding * 2)
+        anchor.rect.y: LayoutTheme.barWidgetHeight + (LayoutTheme.barPadding * 2)
         visible: root.expanded
         implicitWidth: dropdown.screen.width
         implicitHeight: dropdown.screen.height
@@ -87,15 +89,15 @@ Item {
             readonly property int panelWidth: 320
 
             x: (dropdown.width - width) / 2
-            y: Theme.bar_widget_height + (Theme.bar_padding * 2)
+            y: LayoutTheme.barWidgetHeight + (LayoutTheme.barPadding * 2)
             width: panelWidth
-            height: headerSection.implicitHeight + (Theme.bar_widget_padding * 2) + Theme.calendar_content_spacing + notifFlickable.height
-            radius: Theme.radius_background
-            color: Theme.color_background
-            border.width: Theme.border_width
-            border.color: Theme.color_border
+            height: headerSection.implicitHeight + (LayoutTheme.barWidgetPadding * 2) + CalendarTheme.contentSpacing + notifFlickable.height
+            radius: Shape.radiusBackground
+            color: Colors.background
+            border.width: Shape.borderWidth
+            border.color: Colors.border
             opacity: root.expanded ? 1 : 0
-            scale: root.expanded ? 1 : Animations.dropdown_scale_closed
+            scale: root.expanded ? 1 : Animations.dropdownScaleClosed
             transformOrigin: Item.Top
             clip: true
             focus: root.expanded
@@ -103,15 +105,15 @@ Item {
 
             Behavior on opacity {
                 NumberAnimation {
-                    duration: Animations.duration_dropdown
-                    easing.type: Animations.easing_emphasized
+                    duration: Animations.dropdown
+                    easing.type: Animations.easingEmphasized
                 }
             }
 
             Behavior on scale {
                 NumberAnimation {
-                    duration: Animations.duration_dropdown
-                    easing.type: Animations.easing_emphasized
+                    duration: Animations.dropdown
+                    easing.type: Animations.easingEmphasized
                 }
             }
 
@@ -124,20 +126,20 @@ Item {
 
             Column {
                 id: headerSection
-                x: Theme.bar_widget_padding
-                y: Theme.bar_widget_padding
-                width: popupPanel.panelWidth - (Theme.bar_widget_padding * 2)
-                spacing: Theme.calendar_content_spacing
+                x: LayoutTheme.barWidgetPadding
+                y: LayoutTheme.barWidgetPadding
+                width: popupPanel.panelWidth - (LayoutTheme.barWidgetPadding * 2)
+                spacing: CalendarTheme.contentSpacing
 
                 RowLayout {
                     width: parent.width
                     spacing: 0
 
                     Text {
-                        text: Locale.tr.notifications
-                        color: Theme.color_text_subtle
-                        font.pixelSize: Theme.font_size_xs
-                        font.family: Theme.font_family
+                        text: Strings.tr(Strings.keys.notifications)
+                        color: Colors.textSubtle
+                        font.pixelSize: Typography.xs
+                        font.family: Typography.family
                         font.letterSpacing: 1
                         leftPadding: 2
                         bottomPadding: 2
@@ -149,17 +151,17 @@ Item {
 
                     Text {
                         visible: countRepeater.count > 0
-                        text: Locale.tr.clear_all
-                        color: clearMouse.containsMouse ? Theme.color_text : Theme.color_text_subtle
-                        font.pixelSize: Theme.font_size_xs
-                        font.family: Theme.font_family
+                        text: Strings.tr(Strings.keys.clear_all)
+                        color: clearMouse.containsMouse ? Colors.text : Colors.textSubtle
+                        font.pixelSize: Typography.xs
+                        font.family: Typography.family
                         rightPadding: 2
                         bottomPadding: 2
 
                         Behavior on color {
                             ColorAnimation {
                                 duration: Animations.duration_hover
-                                easing.type: Animations.easing_standard
+                                easing.type: Animations.easingStandard
                             }
                         }
 
@@ -180,7 +182,7 @@ Item {
                 Rectangle {
                     width: parent.width
                     height: 1
-                    color: Theme.color_border_subtle
+                    color: Colors.borderSubtle
                 }
             }
 
@@ -189,11 +191,11 @@ Item {
             Flickable {
                 id: notifFlickable
                 anchors.top: headerSection.bottom
-                anchors.topMargin: Theme.calendar_content_spacing
+                anchors.topMargin: CalendarTheme.contentSpacing
                 anchors.left: parent.left
-                anchors.leftMargin: Theme.bar_widget_padding
+                anchors.leftMargin: LayoutTheme.barWidgetPadding
                 anchors.right: parent.right
-                anchors.rightMargin: Theme.bar_widget_padding
+                anchors.rightMargin: LayoutTheme.barWidgetPadding
                 height: Math.min(notifList.implicitHeight, 400)
                 contentHeight: notifList.implicitHeight
                 clip: true
@@ -201,16 +203,16 @@ Item {
                 Column {
                     id: notifList
                     width: parent.width
-                    spacing: Theme.calendar_content_spacing
+                    spacing: CalendarTheme.contentSpacing
 
                     // Empty state
                     Text {
                         visible: countRepeater.count === 0
                         width: parent.width
-                        text: Locale.tr.no_notifications
-                        color: Theme.color_text_subtle
-                        font.pixelSize: Theme.font_size_sm
-                        font.family: Theme.font_family
+                        text: Strings.tr(Strings.keys.no_notifications)
+                        color: Colors.textSubtle
+                        font.pixelSize: Typography.sm
+                        font.family: Typography.family
                         horizontalAlignment: Text.AlignHCenter
                         topPadding: 6
                         bottomPadding: 6
@@ -226,14 +228,14 @@ Item {
 
                             width: notifList.width
                             implicitHeight: cardContent.implicitHeight + 18
-                            radius: Theme.radius_normal
-                            color: cardMouse.containsMouse ? Theme.color_surface_hover : Theme.color_surface
+                            radius: Shape.radiusNormal
+                            color: cardMouse.containsMouse ? Colors.surfaceHover : Colors.surface
                             clip: true
 
                             Behavior on color {
                                 ColorAnimation {
                                     duration: Animations.duration_hover
-                                    easing.type: Animations.easing_standard
+                                    easing.type: Animations.easingStandard
                                 }
                             }
 
@@ -251,7 +253,7 @@ Item {
                                     width: parent.width
                                     notification: notifCard.modelData
                                     iconSize: 24
-                                    summaryFontSize: Theme.font_size_sm
+                                    summaryFontSize: Typography.sm
                                     rowSpacing: 4
                                 }
 
@@ -259,9 +261,9 @@ Item {
                                     visible: text.length > 0
                                     text: notifCard.modelData.body || ""
                                     textFormat: Text.StyledText
-                                    color: Theme.color_text_muted
-                                    font.pixelSize: Theme.font_size_xs
-                                    font.family: Theme.font_family
+                                    color: Colors.textMuted
+                                    font.pixelSize: Typography.xs
+                                    font.family: Typography.family
                                     wrapMode: Text.Wrap
                                     maximumLineCount: 2
                                     elide: Text.ElideRight
@@ -272,8 +274,8 @@ Item {
                                     visible: bellImage.source.toString() !== ""
                                     width: parent.width
                                     height: visible ? 80 : 0
-                                    radius: Theme.radius_normal
-                                    color: Theme.color_overlay_dark
+                                    radius: Shape.radiusNormal
+                                    color: Colors.overlayDark
                                     clip: true
 
                                     Image {

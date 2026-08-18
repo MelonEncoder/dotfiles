@@ -2,6 +2,7 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import Quickshell.Wayland as QsWayland
+import "../theme"
 
 Rectangle {
     id: toggleButton
@@ -9,17 +10,17 @@ Rectangle {
     property bool hovered: clickArea.containsMouse
     property bool pressed: clickArea.pressed
 
-    implicitWidth: label.implicitWidth + (Theme.bar_widget_padding * 2)
-    implicitHeight: Theme.bar_widget_height
-    radius: Theme.radius_normal
-    color: toggleButton.pressed ? Theme.color_surface_pressed : (toggleButton.inhibited ? Theme.color_text : (toggleButton.hovered ? Theme.color_surface_hover : Theme.color_surface))
-    border.width: Theme.border_width
-    border.color: Theme.color_border
+    implicitWidth: label.implicitWidth + (LayoutTheme.barWidgetPadding * 2)
+    implicitHeight: LayoutTheme.barWidgetHeight
+    radius: Shape.radiusNormal
+    color: toggleButton.pressed ? Colors.surfacePressed : (toggleButton.inhibited ? Colors.text : (toggleButton.hovered ? Colors.surfaceHover : Colors.surface))
+    border.width: Shape.borderWidth
+    border.color: Colors.border
 
     Behavior on color {
         ColorAnimation {
             duration: Animations.duration_hover
-            easing.type: Animations.easing_standard
+            easing.type: Animations.easingStandard
         }
     }
 
@@ -27,9 +28,9 @@ Rectangle {
         id: label
         anchors.centerIn: parent
         text: toggleButton.inhibited ? "󰈈" : ""
-        color: toggleButton.inhibited ? Theme.color_background : Theme.color_text
-        font.pixelSize: Theme.font_size
-        font.family: Theme.font_family_icon
+        color: toggleButton.inhibited ? Colors.background : Colors.text
+        font.pixelSize: Typography.size
+        font.family: Typography.iconFamily
     }
 
     MouseArea {

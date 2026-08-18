@@ -2,6 +2,7 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import Quickshell.Services.UPower
+import "../theme"
 
 Rectangle {
     id: root
@@ -11,12 +12,12 @@ Rectangle {
     readonly property bool charging: root.hasBattery && !UPower.onBattery
 
     visible: root.hasBattery
-    implicitWidth: content.implicitWidth + (Theme.bar_widget_padding * 2)
-    implicitHeight: Theme.bar_widget_height
-    radius: Theme.radius_normal
-    color: Theme.color_surface
-    border.width: Theme.border_width
-    border.color: Theme.color_border
+    implicitWidth: content.implicitWidth + (LayoutTheme.barWidgetPadding * 2)
+    implicitHeight: LayoutTheme.barWidgetHeight
+    radius: Shape.radiusNormal
+    color: Colors.surface
+    border.width: Shape.borderWidth
+    border.color: Colors.border
 
     function clampPercent(value: int): int {
         return Math.max(0, Math.min(100, value));
@@ -52,9 +53,9 @@ Rectangle {
             anchors.left: parent.left
             anchors.verticalCenter: parent.verticalCenter
             text: root.batteryIcon(root.batteryPercent, root.charging)
-            color: root.batteryPercent <= 15 ? Theme.color_privacy : Theme.color_text
-            font.pixelSize: Theme.font_size
-            font.family: Theme.font_family_icon
+            color: root.batteryPercent <= 15 ? Colors.privacy : Colors.text
+            font.pixelSize: Typography.size
+            font.family: Typography.iconFamily
         }
 
         Text {
@@ -63,9 +64,9 @@ Rectangle {
             anchors.leftMargin: 6
             anchors.verticalCenter: parent.verticalCenter
             text: root.batteryPercent + "%"
-            color: root.batteryPercent <= 15 ? Theme.color_privacy : Theme.color_text
-            font.pixelSize: Theme.font_size
-            font.family: Theme.font_family
+            color: root.batteryPercent <= 15 ? Colors.privacy : Colors.text
+            font.pixelSize: Typography.size
+            font.family: Typography.family
         }
     }
 }

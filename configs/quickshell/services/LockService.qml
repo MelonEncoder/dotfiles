@@ -4,6 +4,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
+import Quickshell.Hyprland
 import Quickshell.Services.Pam
 
 Singleton {
@@ -14,6 +15,7 @@ Singleton {
     property bool failedAttempt: false
     property string statusText: ""
     property string submittedSecret: ""
+    property Component lockSurface: null
 
     readonly property string currentUser:
         (Quickshell.env("USER") || "") + ""
@@ -43,7 +45,7 @@ Singleton {
         root.submittedSecret = "";
     }
 
-    function submitSecred(secret: string): void {
+    function submitSecret(secret: string): void {
         var value = (secret || "") + "";
 
         if (!root.locked || root.authenticating) {
@@ -69,11 +71,11 @@ Singleton {
         }
     }
 
-    GLobalShortcut {
+    GlobalShortcut {
         appid: "quickshell"
         name: "lock-screen"
         description: "Lock the current session"
-        triggerDescription: "SUPER+L"a
+        triggerDescription: "SUPER+L"
 
         onPressed: root.activateLock()
     }
@@ -86,7 +88,7 @@ Singleton {
         }
     }
 
-    WlSesionLock {
+    WlSessionLock {
         id: sessionLock
 
         locked: root.locked
@@ -96,7 +98,7 @@ Singleton {
     PamContext {
         id: pam
 
-        config: "quckshell"
+        config: "quickshell"
         user: root.currentUser
 
         onPamMessage: {
@@ -110,14 +112,14 @@ Singleton {
             }
 
             if (responseRequired) {
-                respond(root.submittedSecred);
+                respond(root.submittedSecret);
                 root.submittedSecret = "";
             }
         }
 
         onCompleted: result => {
             root.authenticating = false;
-            root.submittedSecred = "";
+            root.submittedSecret = "";
 
             if (result === PamResult.Success) {
                 root.unlock();
@@ -130,7 +132,7 @@ Singleton {
         onError: error => {
             root.authenticating = false;
             root.failedAttempt = true;
-            root.submittedSecred = "";
+            root.submittedSecret = "";
             root.statusText = PamError.toString(error);
         }
     }

@@ -6,6 +6,8 @@ import Quickshell.Wayland
 import Quickshell.Hyprland
 import QtQuick
 import QtQuick.Layouts
+import "../theme"
+import "../services"
 
 Scope {
     id: root
@@ -69,13 +71,13 @@ Scope {
 
             Rectangle {
                 anchors.fill: parent
-                color: Theme.launcher_overlay
+                color: LauncherTheme.overlay
                 opacity: root.visible ? 1 : 0
 
                 Behavior on opacity {
                     NumberAnimation {
                         duration: Animations.duration_normal
-                        easing.type: Animations.easing_standard
+                        easing.type: Animations.easingStandard
                     }
                 }
             }
@@ -84,13 +86,13 @@ Scope {
                 id: panel
                 anchors.centerIn: parent
                 width: 360
-                height: Math.min(titleBar.height + panelContent.implicitHeight + (Theme.bar_widget_padding * 2), win.height - 80)
-                radius: Theme.radius_background
-                color: Theme.color_background
-                border.width: Theme.border_width
-                border.color: Theme.color_border
+                height: Math.min(titleBar.height + panelContent.implicitHeight + (LayoutTheme.barWidgetPadding * 2), win.height - 80)
+                radius: Shape.radiusBackground
+                color: Colors.background
+                border.width: Shape.borderWidth
+                border.color: Colors.border
                 opacity: root.visible ? 1 : 0
-                scale: root.visible ? 1 : Animations.dropdown_scale_closed
+                scale: root.visible ? 1 : Animations.dropdownScaleClosed
                 transformOrigin: Item.Center
                 z: 1
                 focus: root.visible
@@ -99,14 +101,14 @@ Scope {
                 Behavior on opacity {
                     NumberAnimation {
                         duration: Animations.duration_normal
-                        easing.type: Animations.easing_standard
+                        easing.type: Animations.easingStandard
                     }
                 }
 
                 Behavior on scale {
                     NumberAnimation {
                         duration: Animations.duration_slow
-                        easing.type: Animations.easing_emphasized
+                        easing.type: Animations.easingEmphasized
                     }
                 }
 
@@ -123,24 +125,24 @@ Scope {
 
                     RowLayout {
                         anchors.fill: parent
-                        anchors.leftMargin: Theme.bar_widget_padding + 2
-                        anchors.rightMargin: Theme.bar_widget_padding
+                        anchors.leftMargin: LayoutTheme.barWidgetPadding + 2
+                        anchors.rightMargin: LayoutTheme.barWidgetPadding
                         spacing: 8
 
                         Text {
                             text: "󰒓"
-                            color: Theme.color_text
-                            font.pixelSize: Theme.font_size_icon
-                            font.family: Theme.font_family_icon
+                            color: Colors.text
+                            font.pixelSize: Typography.icon
+                            font.family: Typography.iconFamily
                             Layout.alignment: Qt.AlignVCenter
                         }
 
                         Text {
                             Layout.fillWidth: true
                             text: Strings.tr(Strings.keys.quick_settings)
-                            color: Theme.color_text
-                            font.pixelSize: Theme.font_size
-                            font.family: Theme.font_family
+                            color: Colors.text
+                            font.pixelSize: Typography.size
+                            font.family: Typography.family
                             font.weight: Font.Medium
                             Layout.alignment: Qt.AlignVCenter
                         }
@@ -148,23 +150,23 @@ Scope {
                         Rectangle {
                             width: 24
                             height: 24
-                            radius: Theme.radius_normal
-                            color: closeBtnHover.containsMouse ? Theme.color_surface_hover : "transparent"
+                            radius: Shape.radiusNormal
+                            color: closeBtnHover.containsMouse ? Colors.surfaceHover : "transparent"
                             Layout.alignment: Qt.AlignVCenter
 
                             Behavior on color {
                                 ColorAnimation {
                                     duration: Animations.duration_hover
-                                    easing.type: Animations.easing_standard
+                                    easing.type: Animations.easingStandard
                                 }
                             }
 
                             Text {
                                 anchors.centerIn: parent
                                 text: "󰅖"
-                                color: Theme.color_text_subtle
-                                font.pixelSize: Theme.font_size
-                                font.family: Theme.font_family_icon
+                                color: Colors.textSubtle
+                                font.pixelSize: Typography.size
+                                font.family: Typography.iconFamily
                             }
 
                             MouseArea {
@@ -181,10 +183,10 @@ Scope {
                         anchors.bottom: parent.bottom
                         anchors.left: parent.left
                         anchors.right: parent.right
-                        anchors.leftMargin: Theme.bar_widget_padding
-                        anchors.rightMargin: Theme.bar_widget_padding
+                        anchors.leftMargin: LayoutTheme.barWidgetPadding
+                        anchors.rightMargin: LayoutTheme.barWidgetPadding
                         height: 1
-                        color: Theme.color_border_subtle
+                        color: Colors.borderSubtle
                     }
                 }
 
@@ -193,14 +195,14 @@ Scope {
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.bottom: parent.bottom
-                    contentHeight: panelContent.implicitHeight + (Theme.bar_widget_padding * 2)
+                    contentHeight: panelContent.implicitHeight + (LayoutTheme.barWidgetPadding * 2)
                     clip: true
 
                     ColumnLayout {
                         id: panelContent
-                        width: parent.width - (Theme.bar_widget_padding * 2)
-                        x: Theme.bar_widget_padding
-                        y: Theme.bar_widget_padding
+                        width: parent.width - (LayoutTheme.barWidgetPadding * 2)
+                        x: LayoutTheme.barWidgetPadding
+                        y: LayoutTheme.barWidgetPadding
                         spacing: 6
 
                         Screenshot {

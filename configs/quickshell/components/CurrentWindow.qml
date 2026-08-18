@@ -1,5 +1,6 @@
 import QtQuick
 import Quickshell.Hyprland
+import "../theme"
 
 Rectangle {
     id: root
@@ -81,24 +82,24 @@ Rectangle {
         return simple.charAt(0).toUpperCase() + simple.slice(1);
     }
 
-    radius: Theme.radius_normal
-    color: Theme.color_surface
-    border.width: Theme.border_width
-    border.color: Theme.color_border
-    implicitHeight: Theme.bar_widget_height
-    implicitWidth: Math.min(420, label.implicitWidth + (Theme.bar_widget_padding * 2))
+    radius: Shape.radiusNormal
+    color: Colors.surface
+    border.width: Shape.borderWidth
+    border.color: Colors.border
+    implicitHeight: LayoutTheme.barWidgetHeight
+    implicitWidth: Math.min(420, label.implicitWidth + (LayoutTheme.barWidgetPadding * 2))
 
     Text {
         id: label
         anchors.left: parent.left
         anchors.right: parent.right
-        anchors.leftMargin: Theme.bar_widget_padding
-        anchors.rightMargin: Theme.bar_widget_padding
+        anchors.leftMargin: LayoutTheme.barWidgetPadding
+        anchors.rightMargin: LayoutTheme.barWidgetPadding
         anchors.verticalCenter: parent.verticalCenter
         text: root.windowTitle
-        color: Theme.color_text
-        font.pixelSize: Theme.font_size
-        font.family: Theme.font_family
+        color: Colors.text
+        font.pixelSize: Typography.size
+        font.family: Typography.family
         elide: Text.ElideRight
     }
 }

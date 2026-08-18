@@ -7,6 +7,7 @@ import Quickshell.Hyprland
 import QtQuick
 import QtQuick.Layouts
 import "../services" as Services
+import "../theme"
 
 Scope {
     id: root
@@ -75,13 +76,13 @@ Scope {
 
             Rectangle {
                 anchors.fill: parent
-                color: Theme.launcher_overlay
+                color: LauncherTheme.overlay
                 opacity: root.visible ? 1 : 0
 
                 Behavior on opacity {
                     NumberAnimation {
                         duration: Animations.duration_normal
-                        easing.type: Animations.easing_standard
+                        easing.type: Animations.easingStandard
                     }
                 }
             }
@@ -90,13 +91,13 @@ Scope {
                 id: panel
                 anchors.centerIn: parent
                 width: root.cellSize * 5
-                height: panelContent.implicitHeight + (Theme.bar_widget_padding * 2)
-                radius: Theme.radius_background
-                color: Theme.color_background
-                border.width: Theme.border_width
-                border.color: Theme.color_border
+                height: panelContent.implicitHeight + (LayoutTheme.barWidgetPadding * 2)
+                radius: Shape.radiusBackground
+                color: Colors.background
+                border.width: Shape.borderWidth
+                border.color: Colors.border
                 opacity: root.visible ? 1 : 0
-                scale: root.visible ? 1 : Animations.dropdown_scale_closed
+                scale: root.visible ? 1 : Animations.dropdownScaleClosed
                 transformOrigin: Item.Center
                 z: 1
                 focus: root.visible
@@ -104,14 +105,14 @@ Scope {
                 Behavior on opacity {
                     NumberAnimation {
                         duration: Animations.duration_normal
-                        easing.type: Animations.easing_standard
+                        easing.type: Animations.easingStandard
                     }
                 }
 
                 Behavior on scale {
                     NumberAnimation {
                         duration: Animations.duration_slow
-                        easing.type: Animations.easing_emphasized
+                        easing.type: Animations.easingEmphasized
                     }
                 }
 
@@ -153,7 +154,7 @@ Scope {
                     anchors.top: parent.top
                     anchors.left: parent.left
                     anchors.right: parent.right
-                    anchors.margins: Theme.bar_widget_padding
+                    anchors.margins: LayoutTheme.barWidgetPadding
                     columns: root.gridColumns
                     rowSpacing: 4
                     columnSpacing: 4
@@ -162,9 +163,9 @@ Scope {
                         Layout.columnSpan: root.gridColumns
                         Layout.fillWidth: true
                         text: Strings.tr(Strings.keys.system)
-                        color: Theme.color_text_subtle
-                        font.pixelSize: Theme.font_size_xs
-                        font.family: Theme.font_family
+                        color: Colors.textSubtle
+                        font.pixelSize: Typography.xs
+                        font.family: Typography.family
                         font.capitalization: Font.AllUppercase
                         font.letterSpacing: 1
                         leftPadding: 2
@@ -175,7 +176,7 @@ Scope {
                         Layout.columnSpan: root.gridColumns
                         Layout.fillWidth: true
                         implicitHeight: 1
-                        color: Theme.color_border_subtle
+                        color: Colors.borderSubtle
                     }
 
                     Repeater {
@@ -191,14 +192,14 @@ Scope {
 
                             Layout.fillWidth: true
                             Layout.preferredHeight: root.cellSize
-                            radius: Theme.radius_normal
-                            color: pressed ? Theme.color_surface_pressed : (hovered || focused ? Theme.color_surface_hover : "transparent")
+                            radius: Shape.radiusNormal
+                            color: pressed ? Colors.surfacePressed : (hovered || focused ? Colors.surfaceHover : "transparent")
                             clip: true
 
                             Behavior on color {
                                 ColorAnimation {
                                     duration: Animations.duration_hover
-                                    easing.type: Animations.easing_standard
+                                    easing.type: Animations.easingStandard
                                 }
                             }
 
@@ -208,13 +209,13 @@ Scope {
                                 anchors.left: parent.left
                                 anchors.right: parent.right
                                 height: 2
-                                color: Theme.color_purple
+                                color: Colors.purple
                                 opacity: optionItem.focused ? 1 : 0
 
                                 Behavior on opacity {
                                     NumberAnimation {
                                         duration: Animations.duration_hover
-                                        easing.type: Animations.easing_standard
+                                        easing.type: Animations.easingStandard
                                     }
                                 }
                             }
@@ -233,9 +234,9 @@ Scope {
                                 Text {
                                     Layout.alignment: Qt.AlignHCenter
                                     text: Strings.tr(Strings.keys["power_" + optionItem.modelData.action])
-                                    color: Theme.color_text
-                                    font.pixelSize: Theme.font_size
-                                    font.family: Theme.font_family
+                                    color: Colors.text
+                                    font.pixelSize: Typography.size
+                                    font.family: Typography.family
                                 }
                             }
 

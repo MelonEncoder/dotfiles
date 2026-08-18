@@ -4,11 +4,12 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell.Networking
 import "../theme"
+import "../services"
 
 Rectangle {
     id: root
     property bool expanded: false
-    readonly property int sectionMargin: Math.round(Theme.bar_widget_padding / 2)
+    readonly property int sectionMargin: Math.round(LayoutTheme.barWidgetPadding / 2)
 
     readonly property var wifiDevice: {
         var devs = Networking.devices.values;
@@ -56,8 +57,8 @@ Rectangle {
     Layout.fillWidth: true
     Layout.preferredWidth: implicitWidth
     Layout.preferredHeight: implicitHeight
-    radius: Theme.radius_normal
-    color: Theme.color_surface
+    radius: Shape.radiusNormal
+    color: Colors.surface
 
     Item {
         id: wifiFrame
@@ -76,14 +77,14 @@ Rectangle {
                 property bool hovered: wifiHeaderMouse.containsMouse
                 property bool pressed: wifiHeaderMouse.pressed
                 Layout.fillWidth: true
-                Layout.preferredHeight: Theme.bar_widget_height * 1.5
-                radius: Theme.radius_normal
-                color: pressed ? Theme.color_surface_pressed : Theme.color_surface_hover
+                Layout.preferredHeight: LayoutTheme.barWidgetHeight * 1.5
+                radius: Shape.radiusNormal
+                color: pressed ? Colors.surfacePressed : Colors.surfaceHover
 
                 Behavior on color {
                     ColorAnimation {
                         duration: Animations.duration_hover
-                        easing.type: Animations.easing_standard
+                        easing.type: Animations.easingStandard
                     }
                 }
 
@@ -99,9 +100,9 @@ Rectangle {
 
                     Text {
                         text: "󰖩"
-                        color: Theme.color_text
-                        font.pixelSize: Theme.font_size_icon
-                        font.family: Theme.font_family_icon
+                        color: Colors.text
+                        font.pixelSize: Typography.icon
+                        font.family: Typography.iconFamily
                         Layout.alignment: Qt.AlignVCenter
                     }
 
@@ -112,16 +113,16 @@ Rectangle {
 
                         Text {
                             text: Strings.tr(Strings.keys.wifi)
-                            color: Theme.color_text
-                            font.pixelSize: Theme.font_size
-                            font.family: Theme.font_family
+                            color: Colors.text
+                            font.pixelSize: Typography.size
+                            font.family: Typography.family
                         }
 
                         Text {
                             text: root.currentWifiSubtitle()
-                            color: Theme.color_text_subtle
-                            font.pixelSize: Theme.font_size
-                            font.family: Theme.font_family
+                            color: Colors.textSubtle
+                            font.pixelSize: Typography.size
+                            font.family: Typography.family
                             elide: Text.ElideRight
                             width: Math.max(0, wifiHeader.width - 60)
                         }
@@ -129,9 +130,9 @@ Rectangle {
 
                     Text {
                         text: root.expanded ? "" : ""
-                        color: Theme.color_text_subtle
-                        font.pixelSize: Theme.font_size_xs
-                        font.family: Theme.font_family_icon
+                        color: Colors.textSubtle
+                        font.pixelSize: Typography.xs
+                        font.family: Typography.iconFamily
                         Layout.alignment: Qt.AlignVCenter
                     }
                 }
@@ -155,15 +156,15 @@ Rectangle {
 
                 Behavior on Layout.preferredHeight {
                     NumberAnimation {
-                        duration: Animations.duration_dropdown_section
-                        easing.type: Animations.easing_emphasized
+                        duration: Animations.dropdownSection
+                        easing.type: Animations.easingEmphasized
                     }
                 }
 
                 Behavior on opacity {
                     NumberAnimation {
-                        duration: Animations.duration_dropdown_section
-                        easing.type: Animations.easing_emphasized
+                        duration: Animations.dropdownSection
+                        easing.type: Animations.easingEmphasized
                     }
                 }
 
@@ -175,9 +176,9 @@ Rectangle {
 
                     Text {
                         text: Strings.tr(Strings.keys.connected)
-                        color: Theme.color_text_subtle
-                        font.pixelSize: Theme.font_size
-                        font.family: Theme.font_family
+                        color: Colors.textSubtle
+                        font.pixelSize: Typography.size
+                        font.family: Typography.family
                         Layout.fillWidth: true
                         Layout.topMargin: 4
                     }
@@ -191,14 +192,14 @@ Rectangle {
                             property bool hovered: connectedWifiMouse.containsMouse
                             property bool pressed: connectedWifiMouse.pressed
                             Layout.fillWidth: true
-                            Layout.preferredHeight: Theme.bar_widget_height
-                            radius: Theme.radius_normal
-                            color: pressed ? Theme.color_surface_pressed : (hovered ? Theme.color_surface_hover : "transparent")
+                            Layout.preferredHeight: LayoutTheme.barWidgetHeight
+                            radius: Shape.radiusNormal
+                            color: pressed ? Colors.surfacePressed : (hovered ? Colors.surfaceHover : "transparent")
 
                             Behavior on color {
                                 ColorAnimation {
                                     duration: Animations.duration_hover
-                                    easing.type: Animations.easing_standard
+                                    easing.type: Animations.easingStandard
                                 }
                             }
 
@@ -207,9 +208,9 @@ Rectangle {
                                 anchors.leftMargin: 10
                                 anchors.verticalCenter: parent.verticalCenter
                                 text: root.wifiName(connectedWifiItem.modelData)
-                                color: Theme.color_text
-                                font.pixelSize: Theme.font_size
-                                font.family: Theme.font_family
+                                color: Colors.text
+                                font.pixelSize: Typography.size
+                                font.family: Typography.family
                                 elide: Text.ElideRight
                                 width: parent.width - 20
                             }
@@ -226,8 +227,8 @@ Rectangle {
 
                     Rectangle {
                         Layout.fillWidth: true
-                        Layout.preferredHeight: Theme.bar_widget_height
-                        radius: Theme.radius_normal
+                        Layout.preferredHeight: LayoutTheme.barWidgetHeight
+                        radius: Shape.radiusNormal
                         color: "transparent"
                         visible: root.connectedNetworks.length === 0
 
@@ -236,17 +237,17 @@ Rectangle {
                             anchors.leftMargin: 10
                             anchors.verticalCenter: parent.verticalCenter
                             text: Strings.tr(Strings.keys.none_connected)
-                            color: Theme.color_text_subtle
-                            font.pixelSize: Theme.font_size
-                            font.family: Theme.font_family
+                            color: Colors.textSubtle
+                            font.pixelSize: Typography.size
+                            font.family: Typography.family
                         }
                     }
 
                     Text {
                         text: Strings.tr(Strings.keys.available)
-                        color: Theme.color_text_subtle
-                        font.pixelSize: Theme.font_size
-                        font.family: Theme.font_family
+                        color: Colors.textSubtle
+                        font.pixelSize: Typography.size
+                        font.family: Typography.family
                         Layout.fillWidth: true
                         Layout.topMargin: 4
                     }
@@ -260,14 +261,14 @@ Rectangle {
                             property bool hovered: availableWifiMouse.containsMouse
                             property bool pressed: availableWifiMouse.pressed
                             Layout.fillWidth: true
-                            Layout.preferredHeight: Theme.bar_widget_height
-                            radius: Theme.radius_normal
-                            color: pressed ? Theme.color_surface_pressed : (hovered ? Theme.color_surface_hover : "transparent")
+                            Layout.preferredHeight: LayoutTheme.barWidgetHeight
+                            radius: Shape.radiusNormal
+                            color: pressed ? Colors.surfacePressed : (hovered ? Colors.surfaceHover : "transparent")
 
                             Behavior on color {
                                 ColorAnimation {
                                     duration: Animations.duration_hover
-                                    easing.type: Animations.easing_standard
+                                    easing.type: Animations.easingStandard
                                 }
                             }
 
@@ -276,9 +277,9 @@ Rectangle {
                                 anchors.leftMargin: 10
                                 anchors.verticalCenter: parent.verticalCenter
                                 text: root.wifiName(availableWifiItem.modelData)
-                                color: Theme.color_text
-                                font.pixelSize: Theme.font_size
-                                font.family: Theme.font_family
+                                color: Colors.text
+                                font.pixelSize: Typography.size
+                                font.family: Typography.family
                                 elide: Text.ElideRight
                                 width: parent.width - 20
                             }
@@ -295,8 +296,8 @@ Rectangle {
 
                     Rectangle {
                         Layout.fillWidth: true
-                        Layout.preferredHeight: Theme.bar_widget_height
-                        radius: Theme.radius_normal
+                        Layout.preferredHeight: LayoutTheme.barWidgetHeight
+                        radius: Shape.radiusNormal
                         color: "transparent"
                         visible: root.availableNetworks.length === 0
 
@@ -305,9 +306,9 @@ Rectangle {
                             anchors.leftMargin: 10
                             anchors.verticalCenter: parent.verticalCenter
                             text: Strings.tr(Strings.keys.none_available)
-                            color: Theme.color_text_subtle
-                            font.pixelSize: Theme.font_size
-                            font.family: Theme.font_family
+                            color: Colors.textSubtle
+                            font.pixelSize: Typography.size
+                            font.family: Typography.family
                         }
                     }
                 }

@@ -5,6 +5,9 @@ import QtQuick.Layouts
 import Quickshell.Io
 import Quickshell
 import Quickshell.Hyprland
+import "popups"
+import "../theme"
+import "../services"
 
 Rectangle {
     id: root
@@ -123,12 +126,12 @@ Rectangle {
         };
     }
 
-    implicitWidth: osIcon.implicitWidth + (Theme.bar_widget_padding * 2)
-    implicitHeight: Theme.bar_widget_height
-    radius: Theme.radius_normal
-    color: root.pressed ? Theme.color_surface_pressed : (root.hovered ? Theme.color_surface_hover : Theme.color_surface)
-    border.width: Theme.border_width
-    border.color: Theme.color_border
+    implicitWidth: osIcon.implicitWidth + (LayoutTheme.barWidgetPadding * 2)
+    implicitHeight: LayoutTheme.barWidgetHeight
+    radius: Shape.radiusNormal
+    color: root.pressed ? Colors.surfacePressed : (root.hovered ? Colors.surfaceHover : Colors.surface)
+    border.width: Shape.borderWidth
+    border.color: Colors.border
 
     component HwRow: RowLayout {
         required property string icon
@@ -140,16 +143,16 @@ Rectangle {
 
         Text {
             text: icon
-            color: Theme.color_text_subtle
-            font.pixelSize: Theme.font_size_icon
-            font.family: Theme.font_family_icon
+            color: Colors.textSubtle
+            font.pixelSize: Typography.icon
+            font.family: Typography.iconFamily
         }
 
         Text {
             text: label
-            color: Theme.color_text_subtle
-            font.pixelSize: Theme.font_size
-            font.family: Theme.font_family
+            color: Colors.textSubtle
+            font.pixelSize: Typography.size
+            font.family: Typography.family
         }
 
         Item {
@@ -158,9 +161,9 @@ Rectangle {
 
         Text {
             text: value
-            color: Theme.color_text
-            font.pixelSize: Theme.font_size
-            font.family: Theme.font_family
+            color: Colors.text
+            font.pixelSize: Typography.size
+            font.family: Typography.family
             Layout.maximumWidth: 200
             elide: Text.ElideRight
         }
@@ -169,7 +172,7 @@ Rectangle {
     Behavior on color {
         ColorAnimation {
             duration: Animations.duration_hover
-            easing.type: Animations.easing_standard
+            easing.type: Animations.easingStandard
         }
     }
 
@@ -177,9 +180,9 @@ Rectangle {
         id: osIcon
         anchors.centerIn: parent
         text: root.distroIcon
-        color: Theme.color_text
-        font.pixelSize: Theme.font_size_icon
-        font.family: Theme.font_family_icon
+        color: Colors.text
+        font.pixelSize: Typography.icon
+        font.family: Typography.iconFamily
     }
 
     MouseArea {
@@ -211,38 +214,38 @@ Rectangle {
 
         Rectangle {
             id: dropdownPanel
-            y: Theme.bar_widget_height + (Theme.bar_padding * 2)
-            width: root.popupWidth + (Theme.bar_widget_padding * 2)
-            height: popupContent.implicitHeight + (Theme.bar_widget_padding * 2)
-            radius: Theme.radius_background
-            color: Theme.color_background
-            border.width: Theme.border_width
-            border.color: Theme.color_border
+            y: LayoutTheme.barWidgetHeight + (LayoutTheme.barPadding * 2)
+            width: root.popupWidth + (LayoutTheme.barWidgetPadding * 2)
+            height: popupContent.implicitHeight + (LayoutTheme.barWidgetPadding * 2)
+            radius: Shape.radiusBackground
+            color: Colors.background
+            border.width: Shape.borderWidth
+            border.color: Colors.border
             clip: true
             opacity: root.expanded ? 1 : 0
-            scale: root.expanded ? 1 : Animations.dropdown_scale_closed
+            scale: root.expanded ? 1 : Animations.dropdownScaleClosed
             transformOrigin: Item.Top
             focus: root.expanded
             Keys.onEscapePressed: root.expanded = false
 
             Behavior on opacity {
                 NumberAnimation {
-                    duration: Animations.duration_dropdown
-                    easing.type: Animations.easing_emphasized
+                    duration: Animations.dropdown
+                    easing.type: Animations.easingEmphasized
                 }
             }
 
             Behavior on scale {
                 NumberAnimation {
-                    duration: Animations.duration_dropdown
-                    easing.type: Animations.easing_emphasized
+                    duration: Animations.dropdown
+                    easing.type: Animations.easingEmphasized
                 }
             }
 
             Behavior on y {
                 NumberAnimation {
-                    duration: Animations.duration_dropdown
-                    easing.type: Animations.easing_emphasized
+                    duration: Animations.dropdown
+                    easing.type: Animations.easingEmphasized
                 }
             }
 
@@ -253,16 +256,16 @@ Rectangle {
             ColumnLayout {
                 id: popupContent
                 anchors.fill: parent
-                anchors.margins: Theme.bar_widget_padding
+                anchors.margins: LayoutTheme.barWidgetPadding
                 spacing: 6
                 width: root.popupWidth
 
                 Text {
                     Layout.fillWidth: true
                     text: Strings.tr(Strings.keys.system)
-                    color: Theme.color_text_subtle
-                    font.pixelSize: Theme.font_size_xs
-                    font.family: Theme.font_family
+                    color: Colors.textSubtle
+                    font.pixelSize: Typography.xs
+                    font.family: Typography.family
                     font.capitalization: Font.AllUppercase
                     font.letterSpacing: 1
                     leftPadding: 2
@@ -272,20 +275,20 @@ Rectangle {
                 Rectangle {
                     Layout.fillWidth: true
                     implicitHeight: 1
-                    color: Theme.color_border_subtle
+                    color: Colors.borderSubtle
                 }
 
                 Rectangle {
                     id: aboutItem
                     Layout.fillWidth: true
-                    Layout.preferredHeight: aboutContent.implicitHeight + (Theme.bar_widget_padding * 2)
-                    radius: Theme.radius_normal
-                    color: Theme.color_surface
+                    Layout.preferredHeight: aboutContent.implicitHeight + (LayoutTheme.barWidgetPadding * 2)
+                    radius: Shape.radiusNormal
+                    color: Colors.surface
 
                     ColumnLayout {
                         id: aboutContent
                         anchors.fill: parent
-                        anchors.margins: Theme.bar_widget_padding
+                        anchors.margins: LayoutTheme.barWidgetPadding
                         spacing: 2
 
                         RowLayout {
@@ -300,35 +303,35 @@ Rectangle {
                                     Layout.fillWidth: true
                                     text: root.distroDisplay
                                     elide: Text.ElideRight
-                                    color: Theme.color_text
-                                    font.pixelSize: Theme.font_size_title
-                                    font.family: Theme.font_family
+                                    color: Colors.text
+                                    font.pixelSize: Typography.title
+                                    font.family: Typography.family
                                 }
 
                                 Text {
                                     Layout.fillWidth: true
                                     text: root.kernelDisplay.length > 0 ? (Strings.tr(Strings.keys.kernel) + " " + root.kernelDisplay) : ""
                                     visible: text.length > 0
-                                    color: Theme.color_text_subtle
-                                    font.pixelSize: Theme.font_size
-                                    font.family: Theme.font_family
+                                    color: Colors.textSubtle
+                                    font.pixelSize: Typography.size
+                                    font.family: Typography.family
                                 }
 
                                 Text {
                                     Layout.fillWidth: true
                                     text: root.versionDisplay.length > 0 ? (Strings.tr(Strings.keys.version) + " " + root.versionDisplay) : ""
                                     visible: text.length > 0
-                                    color: Theme.color_text_subtle
-                                    font.pixelSize: Theme.font_size
-                                    font.family: Theme.font_family
+                                    color: Colors.textSubtle
+                                    font.pixelSize: Typography.size
+                                    font.family: Typography.family
                                 }
                             }
 
                             Text {
                                 text: root.distroIcon
-                                color: Theme.color_text
-                                font.pixelSize: Theme.font_size_icon_lg
-                                font.family: Theme.font_family_icon
+                                color: Colors.text
+                                font.pixelSize: Typography.iconLg
+                                font.family: Typography.iconFamily
                             }
                         }
                     }
@@ -337,15 +340,15 @@ Rectangle {
                 Rectangle {
                     id: hwItem
                     Layout.fillWidth: true
-                    implicitHeight: hwContent.implicitHeight + (Theme.bar_widget_padding * 2)
-                    radius: Theme.radius_normal
-                    color: Theme.color_surface
+                    implicitHeight: hwContent.implicitHeight + (LayoutTheme.barWidgetPadding * 2)
+                    radius: Shape.radiusNormal
+                    color: Colors.surface
                     visible: root.cpuDisplay.length > 0 || root.gpuDisplay.length > 0 || root.ramDisplay.length > 0 || root.storageDisplay.length > 0
 
                     ColumnLayout {
                         id: hwContent
                         anchors.fill: parent
-                        anchors.margins: Theme.bar_widget_padding
+                        anchors.margins: LayoutTheme.barWidgetPadding
                         spacing: 4
 
                         HwRow {

@@ -5,6 +5,7 @@ import Quickshell.Wayland
 import Quickshell.Hyprland
 import Quickshell.Io
 import QtQuick
+import "../theme"
 
 Scope {
     id: root
@@ -19,7 +20,7 @@ Scope {
             .replace(/^file:\/\//, "")
 
     property string currentWallpaper: ""
-    property bool pendingRandom: Theme.wallpaper === "random"
+    property bool pendingRandom: WallpaperTheme.wallpaper === "random"
 
     readonly property string currentWallpaperPath:
         currentWallpaper.length > 0
@@ -105,8 +106,8 @@ Scope {
     Component.onCompleted: {
         refreshWallpapers();
 
-        if (!pendingRandom && Theme.wallpaper !== "random")
-            currentWallpaper = Theme.wallpaper;
+        if (!pendingRandom && WallpaperTheme.wallpaper !== "random")
+            currentWallpaper = WallpaperTheme.wallpaper;
     }
 
     // -------------------------------------------------------------------------
@@ -422,7 +423,7 @@ Scope {
             Rectangle {
                 anchors.fill: parent
 
-                color: Theme.color_background
+                color: Colors.background
 
                 opacity: root.selectorVisible
                     ? 1
@@ -434,7 +435,7 @@ Scope {
                             Animations.duration_normal
 
                         easing.type:
-                            Animations.easing_standard
+                            Animations.easingStandard
                     }
                 }
             }
@@ -463,13 +464,13 @@ Scope {
                     root.window_radius
 
                 color:
-                    Theme.color_background
+                    Colors.background
 
                 border.width:
                     root.window_border_width
 
                 border.color:
-                    Theme.wallpaper_window_border
+                    WallpaperTheme.windowBorder
 
                 Rectangle {
                     id: listSurface
@@ -627,8 +628,8 @@ Scope {
 
                                 color:
                                     wallpaper.selected
-                                        ? Theme.color_overlay_light
-                                        : Theme.color_overlay_dark
+                                        ? Colors.overlayLight
+                                        : Colors.overlayDark
 
                                 border.width:
                                     wallpaper.selected
@@ -637,8 +638,8 @@ Scope {
 
                                 border.color:
                                     wallpaper.selected
-                                        ? Theme.color_text
-                                        : Theme.color_border_subtle
+                                        ? Colors.text
+                                        : Colors.borderSubtle
 
                                 z:
                                     wallpaper.selected
@@ -662,7 +663,7 @@ Scope {
                                             Animations.duration_slow
 
                                         easing.type:
-                                            Animations.easing_emphasized
+                                            Animations.easingEmphasized
                                     }
                                 }
 
@@ -702,7 +703,7 @@ Scope {
                                         root.caption_radius
 
                                     color:
-                                        Theme.wallpaper_caption
+                                        WallpaperTheme.caption
 
                                     Text {
                                         anchors.fill: parent
@@ -717,13 +718,13 @@ Scope {
                                             wallpaper.fileName
 
                                         color:
-                                            Theme.color_text
+                                            Colors.text
 
                                         font.pixelSize:
-                                            Theme.font_size
+                                            Typography.size
 
                                         font.family:
-                                            Theme.font_family
+                                            Typography.family
 
                                         verticalAlignment:
                                             Text.AlignVCenter

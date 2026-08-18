@@ -4,6 +4,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import "../theme" as Theme
+import "../services"
 
 Rectangle {
     id: root
@@ -11,7 +12,7 @@ Rectangle {
     property bool expanded: false
 
     readonly property int sectionMargin:
-        Math.round(Theme.bar_widget_padding / 2)
+        Math.round(LayoutTheme.barWidgetPadding / 2)
 
     readonly property int expandedContentHeight:
         bluetoothExpandedContent.implicitHeight
@@ -26,8 +27,8 @@ Rectangle {
     Layout.preferredWidth: implicitWidth
     Layout.preferredHeight: implicitHeight
 
-    radius: Theme.radius_normal
-    color: Theme.color_surface
+    radius: Shape.radiusNormal
+    color: Colors.surface
 
     Item {
         id: btFrame
@@ -52,17 +53,17 @@ Rectangle {
                 property bool pressed: bluetoothHeaderMouse.pressed
 
                 Layout.fillWidth: true
-                Layout.preferredHeight: Theme.bar_widget_height * 1.5
+                Layout.preferredHeight: LayoutTheme.barWidgetHeight * 1.5
 
-                radius: Theme.radius_normal
+                radius: Shape.radiusNormal
                 color: pressed
-                    ? Theme.color_surface_pressed
-                    : Theme.color_surface_hover
+                    ? Colors.surfacePressed
+                    : Colors.surfaceHover
 
                 Behavior on color {
                     ColorAnimation {
                         duration: Animations.duration_hover
-                        easing.type: Animations.easing_standard
+                        easing.type: Animations.easingStandard
                     }
                 }
 
@@ -81,9 +82,9 @@ Rectangle {
                     Text {
                         text: BluetoothService.enabled ? "󰂱" : "󰂲"
 
-                        color: Theme.color_text
-                        font.pixelSize: Theme.font_size_icon
-                        font.family: Theme.font_family_icon
+                        color: Colors.text
+                        font.pixelSize: Typography.icon
+                        font.family: Typography.iconFamily
 
                         Layout.alignment: Qt.AlignVCenter
                     }
@@ -97,9 +98,9 @@ Rectangle {
                         Text {
                             text: Strings.tr(Strings.keys.bluetooth)
 
-                            color: Theme.color_text
-                            font.pixelSize: Theme.font_size
-                            font.family: Theme.font_family
+                            color: Colors.text
+                            font.pixelSize: Typography.size
+                            font.family: Typography.family
                         }
 
                         Text {
@@ -107,9 +108,9 @@ Rectangle {
                                 ? Strings.tr(Strings.keys.bt_on)
                                 : Strings.tr(Strings.keys.bt_off)
 
-                            color: Theme.color_text_subtle
-                            font.pixelSize: Theme.font_size
-                            font.family: Theme.font_family
+                            color: Colors.textSubtle
+                            font.pixelSize: Typography.size
+                            font.family: Typography.family
 
                             elide: Text.ElideRight
                             width: Math.max(0, bluetoothHeader.width - 60)
@@ -149,15 +150,15 @@ Rectangle {
 
                 Behavior on Layout.preferredHeight {
                     NumberAnimation {
-                        duration: Animations.duration_dropdown_section
-                        easing.type: Animations.easing_emphasized
+                        duration: Animations.dropdownSection
+                        easing.type: Animations.easingEmphasized
                     }
                 }
 
                 Behavior on opacity {
                     NumberAnimation {
-                        duration: Animations.duration_dropdown_section
-                        easing.type: Animations.easing_emphasized
+                        duration: Animations.dropdownSection
+                        easing.type: Animations.easingEmphasized
                     }
                 }
 
@@ -172,9 +173,9 @@ Rectangle {
                     Text {
                         text: Strings.tr(Strings.keys.connected)
 
-                        color: Theme.color_text_subtle
-                        font.pixelSize: Theme.font_size
-                        font.family: Theme.font_family
+                        color: Colors.textSubtle
+                        font.pixelSize: Typography.size
+                        font.family: Typography.family
 
                         Layout.fillWidth: true
                         Layout.topMargin: 4
@@ -195,20 +196,20 @@ Rectangle {
                                 connectedDeviceMouse.pressed
 
                             Layout.fillWidth: true
-                            Layout.preferredHeight: Theme.bar_widget_height
+                            Layout.preferredHeight: LayoutTheme.barWidgetHeight
 
-                            radius: Theme.radius_normal
+                            radius: Shape.radiusNormal
 
                             color: pressed
-                                ? Theme.color_surface_pressed
+                                ? Colors.surfacePressed
                                 : hovered
-                                    ? Theme.color_surface_hover
+                                    ? Colors.surfaceHover
                                     : "transparent"
 
                             Behavior on color {
                                 ColorAnimation {
                                     duration: Animations.duration_hover
-                                    easing.type: Animations.easing_standard
+                                    easing.type: Animations.easingStandard
                                 }
                             }
 
@@ -223,8 +224,8 @@ Rectangle {
                                     connectedBtDevice.modelData.icon
                                 )
 
-                                width: Theme.font_size_icon
-                                height: Theme.font_size_icon
+                                width: Typography.icon
+                                height: Typography.icon
 
                                 fillMode: Image.PreserveAspectFit
                             }
@@ -238,9 +239,9 @@ Rectangle {
 
                                 text: connectedBtDevice.modelData.name
 
-                                color: Theme.color_text
-                                font.pixelSize: Theme.font_size
-                                font.family: Theme.font_family
+                                color: Colors.text
+                                font.pixelSize: Typography.size
+                                font.family: Typography.family
 
                                 elide: Text.ElideRight
                             }
@@ -263,9 +264,9 @@ Rectangle {
 
                     Rectangle {
                         Layout.fillWidth: true
-                        Layout.preferredHeight: Theme.bar_widget_height
+                        Layout.preferredHeight: LayoutTheme.barWidgetHeight
 
-                        radius: Theme.radius_normal
+                        radius: Shape.radiusNormal
                         color: "transparent"
 
                         visible:
@@ -283,18 +284,18 @@ Rectangle {
                                         ? Strings.tr(Strings.keys.none_connected)
                                         : Strings.tr(Strings.keys.bt_disabled)
 
-                            color: Theme.color_text_subtle
-                            font.pixelSize: Theme.font_size
-                            font.family: Theme.font_family
+                            color: Colors.textSubtle
+                            font.pixelSize: Typography.size
+                            font.family: Typography.family
                         }
                     }
 
                     Text {
                         text: Strings.tr(Strings.keys.available)
 
-                        color: Theme.color_text_subtle
-                        font.pixelSize: Theme.font_size
-                        font.family: Theme.font_family
+                        color: Colors.textSubtle
+                        font.pixelSize: Typography.size
+                        font.family: Typography.family
 
                         Layout.fillWidth: true
                         Layout.topMargin: 4
@@ -315,20 +316,20 @@ Rectangle {
                                 availableDeviceMouse.pressed
 
                             Layout.fillWidth: true
-                            Layout.preferredHeight: Theme.bar_widget_height
+                            Layout.preferredHeight: LayoutTheme.barWidgetHeight
 
-                            radius: Theme.radius_normal
+                            radius: Shape.radiusNormal
 
                             color: pressed
-                                ? Theme.color_surface_pressed
+                                ? Colors.surfacePressed
                                 : hovered
-                                    ? Theme.color_surface_hover
+                                    ? Colors.surfaceHover
                                     : "transparent"
 
                             Behavior on color {
                                 ColorAnimation {
                                     duration: Animations.duration_hover
-                                    easing.type: Animations.easing_standard
+                                    easing.type: Animations.easingStandard
                                 }
                             }
 
@@ -343,8 +344,8 @@ Rectangle {
                                     availableBtDevice.modelData.icon
                                 )
 
-                                width: Theme.font_size_icon
-                                height: Theme.font_size_icon
+                                width: Typography.icon
+                                height: Typography.icon
 
                                 fillMode: Image.PreserveAspectFit
                             }
@@ -358,9 +359,9 @@ Rectangle {
 
                                 text: availableBtDevice.modelData.name
 
-                                color: Theme.color_text
-                                font.pixelSize: Theme.font_size
-                                font.family: Theme.font_family
+                                color: Colors.text
+                                font.pixelSize: Typography.size
+                                font.family: Typography.family
 
                                 elide: Text.ElideRight
                             }
@@ -383,9 +384,9 @@ Rectangle {
 
                     Rectangle {
                         Layout.fillWidth: true
-                        Layout.preferredHeight: Theme.bar_widget_height
+                        Layout.preferredHeight: LayoutTheme.barWidgetHeight
 
-                        radius: Theme.radius_normal
+                        radius: Shape.radiusNormal
                         color: "transparent"
 
                         visible:
@@ -405,9 +406,9 @@ Rectangle {
                                             : Strings.tr(Strings.keys.none_available)
                                         : Strings.tr(Strings.keys.bt_disabled)
 
-                            color: Theme.color_text_subtle
-                            font.pixelSize: Theme.font_size
-                            font.family: Theme.font_family
+                            color: Colors.textSubtle
+                            font.pixelSize: Typography.size
+                            font.family: Typography.family
                         }
                     }
                 }

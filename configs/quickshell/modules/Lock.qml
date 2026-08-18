@@ -5,6 +5,7 @@ import Quickshell
 import QtQuick.Layouts
 import Quickshell.Wayland
 import "../services" as Services
+import "../theme"
 
 Item {
     id: root
@@ -23,11 +24,11 @@ Item {
 
             Rectangle {
                 anchors.fill: parent
-                color: Theme.lock_base
+                color: LockScreenTheme.base
 
                 Rectangle {
                     anchors.fill: parent
-                    color: Theme.lock_scrim
+                    color: LockScreenTheme.scrim
                 }
 
                 FocusScope {
@@ -54,11 +55,11 @@ Item {
 
                         width: Math.min(
                             parent.width -
-                            (Theme.lock_screen_margin * 2),
-                            Theme.lock_column_width
+                            (LockScreenTheme.margin * 2),
+                            LockScreenTheme.columnWidth
                         )
 
-                        spacing: Theme.lock_column_spacing
+                        spacing: LockScreenTheme.columnSpacing
 
                         Row {
                             anchors.horizontalCenter: parent.horizontalCenter
@@ -68,30 +69,30 @@ Item {
                                 anchors.verticalCenter: parent.verticalCenter
 
                                 text: "󰌾"
-                                color: Theme.color_text
+                                color: Colors.text
 
-                                font.family: Theme.font_family_icon
+                                font.family: Typography.iconFamily
                                 font.pixelSize:
-                                    Theme.lock_date_font_size + 6
+                                    LockScreenTheme.dateFontSize + 6
                             }
 
                             Text {
                                 anchors.verticalCenter: parent.verticalCenter
 
                                 text: "Locked"
-                                color: Theme.color_text
+                                color: Colors.text
 
                                 font.family:
-                                    Theme.lock_body_font_family
+                                    LockScreenTheme.bodyFontFamily
 
                                 font.pixelSize:
-                                    Theme.lock_date_font_size + 6
+                                    LockScreenTheme.dateFontSize + 6
                             }
                         }
 
                         Column {
                             width: parent.width
-                            spacing: Theme.lock_header_spacing
+                            spacing: LockScreenTheme.headerSpacing
 
                             Item {
                                 width: parent.width
@@ -109,10 +110,10 @@ Item {
                                         Text.AlignHCenter
 
                                     font.family:
-                                        Theme.lock_time_font_family
+                                        LockScreenTheme.timeFontFamily
 
                                     font.pixelSize:
-                                        Theme.lock_time_font_size
+                                        LockScreenTheme.timeFontSize
 
                                     font.bold: true
 
@@ -173,36 +174,36 @@ Item {
                                     horizontalAlignment:
                                         Text.AlignHCenter
 
-                                    color: Theme.color_text
+                                    color: Colors.text
 
                                     font.family:
-                                        Theme.lock_body_font_family
+                                        LockScreenTheme.bodyFontFamily
 
                                     font.pixelSize:
-                                        Theme.lock_date_font_size
+                                        LockScreenTheme.dateFontSize
                                 }
                             }
                         }
 
                         Item {
                             width: parent.width
-                            height: Theme.lock_input_height
+                            height: LockScreenTheme.inputHeight
 
                             Rectangle {
                                 id: inputFrame
 
                                 property color frameBorderColor:
                                     Services.LockService.failedAttempt
-                                        ? Theme.lock_error
-                                        : Theme.color_accent_primary
+                                        ? LockScreenTheme.error
+                                        : Colors.accentPrimary
 
                                 anchors.fill: parent
 
-                                radius: Theme.lock_input_radius
-                                color: Theme.color_text
+                                radius: LockScreenTheme.inputRadius
+                                color: Colors.text
 
                                 border.width:
-                                    Theme.lock_input_border_width
+                                    LockScreenTheme.inputBorderWidth
 
                                 border.color: frameBorderColor
 
@@ -210,7 +211,7 @@ Item {
                                     ColorAnimation {
                                         duration: Animations.duration_normal
                                         easing.type:
-                                            Animations.easing_standard
+                                            Animations.easingStandard
                                     }
                                 }
 
@@ -220,21 +221,21 @@ Item {
                                     anchors.fill: parent
 
                                     anchors.leftMargin:
-                                        Theme.lock_input_padding
+                                        LockScreenTheme.inputPadding
 
                                     anchors.rightMargin:
-                                        Theme.lock_input_padding
+                                        LockScreenTheme.inputPadding
 
                                     verticalAlignment:
                                         TextInput.AlignVCenter
 
-                                    color: Theme.color_background
+                                    color: Colors.background
 
                                     font.family:
-                                        Theme.lock_body_font_family
+                                        LockScreenTheme.bodyFontFamily
 
                                     font.pixelSize:
-                                        Theme.lock_input_font_size
+                                        LockScreenTheme.inputFontSize
 
                                     echoMode: TextInput.Password
                                     passwordCharacter: "•"
@@ -281,10 +282,10 @@ Item {
                                     anchors.fill: parent
 
                                     anchors.leftMargin:
-                                        Theme.lock_input_padding
+                                        LockScreenTheme.inputPadding
 
                                     anchors.rightMargin:
-                                        Theme.lock_input_padding
+                                        LockScreenTheme.inputPadding
 
                                     verticalAlignment:
                                         Text.AlignVCenter
@@ -294,13 +295,13 @@ Item {
                                             ? "Input Password..."
                                             : ""
 
-                                    color: Theme.lock_placeholder
+                                    color: LockScreenTheme.placeholder
 
                                     font.family:
-                                        Theme.lock_body_font_family
+                                        LockScreenTheme.bodyFontFamily
 
                                     font.pixelSize:
-                                        Theme.lock_input_font_size
+                                        LockScreenTheme.inputFontSize
 
                                     font.italic: true
                                 }
@@ -309,7 +310,7 @@ Item {
 
                         Text {
                             width: parent.width
-                            height: Theme.lock_status_height
+                            height: LockScreenTheme.statusHeight
 
                             text:
                                 Services.LockService.authenticating
@@ -323,14 +324,14 @@ Item {
 
                             color:
                                 Services.LockService.failedAttempt
-                                    ? Theme.lock_error
-                                    : Theme.color_text
+                                    ? LockScreenTheme.error
+                                    : Colors.text
 
                             font.family:
-                                Theme.lock_body_font_family
+                                LockScreenTheme.bodyFontFamily
 
                             font.pixelSize:
-                                Theme.lock_status_font_size
+                                LockScreenTheme.statusFontSize
                         }
 
                         Row {
@@ -382,11 +383,11 @@ Item {
                                     width: 90
                                     height: 64
 
-                                    radius: Theme.radius_normal * 2
+                                    radius: Shape.radiusNormal * 2
 
                                     color:
                                         hovered
-                                            ? Theme.color_overlay_light
+                                            ? Colors.overlayLight
                                             : "transparent"
 
                                     Behavior on color {
@@ -395,7 +396,7 @@ Item {
                                                 Animations.duration_hover
 
                                             easing.type:
-                                                Animations.easing_standard
+                                                Animations.easingStandard
                                         }
                                     }
 
@@ -409,10 +410,10 @@ Item {
 
                                             text: powerOption.modelData.icon
 
-                                            color: Theme.color_text
+                                            color: Colors.text
 
                                             font.family:
-                                                Theme.font_family_icon
+                                                Typography.iconFamily
 
                                             font.pixelSize: 22
                                         }
@@ -423,13 +424,13 @@ Item {
 
                                             text: powerOption.modelData.label
 
-                                            color: Theme.color_text
+                                            color: Colors.text
 
                                             font.family:
-                                                Theme.lock_body_font_family
+                                                LockScreenTheme.bodyFontFamily
 
                                             font.pixelSize:
-                                                Theme.lock_status_font_size
+                                                LockScreenTheme.statusFontSize
                                         }
                                     }
 

@@ -4,13 +4,14 @@ import QtQuick
 import QtQuick.Layouts
 import "../theme"
 import "../services/"
+import "ui"
 // Adjust this import to wherever Slider.qml lives relative to this file
 // (e.g. "../" or your shared widgets module) if it isn't in the same dir.
 
 Rectangle {
     id: root
 
-    readonly property int sectionMargin: Math.round(Theme.bar_widget_padding / 2)
+    readonly property int sectionMargin: Math.round(LayoutTheme.barWidgetPadding / 2)
     readonly property int expandedContentHeight: deviceColumn.implicitHeight
 
     // Local mirror of VolumeService.volume so dragging feels instant and
@@ -40,8 +41,8 @@ Rectangle {
     Layout.fillWidth: true
     Layout.preferredWidth: implicitWidth
     Layout.preferredHeight: implicitHeight
-    radius: Theme.radius_normal
-    color: Theme.color_surface
+    radius: Shape.radiusNormal
+    color: Colors.surface
 
     Item {
         id: volumeFrame
@@ -57,8 +58,8 @@ Rectangle {
 
             Rectangle {
                 Layout.fillWidth: true
-                Layout.preferredHeight: Theme.bar_widget_height * 1.5
-                radius: Theme.radius_normal
+                Layout.preferredHeight: LayoutTheme.barWidgetHeight * 1.5
+                radius: Shape.radiusNormal
                 color: "transparent"
 
                 RowLayout {
@@ -75,25 +76,25 @@ Rectangle {
                         id: muteButton
                         property bool hovered: muteButtonMouse.containsMouse
                         property bool pressed: muteButtonMouse.pressed
-                        implicitWidth: Theme.bar_widget_height
-                        implicitHeight: Theme.bar_widget_height
+                        implicitWidth: LayoutTheme.barWidgetHeight
+                        implicitHeight: LayoutTheme.barWidgetHeight
                         Layout.alignment: Qt.AlignVCenter
-                        radius: Theme.radius_normal
-                        color: muteButton.pressed ? Theme.color_surface_pressed : (muteButton.hovered ? Theme.color_surface_hover : "transparent")
+                        radius: Shape.radiusNormal
+                        color: muteButton.pressed ? Colors.surfacePressed : (muteButton.hovered ? Colors.surfaceHover : "transparent")
 
                         Behavior on color {
                             ColorAnimation {
                                 duration: Animations.duration_hover
-                                easing.type: Animations.easing_standard
+                                easing.type: Animations.easingStandard
                             }
                         }
 
                         Text {
                             anchors.centerIn: parent
                             text: !VolumeService.sink ? "" : (VolumeService.muted ? "" : "")
-                            color: Theme.color_text
-                            font.pixelSize: Theme.font_size_icon
-                            font.family: Theme.font_family_icon
+                            color: Colors.text
+                            font.pixelSize: Typography.icon
+                            font.family: Typography.iconFamily
                         }
 
                         MouseArea {
@@ -121,24 +122,24 @@ Rectangle {
                         property bool hovered: deviceToggleMouse.containsMouse
                         property bool pressed: deviceToggleMouse.pressed
                         Layout.alignment: Qt.AlignVCenter
-                        implicitWidth: Theme.bar_widget_height
-                        implicitHeight: Theme.bar_widget_height
-                        radius: Theme.radius_normal
-                        color: root.expanded || deviceToggle.pressed ? Theme.color_surface_pressed : (deviceToggle.hovered ? Theme.color_surface_hover : "transparent")
+                        implicitWidth: LayoutTheme.barWidgetHeight
+                        implicitHeight: LayoutTheme.barWidgetHeight
+                        radius: Shape.radiusNormal
+                        color: root.expanded || deviceToggle.pressed ? Colors.surfacePressed : (deviceToggle.hovered ? Colors.surfaceHover : "transparent")
 
                         Behavior on color {
                             ColorAnimation {
                                 duration: Animations.duration_hover
-                                easing.type: Animations.easing_standard
+                                easing.type: Animations.easingStandard
                             }
                         }
 
                         Text {
                             anchors.centerIn: parent
                             text: root.expanded ? "\uf077" : "\uf078"
-                            color: root.expanded ? Theme.color_text : Theme.color_text_subtle
-                            font.pixelSize: Theme.font_size_icon_lg
-                            font.family: Theme.font_family_icon
+                            color: root.expanded ? Colors.text : Colors.textSubtle
+                            font.pixelSize: Typography.iconLg
+                            font.family: Typography.iconFamily
                         }
 
                         MouseArea {
@@ -162,15 +163,15 @@ Rectangle {
 
                 Behavior on Layout.preferredHeight {
                     NumberAnimation {
-                        duration: Animations.duration_dropdown_section
-                        easing.type: Animations.easing_emphasized
+                        duration: Animations.dropdownSection
+                        easing.type: Animations.easingEmphasized
                     }
                 }
 
                 Behavior on opacity {
                     NumberAnimation {
-                        duration: Animations.duration_dropdown_section
-                        easing.type: Animations.easing_emphasized
+                        duration: Animations.dropdownSection
+                        easing.type: Animations.easingEmphasized
                     }
                 }
 
@@ -182,9 +183,9 @@ Rectangle {
 
                     Text {
                         text: Strings.tr(Strings.keys.output_devices)
-                        color: Theme.color_text_subtle
-                        font.pixelSize: Theme.font_size
-                        font.family: Theme.font_family
+                        color: Colors.textSubtle
+                        font.pixelSize: Typography.size
+                        font.family: Typography.family
                         Layout.fillWidth: true
                         Layout.topMargin: 4
                     }
@@ -200,14 +201,14 @@ Rectangle {
                             property bool pressed: deviceMouse.pressed
 
                             Layout.fillWidth: true
-                            Layout.preferredHeight: Theme.bar_widget_height
-                            radius: Theme.radius_normal
-                            color: deviceItem.pressed ? Theme.color_surface_pressed : (deviceItem.hovered || deviceItem.isDefault ? Theme.color_surface_hover : "transparent")
+                            Layout.preferredHeight: LayoutTheme.barWidgetHeight
+                            radius: Shape.radiusNormal
+                            color: deviceItem.pressed ? Colors.surfacePressed : (deviceItem.hovered || deviceItem.isDefault ? Colors.surfaceHover : "transparent")
 
                             Behavior on color {
                                 ColorAnimation {
                                     duration: Animations.duration_hover
-                                    easing.type: Animations.easing_standard
+                                    easing.type: Animations.easingStandard
                                 }
                             }
 
@@ -219,17 +220,17 @@ Rectangle {
 
                                 Text {
                                     text: deviceItem.isDefault ? "" : ""
-                                    color: deviceItem.isDefault ? Theme.color_text : Theme.color_text_subtle
-                                    font.pixelSize: Theme.font_size_sm
-                                    font.family: Theme.font_family_icon
+                                    color: deviceItem.isDefault ? Colors.text : Colors.textSubtle
+                                    font.pixelSize: Typography.sm
+                                    font.family: Typography.iconFamily
                                     Layout.alignment: Qt.AlignVCenter
                                 }
 
                                 Text {
                                     text: deviceItem.modelData.description || deviceItem.modelData.nick || deviceItem.modelData.name || "Unknown"
-                                    color: Theme.color_text
-                                    font.pixelSize: Theme.font_size
-                                    font.family: Theme.font_family
+                                    color: Colors.text
+                                    font.pixelSize: Typography.size
+                                    font.family: Typography.family
                                     elide: Text.ElideRight
                                     Layout.fillWidth: true
                                     Layout.alignment: Qt.AlignVCenter

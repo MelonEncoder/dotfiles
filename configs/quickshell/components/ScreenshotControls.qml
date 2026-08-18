@@ -1,6 +1,8 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell.Io
+import "../theme"
+import "../services"
 
 Item {
     id: root
@@ -27,14 +29,14 @@ Item {
             property bool hovered: fullscreenMouse.containsMouse
             property bool pressed: fullscreenMouse.pressed
             Layout.fillWidth: true
-            Layout.preferredHeight: Theme.bar_widget_height * 1.5
-            radius: Theme.radius_normal
-            color: pressed ? Theme.color_surface_pressed : (hovered ? Theme.color_surface_hover : Theme.color_surface)
+            Layout.preferredHeight: LayoutTheme.barWidgetHeight * 1.5
+            radius: Shape.radiusNormal
+            color: pressed ? Colors.surfacePressed : (hovered ? Colors.surfaceHover : Colors.surface)
 
             Behavior on color {
                 ColorAnimation {
                     duration: Animations.duration_hover
-                    easing.type: Animations.easing_standard
+                    easing.type: Animations.easingStandard
                 }
             }
 
@@ -44,16 +46,16 @@ Item {
 
                 Text {
                     text: "󰍹"
-                    color: Theme.color_text
-                    font.pixelSize: Theme.font_size_icon_sm
-                    font.family: Theme.font_family_icon
+                    color: Colors.text
+                    font.pixelSize: Typography.iconSm
+                    font.family: Typography.iconFamily
                 }
 
                 Text {
                     text: Strings.tr(Strings.keys.fullscreen)
-                    color: Theme.color_text
-                    font.pixelSize: Theme.font_size
-                    font.family: Theme.font_family
+                    color: Colors.text
+                    font.pixelSize: Typography.size
+                    font.family: Typography.family
                 }
             }
 
@@ -71,14 +73,14 @@ Item {
             property bool hovered: regionMouse.containsMouse
             property bool pressed: regionMouse.pressed
             Layout.fillWidth: true
-            Layout.preferredHeight: Theme.bar_widget_height * 1.5
-            radius: Theme.radius_normal
-            color: pressed ? Theme.color_surface_pressed : (hovered ? Theme.color_surface_hover : Theme.color_surface)
+            Layout.preferredHeight: LayoutTheme.barWidgetHeight * 1.5
+            radius: Shape.radiusNormal
+            color: pressed ? Colors.surfacePressed : (hovered ? Colors.surfaceHover : Colors.surface)
 
             Behavior on color {
                 ColorAnimation {
                     duration: Animations.duration_hover
-                    easing.type: Animations.easing_standard
+                    easing.type: Animations.easingStandard
                 }
             }
 
@@ -88,16 +90,16 @@ Item {
 
                 Text {
                     text: "󰹑"
-                    color: Theme.color_text
-                    font.pixelSize: Theme.font_size_icon_sm
-                    font.family: Theme.font_family_icon
+                    color: Colors.text
+                    font.pixelSize: Typography.iconSm
+                    font.family: Typography.iconFamily
                 }
 
                 Text {
                     text: Strings.tr(Strings.keys.region)
-                    color: Theme.color_text
-                    font.pixelSize: Theme.font_size
-                    font.family: Theme.font_family
+                    color: Colors.text
+                    font.pixelSize: Typography.size
+                    font.family: Typography.family
                 }
             }
 

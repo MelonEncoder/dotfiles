@@ -7,6 +7,7 @@ import Quickshell.Widgets
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import "../theme"
 
 Scope {
     id: root
@@ -20,7 +21,7 @@ Scope {
     readonly property int search_padding: 16
     readonly property int list_spacing: 8
     readonly property int row_height: 62
-    readonly property int row_radius: Theme.radius_lg
+    readonly property int row_radius: Shape.radiusLarge
     readonly property int icon_size: 28
     readonly property int icon_wrap_size: 40
     readonly property int border_width: 2
@@ -177,13 +178,13 @@ Scope {
 
             Rectangle {
                 anchors.fill: parent
-                color: Theme.launcher_overlay
+                color: LauncherTheme.overlay
                 opacity: root.visible ? 1 : 0
 
                 Behavior on opacity {
                     NumberAnimation {
                         duration: Animations.duration_normal
-                        easing.type: Animations.easing_standard
+                        easing.type: Animations.easingStandard
                     }
                 }
             }
@@ -194,12 +195,12 @@ Scope {
                 width: Math.min(root.window_width, parent.width - (root.window_margin * 2))
                 height: Math.min(root.window_height, parent.height - (root.window_margin * 2))
                 radius: 18
-                color: Theme.background
+                color: Colors.background
                 border.width: root.border_width
-                border.color: Theme.color_overlay_light
+                border.color: Colors.overlayLight
                 opacity: root.visible ? 1 : 0
-                scale: root.visible ? 1 : Animations.dropdown_scale_closed
-                y: root.visible ? 0 : Animations.dropdown_offset
+                scale: root.visible ? 1 : Animations.dropdownScaleClosed
+                y: root.visible ? 0 : Animations.dropdownOffset
                 z: 1
                 focus: root.visible
                 clip: true
@@ -207,21 +208,21 @@ Scope {
                 Behavior on opacity {
                     NumberAnimation {
                         duration: Animations.duration_normal
-                        easing.type: Animations.easing_standard
+                        easing.type: Animations.easingStandard
                     }
                 }
 
                 Behavior on scale {
                     NumberAnimation {
                         duration: Animations.duration_slow
-                        easing.type: Animations.easing_emphasized
+                        easing.type: Animations.easingEmphasized
                     }
                 }
 
                 Behavior on y {
                     NumberAnimation {
                         duration: Animations.duration_slow
-                        easing.type: Animations.easing_emphasized
+                        easing.type: Animations.easingEmphasized
                     }
                 }
 
@@ -234,9 +235,9 @@ Scope {
                         Layout.fillWidth: true
                         Layout.preferredHeight: root.search_height
                         radius: root.row_radius
-                        color: Theme.color_surface
+                        color: Colors.surface
                         border.width: root.border_width
-                        border.color: searchInput.activeFocus ? Theme.launcher_search_active_border : Theme.color_border_subtle
+                        border.color: searchInput.activeFocus ? LauncherTheme.searchActiveBorder : Colors.borderSubtle
 
                         RowLayout {
                             anchors.fill: parent
@@ -246,9 +247,9 @@ Scope {
 
                             Text {
                                 text: ""
-                                color: Theme.color_text_subtle
-                                font.pixelSize: Theme.font_size_2xl
-                                font.family: Theme.font_family_icon
+                                color: Colors.textSubtle
+                                font.pixelSize: Typography.xxl
+                                font.family: Typography.iconFamily
                                 Layout.alignment: Qt.AlignVCenter
                             }
 
@@ -262,12 +263,12 @@ Scope {
                                     anchors.left: parent.left
                                     anchors.right: parent.right
                                     anchors.verticalCenter: parent.verticalCenter
-                                    height: Math.max(contentHeight, Theme.font_size_jumbo)
-                                    color: Theme.color_text
-                                    font.pixelSize: Theme.font_size_xl
-                                    font.family: Theme.font_family
-                                    selectedTextColor: Theme.color_text
-                                    selectionColor: Theme.color_overlay_light
+                                    height: Math.max(contentHeight, Typography.jumbo)
+                                    color: Colors.text
+                                    font.pixelSize: Typography.xl
+                                    font.family: Typography.family
+                                    selectedTextColor: Colors.text
+                                    selectionColor: Colors.overlayLight
                                     clip: true
                                     selectByMouse: true
                                     text: root.query
@@ -300,9 +301,9 @@ Scope {
                                     anchors.verticalCenter: parent.verticalCenter
                                     visible: searchInput.text.length === 0
                                     text: "Search apps"
-                                    color: Theme.color_text_subtle
-                                    font.pixelSize: Theme.font_size_xl
-                                    font.family: Theme.font_family
+                                    color: Colors.textSubtle
+                                    font.pixelSize: Typography.xl
+                                    font.family: Typography.family
                                 }
                             }
                         }
@@ -311,9 +312,9 @@ Scope {
                     Text {
                         visible: root.launchStatus.length > 0
                         text: root.launchStatus
-                        color: Theme.color_text_muted
-                        font.pixelSize: Theme.font_size
-                        font.family: Theme.font_family
+                        color: Colors.textMuted
+                        font.pixelSize: Typography.size
+                        font.family: Typography.family
                         Layout.fillWidth: true
                         elide: Text.ElideRight
                     }
@@ -407,12 +408,12 @@ Scope {
                                 width: listView.width
                                 height: root.row_height
                                 radius: root.row_radius
-                                color: root.selectedIndex === index ? Theme.launcher_row_selected : (rowMouse.containsMouse ? Theme.launcher_row_hover : Theme.launcher_row)
+                                color: root.selectedIndex === index ? LauncherTheme.rowSelected : (rowMouse.containsMouse ? LauncherTheme.rowHover : LauncherTheme.row)
 
                                 Behavior on color {
                                     ColorAnimation {
                                         duration: Animations.duration_hover
-                                        easing.type: Animations.easing_standard
+                                        easing.type: Animations.easingStandard
                                     }
                                 }
 
@@ -427,7 +428,7 @@ Scope {
                                         Layout.preferredWidth: root.icon_wrap_size
                                         Layout.preferredHeight: root.icon_wrap_size
                                         radius: 12
-                                        color: Theme.launcher_icon_background
+                                        color: LauncherTheme.iconBackground
 
                                         IconImage {
                                             anchors.centerIn: parent
@@ -442,9 +443,9 @@ Scope {
                                             anchors.centerIn: parent
                                             visible: !row.iconValid
                                             text: row.name.length > 0 ? row.name.charAt(0).toUpperCase() : "?"
-                                            color: Theme.color_text
-                                            font.pixelSize: Theme.font_size_xl
-                                            font.family: Theme.font_family
+                                            color: Colors.text
+                                            font.pixelSize: Typography.xl
+                                            font.family: Typography.family
                                             font.bold: true
                                         }
                                     }
@@ -456,9 +457,9 @@ Scope {
 
                                         Text {
                                             text: row.name
-                                            color: Theme.color_text
-                                            font.pixelSize: Theme.font_size_title
-                                            font.family: Theme.font_family
+                                            color: Colors.text
+                                            font.pixelSize: Typography.title
+                                            font.family: Typography.family
                                             elide: Text.ElideRight
                                             Layout.fillWidth: true
                                         }
@@ -466,9 +467,9 @@ Scope {
                                         Text {
                                             text: row.genericName.length > 0 ? row.genericName : row.comment
                                             visible: text.length > 0
-                                            color: Theme.color_text_subtle
-                                            font.pixelSize: Theme.font_size
-                                            font.family: Theme.font_family
+                                            color: Colors.textSubtle
+                                            font.pixelSize: Typography.size
+                                            font.family: Typography.family
                                             elide: Text.ElideRight
                                             Layout.fillWidth: true
                                         }
@@ -476,9 +477,9 @@ Scope {
 
                                     Text {
                                         text: row.execString
-                                        color: Theme.color_text_muted
-                                        font.pixelSize: Theme.font_size_sm
-                                        font.family: Theme.font_family
+                                        color: Colors.textMuted
+                                        font.pixelSize: Typography.sm
+                                        font.family: Typography.family
                                         elide: Text.ElideLeft
                                         horizontalAlignment: Text.AlignRight
                                         Layout.preferredWidth: Math.min(220, implicitWidth)
@@ -507,9 +508,9 @@ Scope {
                             anchors.centerIn: parent
                             visible: filteredApps.count === 0
                             text: DesktopEntries.applications.values.length === 0 ? "Loading applications..." : "No matching applications"
-                            color: Theme.color_text_subtle
-                            font.pixelSize: Theme.font_size_icon
-                            font.family: Theme.font_family
+                            color: Colors.textSubtle
+                            font.pixelSize: Typography.icon
+                            font.family: Typography.family
                         }
                     }
                 }

@@ -4,6 +4,8 @@ import Quickshell.Services.Notifications
 import QtQuick
 import QtQuick.Layouts
 import "../services"
+import "../components"
+import "../theme"
 
 Scope {
     id: root
@@ -23,13 +25,13 @@ Scope {
     readonly property int inner_spacing: 6
     readonly property int action_spacing: 4
     readonly property int image_size: 28
-    readonly property int action_height: Theme.font_size_jumbo
-    readonly property int radius: Theme.radius_normal
-    readonly property int border_width: Theme.border_width
+    readonly property int action_height: Typography.jumbo
+    readonly property int radius: Shape.radiusNormal
+    readonly property int border_width: Shape.borderWidth
     readonly property int slide_offset: 28
     readonly property int top_accent_height: 2
     readonly property int image_max_height: 120
-    readonly property int image_radius: Theme.radius_normal
+    readonly property int image_radius: Shape.radiusNormal
 
     Variants {
         model: Quickshell.screens
@@ -53,7 +55,7 @@ Scope {
                 right: true
             }
 
-            margins.top: Theme.bar_widget_height + (Theme.bar_padding * 2) + root.stack_gap_below_bar
+            margins.top: LayoutTheme.barWidgetHeight + (LayoutTheme.barPadding * 2) + root.stack_gap_below_bar
 
             Item {
                 anchors.fill: parent
@@ -144,9 +146,9 @@ Scope {
                                 height: parent.height
                                 radius: root.radius
                                 clip: true
-                                color: Theme.color_surface
+                                color: Colors.surface
                                 border.width: root.border_width
-                                border.color: Theme.color_border
+                                border.color: Colors.border
                                 opacity: entered ? 1 : 0
                                 y: entered ? 0 : -(root.slide_offset + height)
                                 scale: entered ? 1.0 : 0.97
@@ -155,21 +157,21 @@ Scope {
                                 Behavior on y {
                                     NumberAnimation {
                                         duration: Animations.duration_slow
-                                        easing.type: Animations.easing_emphasized
+                                        easing.type: Animations.easingEmphasized
                                     }
                                 }
 
                                 Behavior on opacity {
                                     NumberAnimation {
                                         duration: Animations.duration_normal
-                                        easing.type: Animations.easing_standard
+                                        easing.type: Animations.easingStandard
                                     }
                                 }
 
                                 Behavior on scale {
                                     NumberAnimation {
                                         duration: Animations.duration_slow
-                                        easing.type: Animations.easing_emphasized
+                                        easing.type: Animations.easingEmphasized
                                     }
                                 }
 
@@ -212,9 +214,9 @@ Scope {
                                         visible: text.length > 0
                                         text: notificationItem.notification.body || ""
                                         textFormat: Text.StyledText
-                                        color: Theme.color_text_muted
-                                        font.pixelSize: Theme.font_size
-                                        font.family: Theme.font_family
+                                        color: Colors.textMuted
+                                        font.pixelSize: Typography.size
+                                        font.family: Typography.family
                                         wrapMode: Text.Wrap
                                         maximumLineCount: root.max_body_lines
                                         elide: Text.ElideRight
@@ -229,7 +231,7 @@ Scope {
                                         Layout.preferredHeight: visible ? implicitHeight : 0
                                         implicitHeight: notificationImage.status === Image.Ready ? Math.min(root.image_max_height, (notificationImage.implicitHeight > 0 ? notificationImage.implicitHeight : root.image_max_height)) : root.image_max_height
                                         radius: root.image_radius
-                                        color: Theme.color_overlay_dark
+                                        color: Colors.overlayDark
                                         clip: true
 
                                         Image {
@@ -267,13 +269,13 @@ Scope {
 
                                                 implicitWidth: actionBtnContent.implicitWidth + (root.padding * 2)
                                                 implicitHeight: root.action_height
-                                                radius: Theme.radius_normal
-                                                color: actionMouse.pressed ? Theme.notification_action_pressed : (actionMouse.containsMouse ? Theme.notification_action_hover : Theme.notification_action)
+                                                radius: Shape.radiusNormal
+                                                color: actionMouse.pressed ? NotificationTheme.actionPressed : (actionMouse.containsMouse ? NotificationTheme.actionHover : NotificationTheme.action)
 
                                                 Behavior on color {
                                                     ColorAnimation {
                                                         duration: Animations.duration_hover
-                                                        easing.type: Animations.easing_standard
+                                                        easing.type: Animations.easingStandard
                                                     }
                                                 }
 
@@ -285,17 +287,17 @@ Scope {
                                                     Image {
                                                         visible: actionBtn.iconSource !== ""
                                                         source: actionBtn.iconSource
-                                                        Layout.preferredWidth: Theme.font_size
-                                                        Layout.preferredHeight: Theme.font_size
+                                                        Layout.preferredWidth: Typography.size
+                                                        Layout.preferredHeight: Typography.size
                                                         fillMode: Image.PreserveAspectFit
                                                         smooth: true
                                                     }
 
                                                     Text {
                                                         text: actionBtn.action.text
-                                                        color: Theme.color_text
-                                                        font.pixelSize: Theme.font_size
-                                                        font.family: Theme.font_family
+                                                        color: Colors.text
+                                                        font.pixelSize: Typography.size
+                                                        font.family: Typography.family
                                                     }
                                                 }
 

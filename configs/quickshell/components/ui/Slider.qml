@@ -2,6 +2,7 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import "../"
+import "../../theme"
 
 /*
   Slider
@@ -37,20 +38,20 @@ Item {
         width: parent.width
         height: root.trackHeight
         radius: root.trackHeight / 2
-        color: Theme.color_surface_hover
+        color: Colors.surfaceHover
 
         Rectangle {
             id: sliderFill
             width: Math.max(radius * 2, Math.round(sliderTrack.width * root.value / 100))
             height: parent.height
             radius: parent.radius
-            color: Theme.color_text
+            color: Colors.text
 
             Behavior on width {
                 enabled: !root.dragging
                 NumberAnimation {
                     duration: Animations.duration_fast
-                    easing.type: Animations.easing_standard
+                    easing.type: Animations.easingStandard
                 }
             }
         }
@@ -61,7 +62,7 @@ Item {
         width: root.thumbDiameter
         height: root.thumbDiameter
         radius: root.thumbDiameter / 2
-        color: Theme.color_text
+        color: Colors.text
         anchors.verticalCenter: sliderTrack.verticalCenter
         x: Math.max(0, Math.min(sliderTrack.width - width, Math.round(sliderTrack.width * root.value / 100) - width / 2))
 
@@ -69,7 +70,7 @@ Item {
             enabled: !root.dragging
             NumberAnimation {
                 duration: Animations.duration_fast
-                easing.type: Animations.easing_standard
+                easing.type: Animations.easingStandard
             }
         }
 
@@ -78,7 +79,7 @@ Item {
             width: parent.width * 0.38
             height: parent.width * 0.38
             radius: width / 2
-            color: Theme.color_surface
+            color: Colors.surface
             opacity: 0.5
         }
     }

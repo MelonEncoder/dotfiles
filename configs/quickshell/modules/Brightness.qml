@@ -3,6 +3,8 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import "../components/ui"
+import "../theme"
+import "../services"
 
 /*
   BrightnessModule
@@ -32,14 +34,14 @@ Rectangle {
     }
 
     implicitWidth: 280
-    implicitHeight: moduleRow.implicitHeight + (Theme.bar_widget_height)
+    implicitHeight: moduleRow.implicitHeight + (LayoutTheme.barWidgetHeight)
     width: implicitWidth
     height: implicitHeight
     Layout.fillWidth: true
     Layout.preferredWidth: implicitWidth
     Layout.preferredHeight: implicitHeight
-    radius: Theme.radius_normal
-    color: Theme.color_surface
+    radius: Shape.radiusNormal
+    color: Colors.surface
 
     RowLayout {
         id: moduleRow
@@ -54,25 +56,25 @@ Rectangle {
 
         Rectangle {
             id: leftSlot
-            implicitWidth: Theme.bar_widget_height
-            implicitHeight: Theme.bar_widget_height
+            implicitWidth: LayoutTheme.barWidgetHeight
+            implicitHeight: LayoutTheme.barWidgetHeight
             Layout.alignment: Qt.AlignVCenter
-            radius: Theme.radius_normal
+            radius: Shape.radiusNormal
             color: "transparent"
 
             Behavior on color {
                 ColorAnimation {
                     duration: Animations.duration_hover
-                    easing.type: Animations.easing_standard
+                    easing.type: Animations.easingStandard
                 }
             }
 
             Text {
                 anchors.centerIn: parent
                 text: "󰃠"
-                color: Theme.color_text
-                font.pixelSize: Theme.font_size_icon
-                font.family: Theme.font_family_icon
+                color: Colors.text
+                font.pixelSize: Typography.icon
+                font.family: Typography.iconFamily
             }
         }
 
@@ -89,25 +91,25 @@ Rectangle {
 
         Rectangle {
             id: rightSlot
-            implicitWidth: Theme.bar_widget_height
-            implicitHeight: Theme.bar_widget_height
+            implicitWidth: LayoutTheme.barWidgetHeight
+            implicitHeight: LayoutTheme.barWidgetHeight
             Layout.alignment: Qt.AlignVCenter
-            radius: Theme.radius_normal
+            radius: Shape.radiusNormal
             color: "transparent"
 
             Behavior on color {
                 ColorAnimation {
                     duration: Animations.duration_hover
-                    easing.type: Animations.easing_standard
+                    easing.type: Animations.easingStandard
                 }
             }
 
             Text {
                 anchors.centerIn: parent
                 text: ""
-                color: Theme.color_text
-                font.pixelSize: Theme.font_size_icon
-                font.family: Theme.font_family_icon
+                color: Colors.text
+                font.pixelSize: Typography.icon
+                font.family: Typography.iconFamily
             }
         }
     }

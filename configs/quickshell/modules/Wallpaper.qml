@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import Quickshell
 import Quickshell.Wayland
+import "../theme"
 
 Scope {
     id: root
@@ -16,7 +17,7 @@ Scope {
             required property var modelData
 
             screen: modelData
-            color: Theme.color_background
+            color: Colors.background
 
             exclusionMode: ExclusionMode.Ignore
             WlrLayershell.layer: WlrLayer.Background

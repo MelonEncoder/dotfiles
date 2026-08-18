@@ -6,6 +6,9 @@ import Quickshell
 import Quickshell.Hyprland
 import Quickshell.Widgets
 import Quickshell.Services.SystemTray
+import "popups"
+import "../theme"
+import "../services"
 
 Rectangle {
     id: root
@@ -14,17 +17,17 @@ Rectangle {
     property bool hovered: clickArea.containsMouse
     property bool pressed: clickArea.pressed
 
-    implicitWidth: label.implicitWidth + (Theme.bar_widget_padding * 2)
-    implicitHeight: Theme.bar_widget_height
-    radius: Theme.radius_normal
-    color: root.pressed ? Theme.color_surface_pressed : (root.hovered ? Theme.color_surface_hover : Theme.color_surface)
-    border.width: Theme.border_width
-    border.color: Theme.color_border
+    implicitWidth: label.implicitWidth + (LayoutTheme.barWidgetPadding * 2)
+    implicitHeight: LayoutTheme.barWidgetHeight
+    radius: Shape.radiusNormal
+    color: root.pressed ? Colors.surfacePressed : (root.hovered ? Colors.surfaceHover : Colors.surface)
+    border.width: Shape.borderWidth
+    border.color: Colors.border
 
     Behavior on color {
         ColorAnimation {
             duration: Animations.duration_hover
-            easing.type: Animations.easing_standard
+            easing.type: Animations.easingStandard
         }
     }
 
@@ -32,9 +35,9 @@ Rectangle {
         id: label
         anchors.centerIn: parent
         text: root.expanded ? "" : ""
-        color: Theme.color_text
-        font.pixelSize: Theme.font_size
-        font.family: Theme.font_family_icon
+        color: Colors.text
+        font.pixelSize: Typography.size
+        font.family: Typography.iconFamily
     }
 
     MouseArea {
@@ -66,37 +69,37 @@ Rectangle {
 
         Rectangle {
             id: panel
-            x: dropdown.width - width - Theme.bar_padding
-            y: Theme.bar_widget_height + (Theme.bar_padding * 2)
-            width: Math.max(180, trayList.implicitWidth + (Theme.bar_widget_padding * 2))
-            height: trayList.implicitHeight + (Theme.bar_widget_padding * 2)
-            radius: Theme.radius_background
-            color: Theme.color_background
-            border.width: Theme.border_width
-            border.color: Theme.color_border
+            x: dropdown.width - width - LayoutTheme.barPadding
+            y: LayoutTheme.barWidgetHeight + (LayoutTheme.barPadding * 2)
+            width: Math.max(180, trayList.implicitWidth + (LayoutTheme.barWidgetPadding * 2))
+            height: trayList.implicitHeight + (LayoutTheme.barWidgetPadding * 2)
+            radius: Shape.radiusBackground
+            color: Colors.background
+            border.width: Shape.borderWidth
+            border.color: Colors.border
             opacity: root.expanded ? 1 : 0
-            scale: root.expanded ? 1 : Animations.dropdown_scale_closed
+            scale: root.expanded ? 1 : Animations.dropdownScaleClosed
             focus: root.expanded
             Keys.onEscapePressed: root.expanded = false
 
             Behavior on opacity {
                 NumberAnimation {
-                    duration: Animations.duration_dropdown
-                    easing.type: Animations.easing_emphasized
+                    duration: Animations.dropdown
+                    easing.type: Animations.easingEmphasized
                 }
             }
 
             Behavior on scale {
                 NumberAnimation {
-                    duration: Animations.duration_dropdown
-                    easing.type: Animations.easing_emphasized
+                    duration: Animations.dropdown
+                    easing.type: Animations.easingEmphasized
                 }
             }
 
             Behavior on y {
                 NumberAnimation {
-                    duration: Animations.duration_dropdown
-                    easing.type: Animations.easing_emphasized
+                    duration: Animations.dropdown
+                    easing.type: Animations.easingEmphasized
                 }
             }
 
@@ -108,9 +111,9 @@ Rectangle {
                 Text {
                     Layout.fillWidth: true
                     text: Strings.tr(Strings.keys.system_tray)
-                    color: Theme.color_text_subtle
-                    font.pixelSize: Theme.font_size_xs
-                    font.family: Theme.font_family
+                    color: Colors.textSubtle
+                    font.pixelSize: Typography.xs
+                    font.family: Typography.family
                     font.capitalization: Font.AllUppercase
                     font.letterSpacing: 1
                     leftPadding: 2
@@ -120,7 +123,7 @@ Rectangle {
                 Rectangle {
                     Layout.fillWidth: true
                     implicitHeight: 1
-                    color: Theme.color_border_subtle
+                    color: Colors.borderSubtle
                 }
 
                 Repeater {
@@ -138,22 +141,22 @@ Rectangle {
                             var text = (modelData.tooltipTitle || modelData.title || modelData.id || "?") + "";
                             return text.length > 0 ? text : "?";
                         }
-                        radius: Theme.radius_normal
-                        color: pressed ? Theme.color_surface_pressed : (hovered ? Theme.color_surface_hover : "transparent")
-                        implicitWidth: trayRow.implicitWidth + (Theme.bar_widget_padding * 2)
-                        implicitHeight: trayRow.implicitHeight + (Theme.bar_widget_padding * 2)
+                        radius: Shape.radiusNormal
+                        color: pressed ? Colors.surfacePressed : (hovered ? Colors.surfaceHover : "transparent")
+                        implicitWidth: trayRow.implicitWidth + (LayoutTheme.barWidgetPadding * 2)
+                        implicitHeight: trayRow.implicitHeight + (LayoutTheme.barWidgetPadding * 2)
 
                         Behavior on color {
                             ColorAnimation {
                                 duration: Animations.duration_hover
-                                easing.type: Animations.easing_standard
+                                easing.type: Animations.easingStandard
                             }
                         }
 
                         RowLayout {
                             id: trayRow
                             anchors.centerIn: parent
-                            width: parent.width - (Theme.bar_widget_padding * 2)
+                            width: parent.width - (LayoutTheme.barWidgetPadding * 2)
                             spacing: 8
 
                             IconImage {
@@ -173,9 +176,9 @@ Rectangle {
                                 id: trayName
                                 Layout.fillWidth: true
                                 text: trayItem.itemLabel
-                                color: Theme.color_text
-                                font.pixelSize: Theme.font_size
-                                font.family: Theme.font_family
+                                color: Colors.text
+                                font.pixelSize: Typography.size
+                                font.family: Typography.family
                                 elide: Text.ElideRight
                             }
                         }

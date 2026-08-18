@@ -5,6 +5,7 @@ import Quickshell.Wayland
 import QtQuick
 import QtQuick.Layouts
 import "../components"
+import "../theme"
 
 Scope {
     Variants {
@@ -17,7 +18,7 @@ Scope {
             readonly property int section_margin: 12
             readonly property int widget_spacing: 8
             readonly property int inner_spacing: 6
-            readonly property int popup_offset_y: Theme.bar_widget_height + (Theme.bar_padding * 2)
+            readonly property int popup_offset_y: LayoutTheme.barWidgetHeight + (LayoutTheme.barPadding * 2)
             readonly property int tray_item_size: 22
 			readonly property int tray_icon_size: 16
 
@@ -28,17 +29,17 @@ Scope {
             }
 
             screen: modelData
-            color: Theme.color_background
-            implicitHeight: barContent.implicitHeight + (Theme.bar_padding * 2)
+            color: Colors.background
+            implicitHeight: barContent.implicitHeight + (LayoutTheme.barPadding * 2)
 
             Item {
                 id: barContent
                 anchors.top: parent.top
                 anchors.left: parent.left
                 anchors.right: parent.right
-                anchors.topMargin: Theme.bar_padding
-                anchors.leftMargin: Theme.bar_padding
-                anchors.rightMargin: Theme.bar_padding
+                anchors.topMargin: LayoutTheme.barPadding
+                anchors.leftMargin: LayoutTheme.barPadding
+                anchors.rightMargin: LayoutTheme.barPadding
                 implicitHeight: Math.max(leftRow.implicitHeight, centerRow.implicitHeight, rightRow.implicitHeight)
 
                 Item {

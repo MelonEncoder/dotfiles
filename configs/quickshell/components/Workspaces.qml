@@ -3,15 +3,16 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Quickshell.Hyprland
+import "../theme"
 
 Rectangle {
 	id: root
-	radius: Theme.radius_normal
-	color: Theme.color_surface
-	border.width: Theme.border_width
-	border.color: Theme.color_border
+	radius: Shape.radiusNormal
+	color: Colors.surface
+	border.width: Shape.borderWidth
+	border.color: Colors.border
 	implicitWidth: workspaceRow.implicitWidth
-	implicitHeight: Theme.bar_widget_height
+	implicitHeight: LayoutTheme.barWidgetHeight
 
 	function toJapaneseNumber(n: int): string {
 		var digits = ["", "一", "二", "三", "四", "五", "六", "七", "八", "九", "十"]
@@ -48,7 +49,7 @@ Rectangle {
 				readonly property bool hasWindows: workspace
 					&& workspace.toplevels
 					&& workspace.toplevels.values.length > 0
-				readonly property real slotSize: Theme.bar_widget_height
+				readonly property real slotSize: LayoutTheme.barWidgetHeight
 				readonly property real indicatorHeight: isActive ? slotSize : (hasWindows ? 9 : 4)
 				readonly property real indicatorWidth: isActive ? slotSize : indicatorHeight
 
@@ -63,34 +64,34 @@ Rectangle {
 					width: workspaceSlot.indicatorWidth
 					height: workspaceSlot.indicatorHeight
 					radius: workspaceSlot.isActive ? root.radius : height / 4
-	 				color: workspaceSlot.isActive ? Theme.color_text : (workspaceSlot.hasWindows ? Theme.workspace_dot_occupied : Theme.workspace_dot_empty)
+	 				color: workspaceSlot.isActive ? Colors.text : (workspaceSlot.hasWindows ? WorkspaceTheme.dotOccupied : WorkspaceTheme.dotEmpty)
 					opacity: 1
 
 					Behavior on width {
 						NumberAnimation {
 							duration: Animations.duration_fast
-							easing.type: Animations.easing_standard
+							easing.type: Animations.easingStandard
 						}
 					}
 
 					Behavior on height {
 						NumberAnimation {
 							duration: Animations.duration_fast
-							easing.type: Animations.easing_standard
+							easing.type: Animations.easingStandard
 						}
 					}
 
 					Behavior on radius {
 						NumberAnimation {
 							duration: Animations.duration_fast
-							easing.type: Animations.easing_standard
+							easing.type: Animations.easingStandard
 						}
 					}
 
 					Behavior on color {
 						ColorAnimation {
 							duration: Animations.duration_fast
-							easing.type: Animations.easing_standard
+							easing.type: Animations.easingStandard
 						}
 					}
 				}
@@ -100,14 +101,14 @@ Rectangle {
 					text: root.toJapaneseNumber(workspaceSlot.workspaceId)
 					visible: opacity > 0.01
 					opacity: workspaceSlot.isActive ? 1 : 0
-					color: Theme.color_background
-					font.pixelSize: Theme.font_size
-					font.family: Theme.font_family
+					color: Colors.background
+					font.pixelSize: Typography.size
+					font.family: Typography.family
 
 					Behavior on opacity {
 						NumberAnimation {
 							duration: Animations.duration_fast
-							easing.type: Animations.easing_standard
+							easing.type: Animations.easingStandard
 						}
 					}
 				}

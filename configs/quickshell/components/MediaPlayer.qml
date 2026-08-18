@@ -1,416 +1,78 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Hyprland
-import Quickshell.Services.Mpris
 import Quickshell.Widgets
+import "popups"
+import "ui"
+import "../theme"
+import "../services"
 
 Item {
     id: root
-    property var currentPlayer: null
-    property real displayPosition: 0
+
+    readonly property var currentPlayer: MediaService.currentPlayer
     property bool expanded: false
     property bool hovered: headerMouse.containsMouse
     // Modes: "auto" (browser => player name, media apps => track), "player", "media"
     property string label_mode: "auto"
-    property var service_map: ({
-            youtube: {
-                icon: "󰗃",
-                name: "YouTube",
-                type: "site"
-            },
-            twitch: {
-                icon: "󰕃",
-                name: "Twitch",
-                type: "site"
-            },
-            netflix: {
-                icon: "󰝆",
-                name: "Netflix",
-                type: "site"
-            },
-            nebula: {
-                icon: "",
-                name: "Nebula",
-                type: "site"
-            },
-            hulu: {
-                icon: "󰠩",
-                name: "Hulu",
-                type: "site"
-            },
-            disneyplus: {
-                icon: "󰨜",
-                name: "Disney+",
-                type: "site"
-            },
-            primevideo: {
-                icon: "",
-                name: "Prime Video",
-                type: "site"
-            },
-            max: {
-                icon: "󰨜",
-                name: "Max",
-                type: "site"
-            },
-            spotify: {
-                icon: "󰓇",
-                name: "Spotify",
-                type: "media"
-            },
-            mpv: {
-                icon: "󰐹",
-                name: "mpv",
-                type: "media"
-            },
-            vlc: {
-                icon: "󰕼",
-                name: "VLC",
-                type: "media"
-            },
-            steam: {
-                icon: "󰓓",
-                name: "Steam",
-                type: "media"
-            },
-            firefox: {
-                icon: "󰈹",
-                name: "Firefox",
-                type: "browser"
-            },
-            zen: {
-                icon: "󰈹",
-                name: "Zen",
-                type: "browser"
-            },
-            librewolf: {
-                icon: "󰈹",
-                name: "LibreWolf",
-                type: "browser"
-            },
-            floorp: {
-                icon: "󰈹",
-                name: "Floorp",
-                type: "browser"
-            },
-            waterfox: {
-                icon: "󰈹",
-                name: "Waterfox",
-                type: "browser"
-            },
-            chromium: {
-                icon: "",
-                name: "Chromium",
-                type: "browser"
-            },
-            chrome: {
-                icon: "",
-                name: "Chrome",
-                type: "browser"
-            },
-            "google chrome": {
-                icon: "",
-                name: "Chrome",
-                type: "browser"
-            },
-            brave: {
-                icon: "",
-                name: "Brave",
-                type: "browser"
-            },
-            vivaldi: {
-                icon: "",
-                name: "Vivaldi",
-                type: "browser"
-            },
-            edge: {
-                icon: "󰇩",
-                name: "Edge",
-                type: "browser"
-            },
-            "microsoft edge": {
-                icon: "󰇩",
-                name: "Edge",
-                type: "browser"
-            },
-            opera: {
-                icon: "",
-                name: "Opera",
-                type: "browser"
-            },
-            epiphany: {
-                icon: "󰖟",
-                name: "Epiphany",
-                type: "browser"
-            },
-            qutebrowser: {
-                icon: "",
-                name: "Qutebrowser",
-                type: "browser"
-            }
-        })
 
     implicitWidth: header.implicitWidth
-    implicitHeight: Theme.bar_widget_height
+    implicitHeight: LayoutTheme.barWidgetHeight
     visible: !!root.currentPlayer
-
-    function normalizeTime(value: real): real {
-        // Some backends expose MPRIS time in microseconds.
-        return value > 100000 ? value / 1000000 : value;
-    }
-
-    function formatTime(seconds: real): string {
-        var s = Math.max(0, Math.floor(seconds));
-        var m = Math.floor(s / 60);
-        var r = s % 60;
-        return m.toString() + ":" + (r < 10 ? "0" : "") + r.toString();
-    }
-
-    function mediaLabel(player: var): string {
-        if (!player)
-            return "No media";
-        var title = player.trackTitle || "";
-        var artist = player.trackArtist || player.trackArtists || "";
-        if (title.length > 0 && artist.length > 0)
-            return artist + "  -  " + title;
-        if (title.length > 0)
-            return title;
-        if (artist.length > 0)
-            return artist;
-        return player.identity || "Unknown";
-    }
-
-    function serviceForPlayer(player: var): var {
-        if (!player)
-            return null;
-
-        var key = ((player.desktopEntry || "") + " " + (player.identity || "")).toLowerCase();
-        var keys = Object.keys(root.service_map);
-        for (var i = 0; i < keys.length; i++) {
-            var serviceKey = keys[i];
-            if (key.indexOf(serviceKey) >= 0) {
-                return root.service_map[serviceKey];
-            }
-        }
-
-        return {
-            icon: "󰎆",
-            name: (player.identity && player.identity.length > 0) ? player.identity : "Media",
-            type: "media"
-        };
-    }
-
-    function browserSiteForPlayer(player: var): var {
-        if (!player)
-            return null;
-
-        var service = root.serviceForPlayer(player);
-        if (!service || service.type !== "browser")
-            return null;
-
-        var search = ((player.trackTitle || "") + " " + (player.trackArtist || "") + " " + (player.trackArtists || "") + " " + (player.identity || "")).toLowerCase();
-
-        if (search.indexOf("youtube") >= 0 || search.indexOf("youtu.be") >= 0) {
-            return root.service_map.youtube;
-        }
-        if (search.indexOf("twitch") >= 0 || search.indexOf("twitch.tv") >= 0) {
-            return root.service_map.twitch;
-        }
-        if (search.indexOf("netflix") >= 0 || search.indexOf("netflix.com") >= 0) {
-            return root.service_map.netflix;
-        }
-        if (search.indexOf("nebula") >= 0 || search.indexOf("nebula.tv") >= 0) {
-            return root.service_map.nebula;
-        }
-        if (search.indexOf("hulu") >= 0 || search.indexOf("hulu.com") >= 0) {
-            return root.service_map.hulu;
-        }
-        if (search.indexOf("disney+") >= 0 || search.indexOf("disneyplus") >= 0 || search.indexOf("disneyplus.com") >= 0) {
-            return root.service_map.disneyplus;
-        }
-        if (search.indexOf("prime video") >= 0 || search.indexOf("primevideo") >= 0 || search.indexOf("amazon.com") >= 0) {
-            return root.service_map.primevideo;
-        }
-        if (search.indexOf(" max ") >= 0 || search.indexOf("max.com") >= 0 || search.indexOf("hbo max") >= 0) {
-            return root.service_map.max;
-        }
-
-        return null;
-    }
-
-    function appGlyph(player: var): string {
-        var site = root.browserSiteForPlayer(player);
-        if (site)
-            return site.icon;
-
-        var service = root.serviceForPlayer(player);
-        return service ? service.icon : "󰎆";
-    }
-
-    function playerLabel(player: var): string {
-        if (!player)
-            return "No media";
-        var service = root.serviceForPlayer(player);
-        if (service && service.name)
-            return service.name;
-        return player.identity || "Unknown";
-    }
-
-    function displayLabel(player: var): string {
-        if (!player)
-            return "No media";
-
-        if (root.label_mode === "player")
-            return root.playerLabel(player);
-        if (root.label_mode === "media")
-            return root.mediaLabel(player);
-
-        var site = root.browserSiteForPlayer(player);
-        if (site && site.name)
-            return site.name;
-
-        var service = root.serviceForPlayer(player);
-        if (service && service.type === "browser")
-            return root.playerLabel(player);
-        return root.mediaLabel(player);
-    }
-
-    function pickPlayer(): var {
-        var values = Mpris.players && Mpris.players.values ? Mpris.players.values : [];
-        if (!values || values.length === 0)
-            return null;
-
-        var best = null;
-        var bestScore = -1;
-        for (var i = 0; i < values.length; i++) {
-            var player = values[i];
-            var service = root.serviceForPlayer(player);
-            var isBrowser = service && service.type === "browser";
-            var isPlaying = !!player.isPlaying;
-            var hasMediaInfo = ((player.trackTitle || "").length > 0) || ((player.trackArtist || "").length > 0);
-
-            // Priority:
-            // 1) Playing native media apps (mpv/spotify/etc)
-            // 2) Playing browser sessions
-            // 3) Paused native media apps
-            // 4) Paused browser sessions
-            var score = 0;
-            if (isPlaying && !isBrowser)
-                score = 400;
-            else if (isPlaying && isBrowser)
-                score = 300;
-            else if (!isPlaying && !isBrowser)
-                score = 200;
-            else
-                score = 100;
-
-            if (hasMediaInfo)
-                score += 10;
-
-            if (score > bestScore) {
-                best = player;
-                bestScore = score;
-            }
-        }
-        return best;
-    }
-
-    function refreshPlayer(): void {
-        root.currentPlayer = pickPlayer();
-        if (!root.currentPlayer) {
-            root.displayPosition = 0;
-            return;
-        }
-
-        if (!root.currentPlayer.isPlaying) {
-            root.displayPosition = normalizeTime(root.currentPlayer.position);
-        }
-    }
-
-    function toggleCurrentPlayer(): void {
-        var player = root.currentPlayer;
-        if (!player || !player.canControl)
-            return;
-        if (player.canTogglePlaying) {
-            player.togglePlaying();
-            return;
-        }
-
-        if (player.isPlaying && player.canPause) {
-            player.pause();
-            return;
-        }
-
-        if (!player.isPlaying && player.canPlay) {
-            player.play();
-        }
-    }
-
-    Timer {
-        interval: 1000
-        running: true
-        repeat: true
-        onTriggered: {
-            root.refreshPlayer();
-            if (root.currentPlayer && root.currentPlayer.isPlaying) {
-                root.displayPosition = root.normalizeTime(root.currentPlayer.position);
-            }
-        }
-    }
-
-    Component.onCompleted: refreshPlayer()
 
     // ── Bar widget ─────────────────────────────────────────────────────────────
 
     ClippingRectangle {
         id: header
-        radius: Theme.radius_normal
-        color: headerMouse.pressed ? Theme.color_surface_pressed : ((root.hovered || root.expanded) ? Theme.color_surface_hover : Theme.color_surface)
-        border.width: Theme.border_width
-        border.color: Theme.color_border
-        implicitHeight: Theme.bar_widget_height
+        radius: Shape.radiusNormal
+        color: headerMouse.pressed ? Colors.surfacePressed : ((root.hovered || root.expanded) ? Colors.surfaceHover : Colors.surface)
+        border.width: Shape.borderWidth
+        border.color: Colors.border
+        implicitHeight: LayoutTheme.barWidgetHeight
         clip: true
 
         // Collapsed: padding + icon + padding
         // Expanded:  padding + icon + padding + label + padding
         // Label x = collapsedWidth, so it is perfectly clipped when not shown
-        implicitWidth: Theme.bar_widget_padding + glyphText.implicitWidth + Theme.bar_widget_padding + (root.hovered || root.expanded ? Math.min(labelText.implicitWidth, 140) + Theme.bar_widget_padding : 0)
+        implicitWidth: LayoutTheme.barWidgetPadding + glyphText.implicitWidth + LayoutTheme.barWidgetPadding + (root.hovered || root.expanded ? Math.min(labelText.implicitWidth, 140) + LayoutTheme.barWidgetPadding : 0)
 
         Behavior on color {
             ColorAnimation {
                 duration: Animations.duration_hover
-                easing.type: Animations.easing_standard
+                easing.type: Animations.easingStandard
             }
         }
 
         Behavior on implicitWidth {
             NumberAnimation {
                 duration: Animations.duration_normal
-                easing.type: Animations.easing_emphasized
+                easing.type: Animations.easingEmphasized
             }
         }
 
         Text {
             id: glyphText
             anchors.left: parent.left
-            anchors.leftMargin: Theme.bar_widget_padding
+            anchors.leftMargin: LayoutTheme.barWidgetPadding
             anchors.verticalCenter: parent.verticalCenter
-            text: root.appGlyph(root.currentPlayer)
-            color: Theme.color_text
-            font.pixelSize: Theme.font_size_icon
-            font.family: Theme.font_family_icon
+            text: MediaService.appGlyph(root.currentPlayer)
+            color: Colors.text
+            font.pixelSize: Typography.icon
+            font.family: Typography.iconFamily
         }
 
         Text {
             id: labelText
             anchors.left: glyphText.right
-            anchors.leftMargin: Theme.bar_widget_padding
+            anchors.leftMargin: LayoutTheme.barWidgetPadding
             anchors.verticalCenter: parent.verticalCenter
-            text: root.playerLabel(root.currentPlayer)
-            color: Theme.color_text
-            font.pixelSize: Theme.font_size
-            font.family: Theme.font_family
+            text: MediaService.playerLabel(root.currentPlayer)
+            color: Colors.text
+            font.pixelSize: Typography.size
+            font.family: Typography.family
         }
 
         MouseArea {
@@ -448,30 +110,30 @@ Item {
             readonly property int contentWidth: 240
 
             x: root.mapToGlobal(root.width / 2, 0).x - width / 2
-            y: Theme.bar_widget_height + (Theme.bar_padding * 2)
-            width: contentWidth + (Theme.bar_widget_padding * 2)
-            height: popupColumn.implicitHeight + (Theme.bar_widget_padding * 2)
-            radius: Theme.radius_background
-            color: Theme.color_background
-            border.width: Theme.border_width
-            border.color: Theme.color_border
+            y: LayoutTheme.barWidgetHeight + (LayoutTheme.barPadding * 2)
+            width: contentWidth + (LayoutTheme.barWidgetPadding * 2)
+            height: popupColumn.implicitHeight + (LayoutTheme.barWidgetPadding * 2)
+            radius: Shape.radiusBackground
+            color: Colors.background
+            border.width: Shape.borderWidth
+            border.color: Colors.border
             opacity: root.expanded ? 1 : 0
-            scale: root.expanded ? 1 : Animations.dropdown_scale_closed
+            scale: root.expanded ? 1 : Animations.dropdownScaleClosed
             focus: root.expanded
             Keys.onEscapePressed: root.expanded = false
             transformOrigin: Item.Top
 
             Behavior on opacity {
                 NumberAnimation {
-                    duration: Animations.duration_dropdown
-                    easing.type: Animations.easing_emphasized
+                    duration: Animations.dropdown
+                    easing.type: Animations.easingEmphasized
                 }
             }
 
             Behavior on scale {
                 NumberAnimation {
-                    duration: Animations.duration_dropdown
-                    easing.type: Animations.easing_emphasized
+                    duration: Animations.dropdown
+                    easing.type: Animations.easingEmphasized
                 }
             }
 
@@ -482,8 +144,8 @@ Item {
 
             Column {
                 id: popupColumn
-                x: Theme.bar_widget_padding
-                y: Theme.bar_widget_padding
+                x: LayoutTheme.barWidgetPadding
+                y: LayoutTheme.barWidgetPadding
                 width: popupPanel.contentWidth
                 spacing: 8
 
@@ -491,9 +153,9 @@ Item {
 
                 Text {
                     text: Strings.tr(Strings.keys.media)
-                    color: Theme.color_text_subtle
-                    font.pixelSize: Theme.font_size_xs
-                    font.family: Theme.font_family
+                    color: Colors.textSubtle
+                    font.pixelSize: Typography.xs
+                    font.family: Typography.family
                     font.capitalization: Font.AllUppercase
                     font.letterSpacing: 1
                     leftPadding: 2
@@ -503,7 +165,7 @@ Item {
                 Rectangle {
                     width: parent.width
                     height: 1
-                    color: Theme.color_border_subtle
+                    color: Colors.borderSubtle
                 }
 
                 // ── Album art ──────────────────────────────────────────────────
@@ -513,8 +175,8 @@ Item {
                     height: (artImage.status === Image.Ready && artImage.sourceSize.width > 0)
                         ? Math.round(parent.width * artImage.sourceSize.height / artImage.sourceSize.width)
                         : parent.width
-                    radius: Theme.radius_normal
-                    color: Theme.color_surface
+                    radius: Shape.radiusNormal
+                    color: Colors.surface
                     clip: true
 
                     Image {
@@ -528,10 +190,10 @@ Item {
 
                     Text {
                         anchors.centerIn: parent
-                        text: root.appGlyph(root.currentPlayer)
-                        color: Theme.color_text_muted
-                        font.pixelSize: Theme.font_size_jumbo
-                        font.family: Theme.font_family_icon
+                        text: MediaService.appGlyph(root.currentPlayer)
+                        color: Colors.textMuted
+                        font.pixelSize: Typography.jumbo
+                        font.family: Typography.iconFamily
                         visible: artImage.status !== Image.Ready
                     }
                 }
@@ -545,19 +207,19 @@ Item {
 
                     Text {
                         width: parent.width - parent.leftPadding
-                        text: root.currentPlayer ? (root.currentPlayer.trackTitle || root.playerLabel(root.currentPlayer)) : Strings.tr(Strings.keys.no_media)
-                        color: Theme.color_text
-                        font.pixelSize: Theme.font_size
-                        font.family: Theme.font_family
+                        text: root.currentPlayer ? (root.currentPlayer.trackTitle || MediaService.playerLabel(root.currentPlayer)) : Strings.tr(Strings.keys.no_media)
+                        color: Colors.text
+                        font.pixelSize: Typography.size
+                        font.family: Typography.family
                         elide: Text.ElideRight
                     }
 
                     Text {
                         width: parent.width - parent.leftPadding
                         text: root.currentPlayer ? (root.currentPlayer.trackArtist || root.currentPlayer.trackArtists || "") : ""
-                        color: Theme.color_text_muted
-                        font.pixelSize: Theme.font_size_sm
-                        font.family: Theme.font_family
+                        color: Colors.textMuted
+                        font.pixelSize: Typography.sm
+                        font.family: Typography.family
                         elide: Text.ElideRight
                         visible: text.length > 0
                     }
@@ -569,35 +231,20 @@ Item {
                     width: parent.width
                     spacing: 4
 
-                    Rectangle {
+                    ProgressBar {
                         width: parent.width
-                        height: 3
-                        radius: 2
-                        color: Theme.color_surface
-
-                        Rectangle {
-                            width: {
-                                if (!root.currentPlayer)
-                                    return 0;
-                                var len = root.normalizeTime(root.currentPlayer.length);
-                                if (len <= 0)
-                                    return 0;
-                                return Math.min(1.0, root.displayPosition / len) * parent.width;
-                            }
-                            height: parent.height
-                            radius: parent.radius
-                            color: Theme.color_text
-                        }
+                        value: MediaService.displayPosition
+                        maximum: root.currentPlayer ? MediaService.normalizeTime(root.currentPlayer.length) : 0
                     }
 
                     RowLayout {
                         width: parent.width
 
                         Text {
-                            text: root.formatTime(root.displayPosition)
-                            color: Theme.color_text_muted
-                            font.pixelSize: Theme.font_size_xs
-                            font.family: Theme.font_family
+                            text: MediaService.formatTime(MediaService.displayPosition)
+                            color: Colors.textMuted
+                            font.pixelSize: Typography.xs
+                            font.family: Typography.family
                         }
 
                         Item {
@@ -605,10 +252,10 @@ Item {
                         }
 
                         Text {
-                            text: root.currentPlayer ? root.formatTime(root.normalizeTime(root.currentPlayer.length)) : "0:00"
-                            color: Theme.color_text_muted
-                            font.pixelSize: Theme.font_size_xs
-                            font.family: Theme.font_family
+                            text: root.currentPlayer ? MediaService.formatTime(MediaService.normalizeTime(root.currentPlayer.length)) : "0:00"
+                            color: Colors.textMuted
+                            font.pixelSize: Typography.xs
+                            font.family: Typography.family
                         }
                     }
                 }
@@ -620,101 +267,25 @@ Item {
                     spacing: 6
                     bottomPadding: 2
 
-                    // Previous
-                    Rectangle {
-                        width: 32
-                        height: 32
-                        radius: Theme.radius_normal
-                        color: prevMouse.pressed ? Theme.color_surface_pressed : (prevMouse.containsMouse ? Theme.color_surface_hover : Theme.color_surface)
-
-                        Behavior on color {
-                            ColorAnimation {
-                                duration: Animations.duration_hover
-                                easing.type: Animations.easing_standard
-                            }
-                        }
-
-                        Text {
-                            anchors.centerIn: parent
-                            text: "󰒮"
-                            color: (root.currentPlayer && root.currentPlayer.canGoPrevious) ? Theme.color_text : Theme.color_text_subtle
-                            font.pixelSize: Theme.font_size_icon
-                            font.family: Theme.font_family_icon
-                        }
-
-                        MouseArea {
-                            id: prevMouse
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            cursorShape: Qt.PointingHandCursor
-                            enabled: !!root.currentPlayer && root.currentPlayer.canGoPrevious
-                            onClicked: root.currentPlayer.previous()
-                        }
+                    StyledButton {
+                        icon: "󰒮"
+                        size: 32
+                        enabled: !!root.currentPlayer && root.currentPlayer.canGoPrevious
+                        onClicked: MediaService.previous()
                     }
 
-                    // Play / Pause
-                    Rectangle {
-                        width: 36
-                        height: 36
-                        radius: Theme.radius_normal
-                        color: playMouse.pressed ? Theme.color_surface_pressed : (playMouse.containsMouse ? Theme.color_surface_hover : Theme.color_surface)
-                        border.width: Theme.border_width
-                        border.color: Theme.color_border
-
-                        Behavior on color {
-                            ColorAnimation {
-                                duration: Animations.duration_hover
-                                easing.type: Animations.easing_standard
-                            }
-                        }
-
-                        Text {
-                            anchors.centerIn: parent
-                            text: (root.currentPlayer && root.currentPlayer.isPlaying) ? "󰏤" : "󰐊"
-                            color: Theme.color_text
-                            font.pixelSize: Theme.font_size_icon
-                            font.family: Theme.font_family_icon
-                        }
-
-                        MouseArea {
-                            id: playMouse
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            cursorShape: Qt.PointingHandCursor
-                            onClicked: root.toggleCurrentPlayer()
-                        }
+                    StyledButton {
+                        icon: (root.currentPlayer && root.currentPlayer.isPlaying) ? "󰏤" : "󰐊"
+                        size: 36
+                        bordered: true
+                        onClicked: MediaService.toggleCurrentPlayer()
                     }
 
-                    // Next
-                    Rectangle {
-                        width: 32
-                        height: 32
-                        radius: Theme.radius_normal
-                        color: nextMouse.pressed ? Theme.color_surface_pressed : (nextMouse.containsMouse ? Theme.color_surface_hover : Theme.color_surface)
-
-                        Behavior on color {
-                            ColorAnimation {
-                                duration: Animations.duration_hover
-                                easing.type: Animations.easing_standard
-                            }
-                        }
-
-                        Text {
-                            anchors.centerIn: parent
-                            text: "󰒭"
-                            color: (root.currentPlayer && root.currentPlayer.canGoNext) ? Theme.color_text : Theme.color_text_subtle
-                            font.pixelSize: Theme.font_size_icon
-                            font.family: Theme.font_family_icon
-                        }
-
-                        MouseArea {
-                            id: nextMouse
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            cursorShape: Qt.PointingHandCursor
-                            enabled: !!root.currentPlayer && root.currentPlayer.canGoNext
-                            onClicked: root.currentPlayer.next()
-                        }
+                    StyledButton {
+                        icon: "󰒭"
+                        size: 32
+                        enabled: !!root.currentPlayer && root.currentPlayer.canGoNext
+                        onClicked: MediaService.next()
                     }
                 }
             }

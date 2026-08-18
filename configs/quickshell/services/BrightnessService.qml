@@ -85,115 +85,113 @@ Singleton {
         m.setBrightness(percent);
     }
 
-    // Internal: property change notifier for `_monitors` since QML doesn't
-    // auto-emit for mutations of a plain JS object stored in a var property.
-    signal _monitorsChanged()
-
     Component {
         id: monitorStateComponent
         MonitorState {}
     }
-}
 
-// Per-screen brightness state + the Process/Timer machinery to detect the
-// right backend, read the current value, and (debounced) apply new values.
-component MonitorState: QtObject {
-    id: state
+    // Per-screen brightness state + the Process/Timer machinery to detect the
+    // right backend, read the current value, and (debounced) apply new values.
+    component MonitorState: QtObject {
+        id: state
 
-    property string screenName: ""
-    property int ddcDisplay: 1
+        property string screenName: ""
+        property int ddcDisplay: 1
 
-    property int brightnessPercent: 50
-    property int brightnessMax: 100
-    property int pendingBrightnessRaw: -1
-    property int pendingBrightnessPercent: -1
+        property int brightnessPercent: 50
+        property int brightnessMax: 100
+        property int pendingBrightnessRaw: -1
+        property int pendingBrightnessPercent: -1
 
-    property string brightnessBackend: "ddcutil"
-    property string brightnessCtlDevice: ""
+        property string brightnessBackend: "ddcutil"
+        property string brightnessCtlDevice: ""
 
-    function setBrightness(percent: int): void {
-        var next = BrightnessService.clampPercent(percent);
-        if (next === state.brightnessPercent)
-            return;
-        state.brightnessPercent = next;
-        var max = Math.max(1, state.brightnessMax);
-        state.pendingBrightnessRaw = Math.round((next * max) / 100);
-        state.pendingBrightnessPercent = next;
-        applyTimer.restart();
-    }
-
-    function detectBackend(): void {
-        detectProcess.exec(["sh", "-c", "name=" + BrightnessService.shellQuote(state.screenName) + "; " + "if printf '%s' \"$name\" | grep -Eq '^(eDP|LVDS|DSI)' ; then " + "for dev in /sys/class/backlight/*; do " + "[ -d \"$dev\" ] || continue; " + "printf 'brightnessctl\\t%s\\n' \"$(basename \"$dev\")\"; " + "exit 0; " + "done; " + "fi; " + "printf 'ddcutil\\t%s\\n' \"$name\""]);
-    }
-
-    function probe(): void {
-        if (state.brightnessBackend === "brightnessctl" && state.brightnessCtlDevice.length > 0) {
-            probeProcess.exec(["sh", "-c", "current=$(brightnessctl -d " + BrightnessService.shellQuote(state.brightnessCtlDevice) + " g 2>/dev/null); " + "max=$(brightnessctl -d " + BrightnessService.shellQuote(state.brightnessCtlDevice) + " m 2>/dev/null); " + "[ -n \"$current\" ] && [ -n \"$max\" ] && printf 'current value = %s\\nmax value = %s\\n' \"$current\" \"$max\" || true"]);
-            return;
+        function setBrightness(percent: int): void {
+            var next = BrightnessService.clampPercent(percent);
+            if (next === state.brightnessPercent)
+                return;
+            state.brightnessPercent = next;
+            var max = Math.max(1, state.brightnessMax);
+            state.pendingBrightnessRaw = Math.round((next * max) / 100);
+            state.pendingBrightnessPercent = next;
+            applyTimer.restart();
         }
-        probeProcess.exec(["sh", "-c", "ddcutil --brief --display " + state.ddcDisplay + " getvcp 10 2>/dev/null || true"]);
-    }
 
-    Process {
-        id: setProcess
-    }
-
-    Process {
-        id: detectProcess
-        stdout: StdioCollector {
-            waitForEnd: true
-            onStreamFinished: {
-                var raw = text.trim();
-                if (raw.length === 0)
-                    return;
-                var parts = raw.split(/\t+/);
-                var backend = parts.length > 0 ? parts[0].trim() : "";
-                if (backend !== "brightnessctl" && backend !== "ddcutil")
-                    backend = "ddcutil";
-                state.brightnessBackend = backend;
-                state.brightnessCtlDevice = backend === "brightnessctl" && parts.length > 1 ? parts[1].trim() : "";
-                state.probe();
-            }
+        function detectBackend(): void {
+            detectProcess.exec(["sh", "-c", "name=" + BrightnessService.shellQuote(state.screenName) + "; " + "if printf '%s' \"$name\" | grep -Eq '^(eDP|LVDS|DSI)' ; then " + "for dev in /sys/class/backlight/*; do " + "[ -d \"$dev\" ] || continue; " + "printf 'brightnessctl\\t%s\\n' \"$(basename \"$dev\")\"; " + "exit 0; " + "done; " + "fi; " + "printf 'ddcutil\\t%s\\n' \"$name\""]);
         }
-    }
 
-    Process {
-        id: probeProcess
-        stdout: StdioCollector {
-            waitForEnd: true
-            onStreamFinished: {
-                var raw = text.trim();
-                if (raw.length === 0)
-                    return;
-                var currentMatch = raw.match(/current value =\s*([0-9]+)/);
-                var maxMatch = raw.match(/max value =\s*([0-9]+)/);
-                if (!currentMatch || !maxMatch)
-                    return;
-                var current = parseInt(currentMatch[1]);
-                var max = parseInt(maxMatch[1]);
-                if (isNaN(current) || isNaN(max) || max <= 0)
-                    return;
-                state.brightnessMax = max;
-                state.brightnessPercent = BrightnessService.clampPercent(Math.round((current * 100) / max));
-            }
-        }
-    }
-
-    Timer {
-        id: applyTimer
-        interval: 120
-        running: false
-        repeat: false
-        onTriggered: {
-            if (state.brightnessBackend === "brightnessctl") {
-                if (state.pendingBrightnessPercent < 0 || state.brightnessCtlDevice.length === 0)
-                    return;
-                setProcess.exec(["sh", "-c", "brightnessctl -d " + BrightnessService.shellQuote(state.brightnessCtlDevice) + " set " + state.pendingBrightnessPercent + "% >/dev/null 2>&1 || true"]);
+        function probe(): void {
+            if (state.brightnessBackend === "brightnessctl" && state.brightnessCtlDevice.length > 0) {
+                probeProcess.exec(["sh", "-c", "current=$(brightnessctl -d " + BrightnessService.shellQuote(state.brightnessCtlDevice) + " g 2>/dev/null); " + "max=$(brightnessctl -d " + BrightnessService.shellQuote(state.brightnessCtlDevice) + " m 2>/dev/null); " + "[ -n \"$current\" ] && [ -n \"$max\" ] && printf 'current value = %s\\nmax value = %s\\n' \"$current\" \"$max\" || true"]);
                 return;
             }
-            if (state.pendingBrightnessRaw < 0)
-                return;
-            setProcess.exec(["sh", "-c", "ddcutil --display " + state.ddcDisplay + " setvcp 10 " + state.pendingBrightnessRaw + " >/dev/null 2>&1 || true"]);
+            probeProcess.exec(["sh", "-c", "ddcutil --brief --display " + state.ddcDisplay + " getvcp 10 2>/dev/null || true"]);
         }
+
+        property list<QtObject> _children: [
+            Process {
+                id: setProcess
+            },
+
+            Process {
+                id: detectProcess
+                stdout: StdioCollector {
+                    waitForEnd: true
+                    onStreamFinished: {
+                        var raw = text.trim();
+                        if (raw.length === 0)
+                            return;
+                        var parts = raw.split(/\t+/);
+                        var backend = parts.length > 0 ? parts[0].trim() : "";
+                        if (backend !== "brightnessctl" && backend !== "ddcutil")
+                            backend = "ddcutil";
+                        state.brightnessBackend = backend;
+                        state.brightnessCtlDevice = backend === "brightnessctl" && parts.length > 1 ? parts[1].trim() : "";
+                        state.probe();
+                    }
+                }
+            },
+
+            Process {
+                id: probeProcess
+                stdout: StdioCollector {
+                    waitForEnd: true
+                    onStreamFinished: {
+                        var raw = text.trim();
+                        if (raw.length === 0)
+                            return;
+                        var currentMatch = raw.match(/current value =\s*([0-9]+)/);
+                        var maxMatch = raw.match(/max value =\s*([0-9]+)/);
+                        if (!currentMatch || !maxMatch)
+                            return;
+                        var current = parseInt(currentMatch[1]);
+                        var max = parseInt(maxMatch[1]);
+                        if (isNaN(current) || isNaN(max) || max <= 0)
+                            return;
+                        state.brightnessMax = max;
+                        state.brightnessPercent = BrightnessService.clampPercent(Math.round((current * 100) / max));
+                    }
+                }
+            },
+
+            Timer {
+                id: applyTimer
+                interval: 120
+                running: false
+                repeat: false
+                onTriggered: {
+                    if (state.brightnessBackend === "brightnessctl") {
+                        if (state.pendingBrightnessPercent < 0 || state.brightnessCtlDevice.length === 0)
+                            return;
+                        setProcess.exec(["sh", "-c", "brightnessctl -d " + BrightnessService.shellQuote(state.brightnessCtlDevice) + " set " + state.pendingBrightnessPercent + "% >/dev/null 2>&1 || true"]);
+                        return;
+                    }
+                    if (state.pendingBrightnessRaw < 0)
+                        return;
+                    setProcess.exec(["sh", "-c", "ddcutil --display " + state.ddcDisplay + " setvcp 10 " + state.pendingBrightnessRaw + " >/dev/null 2>&1 || true"]);
+                }
+            }
+        ]
     }
 }
