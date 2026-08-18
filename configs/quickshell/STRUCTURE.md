@@ -63,7 +63,7 @@ Generic, app-agnostic controls: `Dropdown.qml`, `ProgressBar.qml`, `Slider.qml`,
 
 Singletons (declared via `singleton` in `qmldir`) exposing system state to the rest of the shell:
 
-- `BluetoothService.qml`, `BrightnessService.qml`, `ClockService.qml`, `LockService.qml`, `MediaService.qml`, `NotificationService.qml`, `PowerService.qml`, `VolumeService.qml`, `WallpaperService.qml`
+- `BluetoothService.qml`, `BrightnessService.qml`, `ClockService.qml`, `LockService.qml`, `MediaService.qml`, `NotificationService.qml`, `PowerService.qml`, `SystemInfoService.qml`, `VolumeService.qml`, `WallpaperService.qml`
 - `Strings.qml` — shared string constants
 
 ## `theme/`
