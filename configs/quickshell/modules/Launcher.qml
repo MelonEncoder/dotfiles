@@ -26,7 +26,6 @@ Scope {
     readonly property int row_radius: Shape.radiusLarge
     readonly property int icon_size: 28
     readonly property int icon_wrap_size: 40
-    readonly property int border_width: 2
 
     property bool visible: false
     property string query: ""
@@ -189,7 +188,6 @@ Scope {
                 width: Math.min(root.window_width, parent.width - (root.window_margin * 2))
                 height: Math.min(root.window_height, parent.height - (root.window_margin * 2))
                 radius: 18
-                border.width: root.border_width
                 border.color: Colors.overlayLight
                 z: 1
                 expanded: root.visible
@@ -204,7 +202,6 @@ Scope {
                         Layout.preferredHeight: root.search_height
                         radius: root.row_radius
                         color: Colors.surface
-                        border.width: root.border_width
                         border.color: searchInput.activeFocus ? LauncherTheme.searchActiveBorder : Colors.borderSubtle
 
                         RowLayout {
