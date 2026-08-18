@@ -8,6 +8,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import "../components/popups"
+import "../components/surfaces"
 import "../theme"
 
 Scope {
@@ -182,47 +183,16 @@ Scope {
                 onClose: root.closeLauncher()
             }
 
-            Rectangle {
+            PopupSurface {
                 id: panel
                 anchors.centerIn: parent
                 width: Math.min(root.window_width, parent.width - (root.window_margin * 2))
                 height: Math.min(root.window_height, parent.height - (root.window_margin * 2))
                 radius: 18
-                color: Colors.background
                 border.width: root.border_width
                 border.color: Colors.overlayLight
-                opacity: root.visible ? 1 : 0
-                scale: root.visible ? 1 : Animations.dropdownScaleClosed
-                y: root.visible ? 0 : Animations.dropdownOffset
                 z: 1
-                focus: root.visible
-                clip: true
-
-                // Absorb clicks so the backdrop doesn't fire through the panel
-                MouseArea {
-                    anchors.fill: parent
-                }
-
-                Behavior on opacity {
-                    NumberAnimation {
-                        duration: Animations.duration_normal
-                        easing.type: Animations.easingStandard
-                    }
-                }
-
-                Behavior on scale {
-                    NumberAnimation {
-                        duration: Animations.duration_slow
-                        easing.type: Animations.easingEmphasized
-                    }
-                }
-
-                Behavior on y {
-                    NumberAnimation {
-                        duration: Animations.duration_slow
-                        easing.type: Animations.easingEmphasized
-                    }
-                }
+                expanded: root.visible
 
                 ColumnLayout {
                     anchors.fill: parent

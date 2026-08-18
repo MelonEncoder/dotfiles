@@ -187,7 +187,6 @@ Rectangle {
                             id: trayMenu
                             menu: trayItem.modelData && trayItem.modelData.hasMenu ? trayItem.modelData.menu : null
                             anchor.item: trayItem
-                            anchor.edges: Edges.Bottom
                             onClosed: root.menuOpen = false
                         }
 

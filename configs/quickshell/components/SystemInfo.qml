@@ -142,14 +142,14 @@ Rectangle {
         visible: value.length > 0
 
         Text {
-            text: icon
+            text: parent.icon
             color: Colors.textSubtle
             font.pixelSize: Typography.icon
             font.family: Typography.iconFamily
         }
 
         Text {
-            text: label
+            text: parent.label
             color: Colors.textSubtle
             font.pixelSize: Typography.size
             font.family: Typography.family
@@ -160,7 +160,7 @@ Rectangle {
         }
 
         Text {
-            text: value
+            text: parent.value
             color: Colors.text
             font.pixelSize: Typography.size
             font.family: Typography.family

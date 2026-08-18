@@ -9,6 +9,7 @@ import QtQuick.Layouts
 import "../theme"
 import "../services"
 import "../components"
+import "../components/surfaces"
 import "../components/ui"
 
 Scope {
@@ -84,35 +85,14 @@ Scope {
                 }
             }
 
-            Rectangle {
+            PopupSurface {
                 id: panel
                 anchors.centerIn: parent
                 width: 360
                 height: Math.min(titleBar.height + panelContent.implicitHeight + (LayoutTheme.barWidgetPadding * 2), win.height - 80)
-                radius: Shape.radiusBackground
-                color: Colors.background
-                border.width: Shape.borderWidth
-                border.color: Colors.border
-                opacity: root.visible ? 1 : 0
-                scale: root.visible ? 1 : Animations.dropdownScaleClosed
-                transformOrigin: Item.Center
+                closedOffsetY: 0
                 z: 1
-                focus: root.visible
-                clip: true
-
-                Behavior on opacity {
-                    NumberAnimation {
-                        duration: Animations.duration_normal
-                        easing.type: Animations.easingStandard
-                    }
-                }
-
-                Behavior on scale {
-                    NumberAnimation {
-                        duration: Animations.duration_slow
-                        easing.type: Animations.easingEmphasized
-                    }
-                }
+                expanded: root.visible
 
                 Keys.onEscapePressed: root.close()
 

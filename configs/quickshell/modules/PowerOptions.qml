@@ -8,6 +8,7 @@ import QtQuick
 import QtQuick.Layouts
 import "../services" as Services
 import "../components/popups"
+import "../components/surfaces"
 import "../components/ui"
 import "../theme"
 
@@ -81,39 +82,15 @@ Scope {
                 onClose: root.close()
             }
 
-            Rectangle {
+            PopupSurface {
                 id: panel
                 anchors.centerIn: parent
                 width: root.cellSize * 5
                 height: panelContent.implicitHeight + (LayoutTheme.barWidgetPadding * 2)
-                radius: Shape.radiusBackground
-                color: Colors.background
-                border.width: Shape.borderWidth
-                border.color: Colors.border
-                opacity: root.visible ? 1 : 0
-                scale: root.visible ? 1 : Animations.dropdownScaleClosed
-                transformOrigin: Item.Center
+                clip: false
+                closedOffsetY: 0
                 z: 1
-                focus: root.visible
-
-                Behavior on opacity {
-                    NumberAnimation {
-                        duration: Animations.duration_normal
-                        easing.type: Animations.easingStandard
-                    }
-                }
-
-                Behavior on scale {
-                    NumberAnimation {
-                        duration: Animations.duration_slow
-                        easing.type: Animations.easingEmphasized
-                    }
-                }
-
-                // Absorb clicks so the backdrop doesn't fire through the panel
-                MouseArea {
-                    anchors.fill: parent
-                }
+                expanded: root.visible
 
                 Keys.onPressed: event => {
                     var count = Services.PowerService.actions.length;

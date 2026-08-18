@@ -8,6 +8,7 @@ import Quickshell.Widgets
 import QtQuick
 import QtQuick.Layouts
 import "../components/popups"
+import "../components/surfaces"
 import "../theme"
 import "../services"
 
@@ -226,7 +227,7 @@ Scope {
             // Picker panel
             // -------------------------------------------------------------
 
-            Rectangle {
+            PopupSurface {
                 id: panel
                 anchors.centerIn: parent
 
@@ -234,39 +235,8 @@ Scope {
                 height: panelContent.implicitHeight + (root.content_padding * 2)
 
                 radius: root.window_radius
-                color: Colors.background
-                opacity: root.selectorVisible ? 1 : 0
-                scale: root.selectorVisible ? 1 : Animations.dropdownScaleClosed
-                y: root.selectorVisible ? 0 : Animations.dropdownOffset
                 z: 1
-                focus: root.selectorVisible
-                clip: true
-
-                Behavior on opacity {
-                    NumberAnimation {
-                        duration: Animations.duration_normal
-                        easing.type: Animations.easingStandard
-                    }
-                }
-
-                Behavior on scale {
-                    NumberAnimation {
-                        duration: Animations.duration_slow
-                        easing.type: Animations.easingEmphasized
-                    }
-                }
-
-                Behavior on y {
-                    NumberAnimation {
-                        duration: Animations.duration_slow
-                        easing.type: Animations.easingEmphasized
-                    }
-                }
-
-                // Absorb clicks so the backdrop doesn't fire through the panel
-                MouseArea {
-                    anchors.fill: parent
-                }
+                expanded: root.selectorVisible
 
                 Keys.onPressed: event => {
                     var count = WallpaperService.wallpaperModel.count;
