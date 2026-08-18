@@ -1,11 +1,10 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
-import Quickshell
-import QtQuick.Layouts
 import Quickshell.Wayland
 import "../services" as Services
 import "../theme"
+import "../components/ui"
 
 Item {
     id: root
@@ -341,111 +340,18 @@ Item {
                             spacing: 16
 
                             Repeater {
-                                model: [
-                                    {
-                                        icon: "󰒲",
-                                        label: "Suspend",
-                                        action: function() {
-                                            Services.LockService.suspend();
-                                        }
-                                    },
-                                    {
-                                        icon: "󰤄",
-                                        label: "Sleep",
-                                        action: function() {
-                                            Services.LockService.sleep();
-                                        }
-                                    },
-                                    {
-                                        icon: "󰑓",
-                                        label: "Restart",
-                                        action: function() {
-                                            Services.LockService.reboot();
-                                        }
-                                    },
-                                    {
-                                        icon: "󰐥",
-                                        label: "Shutdown",
-                                        action: function() {
-                                            Services.LockService.shutdown();
-                                        }
-                                    }
-                                ]
+                                model: Services.PowerService.actions.filter(
+                                    a => a.action !== "lock"
+                                )
 
-                                Rectangle {
-                                    id: powerOption
-
+                                SquareButton {
+                                    id: button
                                     required property var modelData
 
-                                    property bool hovered:
-                                        powerMouse.containsMouse
+                                    iconName: modelData.iconName
+                                    text: modelData.action
 
-                                    width: 90
-                                    height: 64
-
-                                    radius: Shape.radiusNormal * 2
-
-                                    color:
-                                        hovered
-                                            ? Colors.overlayLight
-                                            : "transparent"
-
-                                    Behavior on color {
-                                        ColorAnimation {
-                                            duration:
-                                                Animations.duration_hover
-
-                                            easing.type:
-                                                Animations.easingStandard
-                                        }
-                                    }
-
-                                    Column {
-                                        anchors.centerIn: parent
-                                        spacing: 6
-
-                                        Text {
-                                            anchors.horizontalCenter:
-                                                parent.horizontalCenter
-
-                                            text: powerOption.modelData.icon
-
-                                            color: Colors.text
-
-                                            font.family:
-                                                Typography.iconFamily
-
-                                            font.pixelSize: 22
-                                        }
-
-                                        Text {
-                                            anchors.horizontalCenter:
-                                                parent.horizontalCenter
-
-                                            text: powerOption.modelData.label
-
-                                            color: Colors.text
-
-                                            font.family:
-                                                LockScreenTheme.bodyFontFamily
-
-                                            font.pixelSize:
-                                                LockScreenTheme.statusFontSize
-                                        }
-                                    }
-
-                                    MouseArea {
-                                        id: powerMouse
-
-                                        anchors.fill: parent
-
-                                        hoverEnabled: true
-                                        cursorShape:
-                                            Qt.PointingHandCursor
-
-                                        onClicked:
-                                            powerOption.modelData.action()
-                                    }
+                                    size: 100
                                 }
                             }
                         }
