@@ -7,7 +7,6 @@ import Quickshell.Hyprland
 import QtQuick
 import QtQuick.Layouts
 import "../services" as Services
-import "../components/popups"
 import "../components/surfaces"
 import "../components/ui"
 import "../theme"

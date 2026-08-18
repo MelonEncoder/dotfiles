@@ -3,7 +3,6 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
-import "../popups"
 import "../../theme"
 
 // Standardized dropdown surface for bar widgets (Clock, SystemTray,

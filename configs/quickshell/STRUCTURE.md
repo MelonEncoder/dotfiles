@@ -49,11 +49,15 @@ Widgets used inside `modules/`:
 
 ### `components/popups/`
 
-- `Backdrop.qml` — full-screen transparent backdrop used by popups to close on outside click / ESC
+Bar-widget dropdown contents (e.g. `ClockPopup.qml`, `SystemInfoPopup.qml`, `SystemTrayPopup.qml`, `MediaPlayerPopup.qml`, `ControlPanelPopup.qml`, `NotificationCenterPopup.qml`).
 
 ### `components/surfaces/`
 
-Shared helpers for popup/window surfaces (currently empty `qmldir`).
+Shared low-level building blocks for popup/window surfaces:
+
+- `Backdrop.qml` — full-screen darkening backdrop that closes on outside click / ESC
+- `PopupSurface.qml` — reusable animated card surface for popup/dropdown panels
+- `BarPopupSurface.qml` — standardized dropdown surface for bar widgets (composes `Backdrop` + a card panel + header)
 
 ### `components/ui/`
 

@@ -7,7 +7,6 @@ import Quickshell.Widgets
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import "../components/popups"
 import "../components/surfaces"
 import "../theme"
 
