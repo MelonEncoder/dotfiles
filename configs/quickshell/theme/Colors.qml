@@ -5,16 +5,16 @@ import QtQuick
 
 Singleton {
     // Base colors
-    readonly property color red: "#f8a8a8"
-    readonly property color orange: "#fbc490"
-    readonly property color yellow: "#fde68a"
-    readonly property color green: "#a7e8b8"
-    readonly property color blue: "#a8c8f0"
+    readonly property color red: "#f45a8b"
+    readonly property color orange: "#f4905a"
+    readonly property color yellow: "#f4e75a"
+    readonly property color green: "#5af493"
+    readonly property color blue: "#5a93f4"
     readonly property color purple: "#8b5cf6"
-    readonly property color violet: "#c9b6f5"
+    readonly property color violet: "#f45aed"
 
     // Accent
-    readonly property color accentPrimary: purple
+    readonly property color accentPrimary: red
     readonly property color accentSecondary: "#06b6d4"
 
     // Base
@@ -25,9 +25,9 @@ Singleton {
 
     // Borders / overlays
     readonly property color border: Qt.rgba(1, 1, 1, 0.4)
-    readonly property color borderSubtle: Qt.rgba(1, 1, 1, 0.267)
+    readonly property color borderSubtle: Qt.rgba(1, 1, 1, 0.25)
     readonly property color overlayLight: Qt.rgba(1, 1, 1, 0.2)
-    readonly property color overlayDark: Qt.rgba(0, 0, 0, 0.078)
+    readonly property color overlayDark: Qt.rgba(0, 0, 0, 0.2)
 
     // Text
     readonly property color text: Qt.rgba(1, 1, 1, 1)

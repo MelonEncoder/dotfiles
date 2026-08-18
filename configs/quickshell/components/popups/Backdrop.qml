@@ -1,6 +1,7 @@
 import QtQuick
+import "../../theme"
 
-// Full-screen transparent backdrop for popup windows.
+// Full-screen darkening backdrop for popup windows.
 // Closes the popup when clicking outside or pressing ESC.
 //
 // Usage inside a PopupWindow:
@@ -14,7 +15,15 @@ Rectangle {
     signal close
 
     anchors.fill: parent
-    color: "transparent"
+    color: Colors.overlayDark
+    opacity: root.expanded ? 1 : 0
+
+    Behavior on opacity {
+        NumberAnimation {
+            duration: Animations.duration_normal
+            easing.type: Animations.easingStandard
+        }
+    }
 
     MouseArea {
         anchors.fill: parent

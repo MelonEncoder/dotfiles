@@ -6,6 +6,7 @@ import Quickshell.Hyprland
 import Quickshell.Io
 import Quickshell.Widgets
 import QtQuick
+import QtQuick.Layouts
 import "../components/popups"
 import "../theme"
 import "../services"
@@ -29,8 +30,9 @@ Scope {
     // Picker layout
     // -------------------------------------------------------------------------
 
-    readonly property int window_margin: 24
-    readonly property int content_padding: 8
+    readonly property int window_margin: 48
+    readonly property int content_padding: 22
+    readonly property int section_spacing: 16
 
     readonly property int grid_columns: 3
     readonly property int max_visible_rows: 3
@@ -47,7 +49,6 @@ Scope {
     readonly property int preview_radius: 12
     readonly property int caption_radius: 0
 
-    readonly property int window_border_width: 2
     readonly property int selected_border_width: 2
     readonly property int default_border_width: 0
 
@@ -60,9 +61,6 @@ Scope {
 
     readonly property int gridViewHeight:
         max_visible_rows * (thumbnail_height + grid_spacing)
-
-    readonly property int panelContentHeight:
-        gridViewHeight + (content_padding * 2)
 
     // -------------------------------------------------------------------------
     // Initialization
@@ -229,146 +227,201 @@ Scope {
             // -------------------------------------------------------------
 
             Rectangle {
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.verticalCenter: parent.verticalCenter
+                id: panel
+                anchors.centerIn: parent
 
                 width: Math.min(root.windowContentWidth, parent.width - (root.window_margin * 2))
-                implicitHeight: root.panelContentHeight
+                height: panelContent.implicitHeight + (root.content_padding * 2)
 
                 radius: root.window_radius
                 color: Colors.background
-                border.width: root.window_border_width
-                border.color: WallpaperTheme.windowBorder
+                opacity: root.selectorVisible ? 1 : 0
+                scale: root.selectorVisible ? 1 : Animations.dropdownScaleClosed
+                y: root.selectorVisible ? 0 : Animations.dropdownOffset
+                z: 1
+                focus: root.selectorVisible
+                clip: true
+
+                Behavior on opacity {
+                    NumberAnimation {
+                        duration: Animations.duration_normal
+                        easing.type: Animations.easingStandard
+                    }
+                }
+
+                Behavior on scale {
+                    NumberAnimation {
+                        duration: Animations.duration_slow
+                        easing.type: Animations.easingEmphasized
+                    }
+                }
+
+                Behavior on y {
+                    NumberAnimation {
+                        duration: Animations.duration_slow
+                        easing.type: Animations.easingEmphasized
+                    }
+                }
 
                 // Absorb clicks so the backdrop doesn't fire through the panel
                 MouseArea {
                     anchors.fill: parent
                 }
 
-                // -----------------------------------------------------
-                // Wallpaper grid
-                // -----------------------------------------------------
-
-                GridView {
-                    id: gridView
-
-                    anchors.fill: parent
+                ColumnLayout {
+                    id: panelContent
+                    anchors.top: parent.top
+                    anchors.left: parent.left
+                    anchors.right: parent.right
                     anchors.margins: root.content_padding
+                    spacing: root.section_spacing
 
-                    cellWidth: root.thumbnail_width + root.grid_spacing
-                    cellHeight: root.thumbnail_height + root.grid_spacing
+                    // -----------------------------------------------------
+                    // Title
+                    // -----------------------------------------------------
 
-                    model: WallpaperService.wallpaperModel
-                    currentIndex: root.selectedIndex
-                    keyNavigationWraps: true
-                    boundsBehavior: Flickable.StopAtBounds
-                    clip: true
-                    focus: root.selectorVisible
-
-                    onCurrentIndexChanged: {
-                        if (currentIndex < 0)
-                            return;
-
-                        root.selectedIndex = currentIndex;
+                    Text {
+                        Layout.fillWidth: true
+                        text: Strings.tr(Strings.keys.wallpaper)
+                        color: Colors.textSubtle
+                        font.pixelSize: Typography.xs
+                        font.family: Typography.family
+                        font.capitalization: Font.AllUppercase
+                        font.letterSpacing: 1
+                        leftPadding: 2
                     }
 
-                    Connections {
-                        target: root
-                        function onSelectedIndexChanged() {
-                            if (gridView.currentIndex !== root.selectedIndex)
-                                gridView.currentIndex = root.selectedIndex;
+                    Rectangle {
+                        Layout.fillWidth: true
+                        implicitHeight: 1
+                        color: Colors.borderSubtle
+                    }
+
+                    // -----------------------------------------------------
+                    // Wallpaper grid
+                    // -----------------------------------------------------
+
+                    GridView {
+                        id: gridView
+
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: root.gridViewHeight
+
+                        cellWidth: root.thumbnail_width + root.grid_spacing
+                        cellHeight: root.thumbnail_height + root.grid_spacing
+
+                        model: WallpaperService.wallpaperModel
+                        currentIndex: root.selectedIndex
+                        keyNavigationWraps: true
+                        boundsBehavior: Flickable.StopAtBounds
+                        clip: true
+                        focus: root.selectorVisible
+
+                        onCurrentIndexChanged: {
+                            if (currentIndex < 0)
+                                return;
+
+                            root.selectedIndex = currentIndex;
                         }
-                    }
 
-                    Keys.onReturnPressed: root.applySelectedWallpaper()
-                    Keys.onEnterPressed: root.applySelectedWallpaper()
-                    Keys.onEscapePressed: root.closeSelector()
-
-                    // -------------------------------------------------
-                    // Wallpaper thumbnail
-                    // -------------------------------------------------
-
-                    delegate: Item {
-                        id: wallpaper
-
-                        required property int index
-                        required property string fileName
-
-                        readonly property bool selected: GridView.isCurrentItem
-                        property bool hovered: mouseArea.containsMouse
-
-                        width: root.thumbnail_width
-                        height: root.thumbnail_height
-
-                        ClippingRectangle {
-                            anchors.fill: parent
-
-                            radius: root.preview_radius
-                            color: (wallpaper.selected || wallpaper.hovered) ? Colors.overlayLight : Colors.overlayDark
-                            border.width: wallpaper.selected ? root.selected_border_width : root.default_border_width
-                            border.color: Colors.accentPrimary
-                            clip: true
-
-                            Behavior on color {
-                                ColorAnimation {
-                                    duration: Animations.duration_hover
-                                    easing.type: Animations.easingStandard
-                                }
+                        Connections {
+                            target: root
+                            function onSelectedIndexChanged() {
+                                if (gridView.currentIndex !== root.selectedIndex)
+                                    gridView.currentIndex = root.selectedIndex;
                             }
+                        }
+
+                        Keys.onReturnPressed: root.applySelectedWallpaper()
+                        Keys.onEnterPressed: root.applySelectedWallpaper()
+                        Keys.onEscapePressed: root.closeSelector()
+
+                        // ---------------------------------------------
+                        // Wallpaper thumbnail
+                        // ---------------------------------------------
+
+                        delegate: Item {
+                            id: wallpaper
+
+                            required property int index
+                            required property string fileName
+
+                            readonly property bool selected: GridView.isCurrentItem
+                            property bool hovered: mouseArea.containsMouse
+
+                            width: root.thumbnail_width
+                            height: root.thumbnail_height
 
                             ClippingRectangle {
                                 anchors.fill: parent
-                                anchors.margins: root.preview_margin
 
-                                radius: Math.max(root.preview_radius - root.preview_margin, 0)
-                                color: "transparent"
+                                radius: root.preview_radius
+                                color: (wallpaper.selected || wallpaper.hovered) ? Colors.overlayLight : Colors.overlayDark
+                                border.width: wallpaper.selected ? root.selected_border_width : root.default_border_width
+                                border.color: Colors.accentPrimary
                                 clip: true
 
-                                Image {
-                                    anchors.fill: parent
+                                Behavior on color {
+                                    ColorAnimation {
+                                        duration: Animations.duration_hover
+                                        easing.type: Animations.easingStandard
+                                    }
+                                }
 
-                                    source: WallpaperService.pathFor(wallpaper.fileName)
-                                    fillMode: Image.PreserveAspectCrop
-                                    asynchronous: true
-                                    cache: false
+                                ClippingRectangle {
+                                    anchors.fill: parent
+                                    anchors.margins: root.preview_margin
+
+                                    radius: Math.max(root.preview_radius - root.preview_margin, 0)
+                                    color: "transparent"
+                                    clip: true
+
+                                    Image {
+                                        anchors.fill: parent
+
+                                        source: WallpaperService.pathFor(wallpaper.fileName)
+                                        fillMode: Image.PreserveAspectCrop
+                                        asynchronous: true
+                                        cache: false
+                                    }
+                                }
+
+                                Rectangle {
+                                    anchors.left: parent.left
+                                    anchors.right: parent.right
+                                    anchors.bottom: parent.bottom
+                                    anchors.margins: root.preview_margin
+
+                                    height: root.caption_height
+                                    radius: root.caption_radius
+                                    color: WallpaperTheme.caption
+
+                                    Text {
+                                        anchors.fill: parent
+                                        anchors.leftMargin: root.caption_padding
+                                        anchors.rightMargin: root.caption_padding
+
+                                        text: wallpaper.fileName
+                                        color: Colors.text
+                                        font.pixelSize: Typography.size
+                                        font.family: Typography.family
+                                        verticalAlignment: Text.AlignVCenter
+                                        elide: Text.ElideRight
+                                    }
                                 }
                             }
 
-                            Rectangle {
-                                anchors.left: parent.left
-                                anchors.right: parent.right
-                                anchors.bottom: parent.bottom
-                                anchors.margins: root.preview_margin
+                            MouseArea {
+                                id: mouseArea
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                cursorShape: Qt.PointingHandCursor
 
-                                height: root.caption_height
-                                radius: root.caption_radius
-                                color: WallpaperTheme.caption
-
-                                Text {
-                                    anchors.fill: parent
-                                    anchors.leftMargin: root.caption_padding
-                                    anchors.rightMargin: root.caption_padding
-
-                                    text: wallpaper.fileName
-                                    color: Colors.text
-                                    font.pixelSize: Typography.size
-                                    font.family: Typography.family
-                                    verticalAlignment: Text.AlignVCenter
-                                    elide: Text.ElideRight
+                                onClicked: gridView.currentIndex = wallpaper.index
+                                onDoubleClicked: {
+                                    gridView.currentIndex = wallpaper.index;
+                                    root.applySelectedWallpaper();
                                 }
-                            }
-                        }
-
-                        MouseArea {
-                            id: mouseArea
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            cursorShape: Qt.PointingHandCursor
-
-                            onClicked: gridView.currentIndex = wallpaper.index
-                            onDoubleClicked: {
-                                gridView.currentIndex = wallpaper.index;
-                                root.applySelectedWallpaper();
                             }
                         }
                     }

@@ -18,6 +18,7 @@ Singleton {
         system_tray:      { en: "System Tray",          ja: "システムトレイ" },
         calendar:         { en: "Calendar",             ja: "カレンダー" },
         notifications:    { en: "Notifications",        ja: "通知" },
+        wallpaper:        { en: "Wallpaper",             ja: "壁紙" },
 
         // Notification panel
         no_notifications: { en: "No notifications",     ja: "通知なし" },

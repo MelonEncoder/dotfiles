@@ -7,6 +7,7 @@ import Quickshell.Widgets
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import "../components/popups"
 import "../theme"
 
 Scope {
@@ -176,17 +177,9 @@ Scope {
             implicitWidth: modelData.width
             implicitHeight: modelData.height
 
-            Rectangle {
-                anchors.fill: parent
-                color: LauncherTheme.overlay
-                opacity: root.visible ? 1 : 0
-
-                Behavior on opacity {
-                    NumberAnimation {
-                        duration: Animations.duration_normal
-                        easing.type: Animations.easingStandard
-                    }
-                }
+            Backdrop {
+                expanded: root.visible
+                onClose: root.closeLauncher()
             }
 
             Rectangle {
@@ -204,6 +197,11 @@ Scope {
                 z: 1
                 focus: root.visible
                 clip: true
+
+                // Absorb clicks so the backdrop doesn't fire through the panel
+                MouseArea {
+                    anchors.fill: parent
+                }
 
                 Behavior on opacity {
                     NumberAnimation {
@@ -536,13 +534,6 @@ Scope {
                     root.closeLauncher();
                     event.accepted = true;
                 }
-            }
-
-            MouseArea {
-                anchors.fill: parent
-                acceptedButtons: Qt.LeftButton
-                z: 0
-                onClicked: root.closeLauncher()
             }
         }
     }

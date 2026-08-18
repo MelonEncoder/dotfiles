@@ -7,6 +7,7 @@ import Quickshell.Hyprland
 import QtQuick
 import QtQuick.Layouts
 import "../services" as Services
+import "../components/popups"
 import "../components/ui"
 import "../theme"
 
@@ -75,17 +76,9 @@ Scope {
             implicitWidth: modelData.width
             implicitHeight: modelData.height
 
-            Rectangle {
-                anchors.fill: parent
-                color: LauncherTheme.overlay
-                opacity: root.visible ? 1 : 0
-
-                Behavior on opacity {
-                    NumberAnimation {
-                        duration: Animations.duration_normal
-                        easing.type: Animations.easingStandard
-                    }
-                }
+            Backdrop {
+                expanded: root.visible
+                onClose: root.close()
             }
 
             Rectangle {
@@ -115,6 +108,11 @@ Scope {
                         duration: Animations.duration_slow
                         easing.type: Animations.easingEmphasized
                     }
+                }
+
+                // Absorb clicks so the backdrop doesn't fire through the panel
+                MouseArea {
+                    anchors.fill: parent
                 }
 
                 Keys.onPressed: event => {
@@ -201,13 +199,6 @@ Scope {
                         }
                     }
                 }
-            }
-
-            MouseArea {
-                anchors.fill: parent
-                acceptedButtons: Qt.LeftButton
-                z: 0
-                onClicked: root.close()
             }
         }
     }
