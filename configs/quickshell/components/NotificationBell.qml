@@ -4,8 +4,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Hyprland
-import ".."
-import "../../services"
+import "../services"
 
 Item {
     id: root

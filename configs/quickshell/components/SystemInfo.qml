@@ -5,7 +5,6 @@ import QtQuick.Layouts
 import Quickshell.Io
 import Quickshell
 import Quickshell.Hyprland
-import ".."
 
 Rectangle {
     id: root

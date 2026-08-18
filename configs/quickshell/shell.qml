@@ -9,8 +9,8 @@ ShellRoot {
     Lock {
         id: lock
     }
-    Notifications {}
+    NotificationCenter {}
     PowerOptions {}
-    SystemOptions {}
     Wallpaper {}
+    WallpaperPicker {}
 }

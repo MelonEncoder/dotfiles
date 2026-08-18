@@ -1,6 +1,5 @@
 import QtQuick
 import Quickshell.Hyprland
-import ".."
 
 Rectangle {
     id: root

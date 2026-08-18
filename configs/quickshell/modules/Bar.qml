@@ -4,7 +4,7 @@ import Quickshell
 import Quickshell.Wayland
 import QtQuick
 import QtQuick.Layouts
-import "../components/bar_widgets"
+import "../components"
 
 Scope {
     Variants {
@@ -81,7 +81,7 @@ Scope {
                         Clock {
                             Layout.alignment: Qt.AlignVCenter
                         }
-                        Media {
+                        MediaPlayer {
                             Layout.alignment: Qt.AlignVCenter
                         }
                     }

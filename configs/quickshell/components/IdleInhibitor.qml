@@ -2,7 +2,6 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import Quickshell.Wayland as QsWayland
-import ".."
 
 Rectangle {
     id: toggleButton
