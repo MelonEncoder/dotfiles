@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import Quickshell.Io
 import "../theme"
 import "../services"
+import "ui"
 
 Item {
     id: root
@@ -24,92 +25,22 @@ Item {
         width: parent.width
         spacing: 6
 
-        Rectangle {
-            id: fullscreenButton
-            property bool hovered: fullscreenMouse.containsMouse
-            property bool pressed: fullscreenMouse.pressed
+        StyledButton {
             Layout.fillWidth: true
-            Layout.preferredHeight: LayoutTheme.barWidgetHeight * 1.5
-            radius: Shape.radiusNormal
-            color: pressed ? Colors.surfacePressed : (hovered ? Colors.surfaceHover : Colors.surface)
-
-            Behavior on color {
-                ColorAnimation {
-                    duration: Animations.duration_hover
-                    easing.type: Animations.easingStandard
-                }
-            }
-
-            RowLayout {
-                anchors.centerIn: parent
-                spacing: 6
-
-                Text {
-                    text: "󰍹"
-                    color: Colors.text
-                    font.pixelSize: Typography.iconSm
-                    font.family: Typography.iconFamily
-                }
-
-                Text {
-                    text: Strings.tr(Strings.keys.fullscreen)
-                    color: Colors.text
-                    font.pixelSize: Typography.size
-                    font.family: Typography.family
-                }
-            }
-
-            MouseArea {
-                id: fullscreenMouse
-                anchors.fill: parent
-                hoverEnabled: true
-                cursorShape: Qt.PointingHandCursor
-                onClicked: root.trigger("output")
-            }
+            size: LayoutTheme.barWidgetHeight * 1.5
+            icon: "󰍹"
+            iconSize: Typography.iconSm
+            text: Strings.tr(Strings.keys.fullscreen)
+            onClicked: root.trigger("output")
         }
 
-        Rectangle {
-            id: regionButton
-            property bool hovered: regionMouse.containsMouse
-            property bool pressed: regionMouse.pressed
+        StyledButton {
             Layout.fillWidth: true
-            Layout.preferredHeight: LayoutTheme.barWidgetHeight * 1.5
-            radius: Shape.radiusNormal
-            color: pressed ? Colors.surfacePressed : (hovered ? Colors.surfaceHover : Colors.surface)
-
-            Behavior on color {
-                ColorAnimation {
-                    duration: Animations.duration_hover
-                    easing.type: Animations.easingStandard
-                }
-            }
-
-            RowLayout {
-                anchors.centerIn: parent
-                spacing: 6
-
-                Text {
-                    text: "󰹑"
-                    color: Colors.text
-                    font.pixelSize: Typography.iconSm
-                    font.family: Typography.iconFamily
-                }
-
-                Text {
-                    text: Strings.tr(Strings.keys.region)
-                    color: Colors.text
-                    font.pixelSize: Typography.size
-                    font.family: Typography.family
-                }
-            }
-
-            MouseArea {
-                id: regionMouse
-                anchors.fill: parent
-                hoverEnabled: true
-                cursorShape: Qt.PointingHandCursor
-                onClicked: root.trigger("region")
-            }
+            size: LayoutTheme.barWidgetHeight * 1.5
+            icon: "󰹑"
+            iconSize: Typography.iconSm
+            text: Strings.tr(Strings.keys.region)
+            onClicked: root.trigger("region")
         }
     }
     Process {

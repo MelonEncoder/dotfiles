@@ -3,416 +3,263 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
-import "../theme" as Theme
+import "../theme"
 import "../services"
+import "ui"
 
-Rectangle {
+Dropdown {
     id: root
 
-    property bool expanded: false
+    icon: BluetoothService.enabled ? "󰂱" : "󰂲"
+    title: Strings.tr(Strings.keys.bluetooth)
+    subtitle: BluetoothService.enabled
+        ? Strings.tr(Strings.keys.bt_on)
+        : Strings.tr(Strings.keys.bt_off)
 
-    readonly property int sectionMargin:
-        Math.round(LayoutTheme.barWidgetPadding / 2)
+    onToggled: expanded => {
+        if (expanded)
+            BluetoothService.discover();
+    }
 
-    readonly property int expandedContentHeight:
-        bluetoothExpandedContent.implicitHeight
+    Text {
+        text: Strings.tr(Strings.keys.connected)
 
-    implicitWidth: 280
-    implicitHeight: btFrame.implicitHeight + (sectionMargin * 2)
+        color: Colors.textSubtle
+        font.pixelSize: Typography.size
+        font.family: Typography.family
 
-    width: implicitWidth
-    height: implicitHeight
+        Layout.fillWidth: true
+        Layout.topMargin: 4
+    }
 
-    Layout.fillWidth: true
-    Layout.preferredWidth: implicitWidth
-    Layout.preferredHeight: implicitHeight
+    Repeater {
+        model: BluetoothService.getConnectedDevices()
 
-    radius: Shape.radiusNormal
-    color: Colors.surface
+        Rectangle {
+            id: connectedBtDevice
 
-    Item {
-        id: btFrame
+            required property var modelData
 
-        x: root.sectionMargin
-        y: root.sectionMargin
+            property bool hovered:
+                connectedDeviceMouse.containsMouse
 
-        width: parent.width - (root.sectionMargin * 2)
+            property bool pressed:
+                connectedDeviceMouse.pressed
 
-        implicitHeight: btMenu.implicitHeight
+            Layout.fillWidth: true
+            Layout.preferredHeight: LayoutTheme.barWidgetHeight
 
-        ColumnLayout {
-            id: btMenu
+            radius: Shape.radiusNormal
 
-            width: parent.width
-            spacing: 4
+            color: pressed
+                ? Colors.surfacePressed
+                : hovered
+                    ? Colors.surfaceHover
+                    : "transparent"
 
-            Rectangle {
-                id: bluetoothHeader
-
-                property bool hovered: bluetoothHeaderMouse.containsMouse
-                property bool pressed: bluetoothHeaderMouse.pressed
-
-                Layout.fillWidth: true
-                Layout.preferredHeight: LayoutTheme.barWidgetHeight * 1.5
-
-                radius: Shape.radiusNormal
-                color: pressed
-                    ? Colors.surfacePressed
-                    : Colors.surfaceHover
-
-                Behavior on color {
-                    ColorAnimation {
-                        duration: Animations.duration_hover
-                        easing.type: Animations.easingStandard
-                    }
-                }
-
-                RowLayout {
-                    anchors {
-                        left: parent.left
-                        right: parent.right
-                        verticalCenter: parent.verticalCenter
-
-                        leftMargin: 10
-                        rightMargin: 10
-                    }
-
-                    spacing: 12
-
-                    Text {
-                        text: BluetoothService.enabled ? "󰂱" : "󰂲"
-
-                        color: Colors.text
-                        font.pixelSize: Typography.icon
-                        font.family: Typography.iconFamily
-
-                        Layout.alignment: Qt.AlignVCenter
-                    }
-
-                    Column {
-                        Layout.fillWidth: true
-                        Layout.alignment: Qt.AlignVCenter
-
-                        spacing: 1
-
-                        Text {
-                            text: Strings.tr(Strings.keys.bluetooth)
-
-                            color: Colors.text
-                            font.pixelSize: Typography.size
-                            font.family: Typography.family
-                        }
-
-                        Text {
-                            text: BluetoothService.enabled
-                                ? Strings.tr(Strings.keys.bt_on)
-                                : Strings.tr(Strings.keys.bt_off)
-
-                            color: Colors.textSubtle
-                            font.pixelSize: Typography.size
-                            font.family: Typography.family
-
-                            elide: Text.ElideRight
-                            width: Math.max(0, bluetoothHeader.width - 60)
-                        }
-                    }
-                }
-
-                MouseArea {
-                    id: bluetoothHeaderMouse
-
-                    anchors.fill: parent
-
-                    hoverEnabled: true
-                    cursorShape: Qt.PointingHandCursor
-
-                    onClicked: {
-                        root.expanded = !root.expanded;
-
-                        if (root.expanded)
-                            BluetoothService.discover();
-                    }
+            Behavior on color {
+                ColorAnimation {
+                    duration: Animations.duration_hover
+                    easing.type: Animations.easingStandard
                 }
             }
 
-            Item {
-                visible: root.expanded || opacity > 0.01
+            Image {
+                id: connectedDeviceIcon
 
-                Layout.fillWidth: true
-                Layout.preferredHeight:
-                    root.expanded ? root.expandedContentHeight : 0
+                anchors.left: parent.left
+                anchors.leftMargin: 10
+                anchors.verticalCenter: parent.verticalCenter
 
-                implicitHeight:
-                    root.expanded ? root.expandedContentHeight : 0
+                source: Quickshell.iconPath(
+                    connectedBtDevice.modelData.icon
+                )
 
-                opacity: root.expanded ? 1 : 0
-                clip: true
+                width: Typography.icon
+                height: Typography.icon
 
-                Behavior on Layout.preferredHeight {
-                    NumberAnimation {
-                        duration: Animations.dropdownSection
-                        easing.type: Animations.easingEmphasized
-                    }
-                }
+                fillMode: Image.PreserveAspectFit
+            }
 
-                Behavior on opacity {
-                    NumberAnimation {
-                        duration: Animations.dropdownSection
-                        easing.type: Animations.easingEmphasized
-                    }
-                }
+            Text {
+                anchors.left: connectedDeviceIcon.right
+                anchors.leftMargin: 8
+                anchors.right: parent.right
+                anchors.rightMargin: 10
+                anchors.verticalCenter: parent.verticalCenter
 
-                ColumnLayout {
-                    id: bluetoothExpandedContent
+                text: connectedBtDevice.modelData.name
 
-                    anchors.left: parent.left
-                    anchors.right: parent.right
+                color: Colors.text
+                font.pixelSize: Typography.size
+                font.family: Typography.family
 
-                    spacing: 3
+                elide: Text.ElideRight
+            }
 
-                    Text {
-                        text: Strings.tr(Strings.keys.connected)
+            MouseArea {
+                id: connectedDeviceMouse
 
-                        color: Colors.textSubtle
-                        font.pixelSize: Typography.size
-                        font.family: Typography.family
+                anchors.fill: parent
 
-                        Layout.fillWidth: true
-                        Layout.topMargin: 4
-                    }
+                hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
 
-                    Repeater {
-                        model: BluetoothService.getConnectedDevices()
+                onClicked:
+                    BluetoothService.disconnect(
+                        connectedBtDevice.modelData
+                    )
+            }
+        }
+    }
 
-                        Rectangle {
-                            id: connectedBtDevice
+    Rectangle {
+        Layout.fillWidth: true
+        Layout.preferredHeight: LayoutTheme.barWidgetHeight
 
-                            required property var modelData
+        radius: Shape.radiusNormal
+        color: "transparent"
 
-                            property bool hovered:
-                                connectedDeviceMouse.containsMouse
+        visible:
+            BluetoothService.getConnectedDevices().length === 0
 
-                            property bool pressed:
-                                connectedDeviceMouse.pressed
+        Text {
+            anchors.left: parent.left
+            anchors.leftMargin: 10
+            anchors.verticalCenter: parent.verticalCenter
 
-                            Layout.fillWidth: true
-                            Layout.preferredHeight: LayoutTheme.barWidgetHeight
+            text:
+                !BluetoothService.available
+                    ? Strings.tr(Strings.keys.bt_unavailable)
+                    : BluetoothService.enabled
+                        ? Strings.tr(Strings.keys.none_connected)
+                        : Strings.tr(Strings.keys.bt_disabled)
 
-                            radius: Shape.radiusNormal
+            color: Colors.textSubtle
+            font.pixelSize: Typography.size
+            font.family: Typography.family
+        }
+    }
 
-                            color: pressed
-                                ? Colors.surfacePressed
-                                : hovered
-                                    ? Colors.surfaceHover
-                                    : "transparent"
+    Text {
+        text: Strings.tr(Strings.keys.available)
 
-                            Behavior on color {
-                                ColorAnimation {
-                                    duration: Animations.duration_hover
-                                    easing.type: Animations.easingStandard
-                                }
-                            }
+        color: Colors.textSubtle
+        font.pixelSize: Typography.size
+        font.family: Typography.family
 
-                            Image {
-                                id: connectedDeviceIcon
+        Layout.fillWidth: true
+        Layout.topMargin: 4
+    }
 
-                                anchors.left: parent.left
-                                anchors.leftMargin: 10
-                                anchors.verticalCenter: parent.verticalCenter
+    Repeater {
+        model: BluetoothService.getAvailableDevices()
 
-                                source: Quickshell.iconPath(
-                                    connectedBtDevice.modelData.icon
-                                )
+        Rectangle {
+            id: availableBtDevice
 
-                                width: Typography.icon
-                                height: Typography.icon
+            required property var modelData
 
-                                fillMode: Image.PreserveAspectFit
-                            }
+            property bool hovered:
+                availableDeviceMouse.containsMouse
 
-                            Text {
-                                anchors.left: connectedDeviceIcon.right
-                                anchors.leftMargin: 8
-                                anchors.right: parent.right
-                                anchors.rightMargin: 10
-                                anchors.verticalCenter: parent.verticalCenter
-
-                                text: connectedBtDevice.modelData.name
-
-                                color: Colors.text
-                                font.pixelSize: Typography.size
-                                font.family: Typography.family
-
-                                elide: Text.ElideRight
-                            }
-
-                            MouseArea {
-                                id: connectedDeviceMouse
-
-                                anchors.fill: parent
-
-                                hoverEnabled: true
-                                cursorShape: Qt.PointingHandCursor
-
-                                onClicked:
-                                    BluetoothService.disconnect(
-                                        connectedBtDevice.modelData
-                                    )
-                            }
-                        }
-                    }
-
-                    Rectangle {
-                        Layout.fillWidth: true
-                        Layout.preferredHeight: LayoutTheme.barWidgetHeight
-
-                        radius: Shape.radiusNormal
-                        color: "transparent"
-
-                        visible:
-                            BluetoothService.getConnectedDevices().length === 0
-
-                        Text {
-                            anchors.left: parent.left
-                            anchors.leftMargin: 10
-                            anchors.verticalCenter: parent.verticalCenter
-
-                            text:
-                                !BluetoothService.available
-                                    ? Strings.tr(Strings.keys.bt_unavailable)
-                                    : BluetoothService.enabled
-                                        ? Strings.tr(Strings.keys.none_connected)
-                                        : Strings.tr(Strings.keys.bt_disabled)
-
-                            color: Colors.textSubtle
-                            font.pixelSize: Typography.size
-                            font.family: Typography.family
-                        }
-                    }
-
-                    Text {
-                        text: Strings.tr(Strings.keys.available)
-
-                        color: Colors.textSubtle
-                        font.pixelSize: Typography.size
-                        font.family: Typography.family
-
-                        Layout.fillWidth: true
-                        Layout.topMargin: 4
-                    }
-
-                    Repeater {
-                        model: BluetoothService.getAvailableDevices()
-
-                        Rectangle {
-                            id: availableBtDevice
-
-                            required property var modelData
-
-                            property bool hovered:
-                                availableDeviceMouse.containsMouse
-
-                            property bool pressed:
-                                availableDeviceMouse.pressed
-
-                            Layout.fillWidth: true
-                            Layout.preferredHeight: LayoutTheme.barWidgetHeight
-
-                            radius: Shape.radiusNormal
-
-                            color: pressed
-                                ? Colors.surfacePressed
-                                : hovered
-                                    ? Colors.surfaceHover
-                                    : "transparent"
-
-                            Behavior on color {
-                                ColorAnimation {
-                                    duration: Animations.duration_hover
-                                    easing.type: Animations.easingStandard
-                                }
-                            }
-
-                            Image {
-                                id: availableDeviceIcon
-
-                                anchors.left: parent.left
-                                anchors.leftMargin: 10
-                                anchors.verticalCenter: parent.verticalCenter
-
-                                source: Quickshell.iconPath(
-                                    availableBtDevice.modelData.icon
-                                )
-
-                                width: Typography.icon
-                                height: Typography.icon
-
-                                fillMode: Image.PreserveAspectFit
-                            }
-
-                            Text {
-                                anchors.left: availableDeviceIcon.right
-                                anchors.leftMargin: 8
-                                anchors.right: parent.right
-                                anchors.rightMargin: 10
-                                anchors.verticalCenter: parent.verticalCenter
-
-                                text: availableBtDevice.modelData.name
-
-                                color: Colors.text
-                                font.pixelSize: Typography.size
-                                font.family: Typography.family
-
-                                elide: Text.ElideRight
-                            }
-
-                            MouseArea {
-                                id: availableDeviceMouse
-
-                                anchors.fill: parent
-
-                                hoverEnabled: true
-                                cursorShape: Qt.PointingHandCursor
-
-                                onClicked:
-                                    BluetoothService.connect(
-                                        availableBtDevice.modelData
-                                    )
-                            }
-                        }
-                    }
-
-                    Rectangle {
-                        Layout.fillWidth: true
-                        Layout.preferredHeight: LayoutTheme.barWidgetHeight
-
-                        radius: Shape.radiusNormal
-                        color: "transparent"
-
-                        visible:
-                            BluetoothService.getAvailableDevices().length === 0
-
-                        Text {
-                            anchors.left: parent.left
-                            anchors.leftMargin: 10
-                            anchors.verticalCenter: parent.verticalCenter
-
-                            text:
-                                !BluetoothService.available
-                                    ? Strings.tr(Strings.keys.bt_unavailable)
-                                    : BluetoothService.enabled
-                                        ? BluetoothService.discovering
-                                            ? Strings.tr(Strings.keys.scanning)
-                                            : Strings.tr(Strings.keys.none_available)
-                                        : Strings.tr(Strings.keys.bt_disabled)
-
-                            color: Colors.textSubtle
-                            font.pixelSize: Typography.size
-                            font.family: Typography.family
-                        }
-                    }
+            property bool pressed:
+                availableDeviceMouse.pressed
+
+            Layout.fillWidth: true
+            Layout.preferredHeight: LayoutTheme.barWidgetHeight
+
+            radius: Shape.radiusNormal
+
+            color: pressed
+                ? Colors.surfacePressed
+                : hovered
+                    ? Colors.surfaceHover
+                    : "transparent"
+
+            Behavior on color {
+                ColorAnimation {
+                    duration: Animations.duration_hover
+                    easing.type: Animations.easingStandard
                 }
             }
+
+            Image {
+                id: availableDeviceIcon
+
+                anchors.left: parent.left
+                anchors.leftMargin: 10
+                anchors.verticalCenter: parent.verticalCenter
+
+                source: Quickshell.iconPath(
+                    availableBtDevice.modelData.icon
+                )
+
+                width: Typography.icon
+                height: Typography.icon
+
+                fillMode: Image.PreserveAspectFit
+            }
+
+            Text {
+                anchors.left: availableDeviceIcon.right
+                anchors.leftMargin: 8
+                anchors.right: parent.right
+                anchors.rightMargin: 10
+                anchors.verticalCenter: parent.verticalCenter
+
+                text: availableBtDevice.modelData.name
+
+                color: Colors.text
+                font.pixelSize: Typography.size
+                font.family: Typography.family
+
+                elide: Text.ElideRight
+            }
+
+            MouseArea {
+                id: availableDeviceMouse
+
+                anchors.fill: parent
+
+                hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+
+                onClicked:
+                    BluetoothService.connect(
+                        availableBtDevice.modelData
+                    )
+            }
+        }
+    }
+
+    Rectangle {
+        Layout.fillWidth: true
+        Layout.preferredHeight: LayoutTheme.barWidgetHeight
+
+        radius: Shape.radiusNormal
+        color: "transparent"
+
+        visible:
+            BluetoothService.getAvailableDevices().length === 0
+
+        Text {
+            anchors.left: parent.left
+            anchors.leftMargin: 10
+            anchors.verticalCenter: parent.verticalCenter
+
+            text:
+                !BluetoothService.available
+                    ? Strings.tr(Strings.keys.bt_unavailable)
+                    : BluetoothService.enabled
+                        ? BluetoothService.discovering
+                            ? Strings.tr(Strings.keys.scanning)
+                            : Strings.tr(Strings.keys.none_available)
+                        : Strings.tr(Strings.keys.bt_disabled)
+
+            color: Colors.textSubtle
+            font.pixelSize: Typography.size
+            font.family: Typography.family
         }
     }
 }

@@ -8,6 +8,8 @@ import QtQuick
 import QtQuick.Layouts
 import "../theme"
 import "../services"
+import "../components"
+import "../components/ui"
 
 Scope {
     id: root
@@ -23,7 +25,7 @@ Scope {
     }
 
     IpcHandler {
-        target: "control-panel"
+        target: "system-options"
         function open(): void {
             root.open();
         }
@@ -31,7 +33,7 @@ Scope {
 
     GlobalShortcut {
         appid: "quickshell"
-        name: "control-panel"
+        name: "system-options"
         description: "Open the system settings panel"
         triggerDescription: "SUPER+SHIFT+O"
         onPressed: root.visible ? root.close() : root.open()
@@ -147,35 +149,14 @@ Scope {
                             Layout.alignment: Qt.AlignVCenter
                         }
 
-                        Rectangle {
-                            width: 24
-                            height: 24
-                            radius: Shape.radiusNormal
-                            color: closeBtnHover.containsMouse ? Colors.surfaceHover : "transparent"
+                        StyledButton {
                             Layout.alignment: Qt.AlignVCenter
-
-                            Behavior on color {
-                                ColorAnimation {
-                                    duration: Animations.duration_hover
-                                    easing.type: Animations.easingStandard
-                                }
-                            }
-
-                            Text {
-                                anchors.centerIn: parent
-                                text: "󰅖"
-                                color: Colors.textSubtle
-                                font.pixelSize: Typography.size
-                                font.family: Typography.iconFamily
-                            }
-
-                            MouseArea {
-                                id: closeBtnHover
-                                anchors.fill: parent
-                                hoverEnabled: true
-                                cursorShape: Qt.PointingHandCursor
-                                onClicked: root.close()
-                            }
+                            size: 24
+                            icon: "󰅖"
+                            iconSize: Typography.size
+                            iconColor: Colors.textSubtle
+                            baseColor: "transparent"
+                            onClicked: root.close()
                         }
                     }
 
@@ -205,7 +186,7 @@ Scope {
                         y: LayoutTheme.barWidgetPadding
                         spacing: 6
 
-                        Screenshot {
+                        ScreenshotControls {
                             Layout.fillWidth: true
                         }
                         Brightness {
