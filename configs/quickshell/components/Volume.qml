@@ -34,7 +34,7 @@ Dropdown {
                 }
                 spacing: 10
 
-                StyledButton {
+                LabelButton {
                     Layout.alignment: Qt.AlignVCenter
                     baseColor: "transparent"
                     icon: !VolumeService.sink ? "" : (VolumeService.muted ? "" : "")
@@ -60,7 +60,7 @@ Dropdown {
                     }
                 }
 
-                StyledButton {
+                LabelButton {
                     Layout.alignment: Qt.AlignVCenter
                     baseColor: "transparent"
                     active: root.expanded

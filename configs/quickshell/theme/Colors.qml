@@ -4,8 +4,16 @@ import Quickshell
 import QtQuick
 
 Singleton {
-    // Accent
+    // Base colors
+    readonly property color red: "#f8a8a8"
+    readonly property color orange: "#fbc490"
+    readonly property color yellow: "#fde68a"
+    readonly property color green: "#a7e8b8"
+    readonly property color blue: "#a8c8f0"
     readonly property color purple: "#8b5cf6"
+    readonly property color violet: "#c9b6f5"
+
+    // Accent
     readonly property color accentPrimary: purple
     readonly property color accentSecondary: "#06b6d4"
 

@@ -7,6 +7,7 @@ import Quickshell.Hyprland
 import QtQuick
 import QtQuick.Layouts
 import "../services" as Services
+import "../components/ui"
 import "../theme"
 
 Scope {
@@ -117,7 +118,7 @@ Scope {
                 }
 
                 Keys.onPressed: event => {
-                    var count = root.actions.length;
+                    var count = Services.PowerService.actions.length;
                     var cols = root.gridColumns;
                     var idx = root.focusedIndex < 0 ? 0 : root.focusedIndex;
                     switch (event.key) {
@@ -138,7 +139,7 @@ Scope {
                     case Qt.Key_Return:
                     case Qt.Key_Enter:
                         if (root.focusedIndex >= 0)
-                            root.runAction(root.actions[root.focusedIndex].action);
+                            Services.PowerService.runAction(Services.PowerService.actions[root.focusedIndex].action);
                         break;
                     case Qt.Key_Escape:
                         root.close();
@@ -162,7 +163,7 @@ Scope {
                     Text {
                         Layout.columnSpan: root.gridColumns
                         Layout.fillWidth: true
-                        text: Strings.tr(Strings.keys.system)
+                        text: Services.Strings.tr(Services.Strings.keys.system)
                         color: Colors.textSubtle
                         font.pixelSize: Typography.xs
                         font.family: Typography.family
@@ -180,74 +181,23 @@ Scope {
                     }
 
                     Repeater {
-                        model: root.actions
+                        model: Services.PowerService.actions
 
-                        Rectangle {
+                        SquareButton {
                             id: optionItem
                             required property var modelData
                             required property int index
-                            readonly property bool focused: root.focusedIndex === index
-                            property bool hovered: optionMouse.containsMouse
-                            property bool pressed: optionMouse.pressed
+                            focused: root.focusedIndex === index
 
                             Layout.fillWidth: true
                             Layout.preferredHeight: root.cellSize
-                            radius: Shape.radiusNormal
-                            color: pressed ? Colors.surfacePressed : (hovered || focused ? Colors.surfaceHover : "transparent")
-                            clip: true
+                            size: root.cellSize
+                            iconName: optionItem.modelData.iconName
+                            text: Services.Strings.tr(Services.Strings.keys["power_" + optionItem.modelData.action])
+                            accentColor: Colors.accentPrimary
 
-                            Behavior on color {
-                                ColorAnimation {
-                                    duration: Animations.duration_hover
-                                    easing.type: Animations.easingStandard
-                                }
-                            }
-
-                            // Keyboard focus accent bar
-                            Rectangle {
-                                anchors.bottom: parent.bottom
-                                anchors.left: parent.left
-                                anchors.right: parent.right
-                                height: 2
-                                color: Colors.purple
-                                opacity: optionItem.focused ? 1 : 0
-
-                                Behavior on opacity {
-                                    NumberAnimation {
-                                        duration: Animations.duration_hover
-                                        easing.type: Animations.easingStandard
-                                    }
-                                }
-                            }
-
-                            ColumnLayout {
-                                anchors.centerIn: parent
-                                spacing: 8
-
-                                Image {
-                                    Layout.alignment: Qt.AlignHCenter
-                                    source: "image://icon/" + optionItem.modelData.iconName
-                                    sourceSize.width: 48
-                                    sourceSize.height: 48
-                                }
-
-                                Text {
-                                    Layout.alignment: Qt.AlignHCenter
-                                    text: Strings.tr(Strings.keys["power_" + optionItem.modelData.action])
-                                    color: Colors.text
-                                    font.pixelSize: Typography.size
-                                    font.family: Typography.family
-                                }
-                            }
-
-                            MouseArea {
-                                id: optionMouse
-                                anchors.fill: parent
-                                hoverEnabled: true
-                                cursorShape: Qt.PointingHandCursor
-                                onEntered: root.focusedIndex = optionItem.index
-                                onClicked: PowerService.runAction(optionItem.modelData.action)
-                            }
+                            onEntered: root.focusedIndex = optionItem.index
+                            onClicked: Services.PowerService.runAction(optionItem.modelData.action)
                         }
                     }
                 }

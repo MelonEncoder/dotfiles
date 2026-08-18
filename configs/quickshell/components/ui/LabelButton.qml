@@ -3,7 +3,7 @@ import "../"
 import "../../theme"
 
 /*
-  StyledButton
+  LabelButton
 
   Reusable icon button matching the bar's shared hover/press/color-animation
   recipe (see the media transport controls, mute button, device toggle --

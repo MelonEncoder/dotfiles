@@ -25,7 +25,7 @@ Item {
         width: parent.width
         spacing: 6
 
-        StyledButton {
+        LabelButton {
             Layout.fillWidth: true
             size: LayoutTheme.barWidgetHeight * 1.5
             icon: "󰍹"
@@ -34,7 +34,7 @@ Item {
             onClicked: root.trigger("output")
         }
 
-        StyledButton {
+        LabelButton {
             Layout.fillWidth: true
             size: LayoutTheme.barWidgetHeight * 1.5
             icon: "󰹑"

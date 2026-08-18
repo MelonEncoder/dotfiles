@@ -57,7 +57,7 @@ Shared helpers for popup/window surfaces (currently empty `qmldir`).
 
 ### `components/ui/`
 
-Generic, app-agnostic controls: `Dropdown.qml`, `ProgressBar.qml`, `Slider.qml`, `StyledButton.qml`
+Generic, app-agnostic controls: `Dropdown.qml`, `ProgressBar.qml`, `Slider.qml`, `LabelButton.qml`, `SquareButton.qml`
 
 ## `services/`
 

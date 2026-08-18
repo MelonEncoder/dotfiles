@@ -149,7 +149,7 @@ Scope {
                             Layout.alignment: Qt.AlignVCenter
                         }
 
-                        StyledButton {
+                        LabelButton {
                             Layout.alignment: Qt.AlignVCenter
                             size: 24
                             icon: "󰅖"

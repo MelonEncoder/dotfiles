@@ -1,4 +1,5 @@
 Dropdown 1.0 Dropdown.qml
+LabelButton 1.0 LabelButton.qml
 ProgressBar 1.0 ProgressBar.qml
 Slider 1.0 Slider.qml
-StyledButton 1.0 StyledButton.qml
+SquareButton 1.0 SquareButton.qml

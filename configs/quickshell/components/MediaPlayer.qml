@@ -267,21 +267,21 @@ Item {
                     spacing: 6
                     bottomPadding: 2
 
-                    StyledButton {
+                    LabelButton {
                         icon: "󰒮"
                         size: 32
                         enabled: !!root.currentPlayer && root.currentPlayer.canGoPrevious
                         onClicked: MediaService.previous()
                     }
 
-                    StyledButton {
+                    LabelButton {
                         icon: (root.currentPlayer && root.currentPlayer.isPlaying) ? "󰏤" : "󰐊"
                         size: 36
                         bordered: true
                         onClicked: MediaService.toggleCurrentPlayer()
                     }
 
-                    StyledButton {
+                    LabelButton {
                         icon: "󰒭"
                         size: 32
                         enabled: !!root.currentPlayer && root.currentPlayer.canGoNext
