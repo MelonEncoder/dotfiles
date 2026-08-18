@@ -25,7 +25,7 @@ local font_family = "Noto Sans"
 hl.config({
     general = {
         gaps_in = 5,
-        gaps_out = 5,
+        gaps_out = 10,
         float_gaps = 12,
         border_size = 2,
         col = {
