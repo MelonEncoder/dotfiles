@@ -6,28 +6,14 @@ import Quickshell.Hyprland
 import Quickshell.Io
 import QtQuick
 import "../theme"
+import "../services"
 
 Scope {
     id: root
 
     // -------------------------------------------------------------------------
-    // Wallpaper state
+    // Wallpaper state lives in WallpaperService; this file only owns picker UI
     // -------------------------------------------------------------------------
-
-    readonly property string wallpaperDirectory:
-        Qt.resolvedUrl("../wallpapers")
-            .toString()
-            .replace(/^file:\/\//, "")
-
-    property string currentWallpaper: ""
-    property bool pendingRandom: WallpaperTheme.wallpaper === "random"
-
-    readonly property string currentWallpaperPath:
-        currentWallpaper.length > 0
-            ? Qt.resolvedUrl(
-                "../wallpapers/" + currentWallpaper
-            ).toString()
-            : ""
 
     // -------------------------------------------------------------------------
     // Picker state
@@ -41,8 +27,8 @@ Scope {
     readonly property int carouselLoopCount: 200
 
     readonly property int virtualWallpaperCount:
-        wallpaperModel.count > 0
-            ? wallpaperModel.count * carouselLoopCount
+        WallpaperService.wallpaperModel.count > 0
+            ? WallpaperService.wallpaperModel.count * carouselLoopCount
             : 0
 
     // -------------------------------------------------------------------------
@@ -104,10 +90,37 @@ Scope {
     // -------------------------------------------------------------------------
 
     Component.onCompleted: {
-        refreshWallpapers();
+        WallpaperService.refreshWallpapers();
+        root.syncSelectionToCurrent();
+    }
 
-        if (!pendingRandom && WallpaperTheme.wallpaper !== "random")
-            currentWallpaper = WallpaperTheme.wallpaper;
+    Connections {
+        target: WallpaperService.wallpaperModel
+        function onCountChanged() {
+            root.syncSelectionToCurrent();
+        }
+    }
+
+    // Keeps the picker's selection pointed at whatever WallpaperService
+    // reports as current (e.g. after an async scan or an external change).
+    function syncSelectionToCurrent(): void {
+        var model = WallpaperService.wallpaperModel;
+
+        if (model.count <= 0 || WallpaperService.currentWallpaper.length === 0) {
+            root.clampSelection();
+            return;
+        }
+
+        for (var j = 0; j < model.count; j++) {
+            if (model.get(j).fileName === WallpaperService.currentWallpaper) {
+                root.selectedIndex = j;
+                root.carouselIndex = j;
+                break;
+            }
+        }
+
+        root.clampSelection();
+        root.recenterCarousel();
     }
 
     // -------------------------------------------------------------------------
@@ -115,26 +128,29 @@ Scope {
     // -------------------------------------------------------------------------
 
     function wrappedIndex(index: int): int {
-        if (wallpaperModel.count <= 0)
+        var count = WallpaperService.wallpaperModel.count;
+
+        if (count <= 0)
             return 0;
 
-        var wrapped = index % wallpaperModel.count;
+        var wrapped = index % count;
 
         return wrapped < 0
-            ? wrapped + wallpaperModel.count
+            ? wrapped + count
             : wrapped;
     }
 
     function baseCarouselIndex(): int {
-        if (wallpaperModel.count <= 0)
+        var count = WallpaperService.wallpaperModel.count;
+
+        if (count <= 0)
             return 0;
 
-        return Math.floor(carouselLoopCount / 2) *
-            wallpaperModel.count;
+        return Math.floor(carouselLoopCount / 2) * count;
     }
 
     function recenterCarousel(): void {
-        if (wallpaperModel.count <= 0) {
+        if (WallpaperService.wallpaperModel.count <= 0) {
             carouselIndex = 0;
             return;
         }
@@ -145,7 +161,7 @@ Scope {
     }
 
     function clampSelection(): void {
-        if (wallpaperModel.count <= 0) {
+        if (WallpaperService.wallpaperModel.count <= 0) {
             selectedIndex = 0;
             carouselIndex = 0;
             return;
@@ -155,38 +171,16 @@ Scope {
     }
 
     function selectedWallpaperName(): string {
-        if (wallpaperModel.count <= 0)
+        if (WallpaperService.wallpaperModel.count <= 0)
             return "";
 
         var selectedWallpaper =
-            wallpaperModel.get(selectedIndex);
+            WallpaperService.wallpaperModel.get(selectedIndex);
 
         return selectedWallpaper &&
             selectedWallpaper.fileName
                 ? selectedWallpaper.fileName
                 : "";
-    }
-
-    // -------------------------------------------------------------------------
-    // Wallpaper discovery
-    // -------------------------------------------------------------------------
-
-    function refreshWallpapers(): void {
-        wallpaperScan.running = false;
-
-        wallpaperScan.exec([
-            "bash",
-            "-lc",
-            "find -L \"" +
-                root.wallpaperDirectory +
-                "\" -maxdepth 1 -type f \\(" +
-                " -iname '*.jpg'" +
-                " -o -iname '*.jpeg'" +
-                " -o -iname '*.png'" +
-                " -o -iname '*.webp'" +
-                " -o -iname '*.bmp'" +
-                " \\) -printf '%f\\n' | sort"
-        ]);
     }
 
     // -------------------------------------------------------------------------
@@ -197,7 +191,7 @@ Scope {
         selectorVisible = !selectorVisible;
         statusText = "";
 
-        refreshWallpapers();
+        WallpaperService.refreshWallpapers();
         clampSelection();
     }
 
@@ -207,16 +201,17 @@ Scope {
     }
 
     function moveSelection(delta: int): void {
-        if (wallpaperModel.count <= 0)
+        var count = WallpaperService.wallpaperModel.count;
+
+        if (count <= 0)
             return;
 
         carouselIndex += delta;
         selectedIndex = wrappedIndex(carouselIndex);
 
         if (
-            carouselIndex < wallpaperModel.count ||
-            carouselIndex >=
-                (virtualWallpaperCount - wallpaperModel.count)
+            carouselIndex < count ||
+            carouselIndex >= (virtualWallpaperCount - count)
         ) {
             recenterCarousel();
         }
@@ -234,7 +229,7 @@ Scope {
             return;
         }
 
-        currentWallpaper = name;
+        WallpaperService.selectWallpaper(name);
 
         statusText = "Applied " + name;
 
@@ -256,108 +251,6 @@ Scope {
 
         onPressed:
             root.toggleSelector()
-    }
-
-    // -------------------------------------------------------------------------
-    // Wallpaper model
-    // -------------------------------------------------------------------------
-
-    ListModel {
-        id: wallpaperModel
-    }
-
-    // -------------------------------------------------------------------------
-    // Wallpaper scanner
-    // -------------------------------------------------------------------------
-
-    StdioCollector {
-        id: wallpaperScanOut
-
-        waitForEnd: true
-
-        onStreamFinished: {
-            wallpaperModel.clear();
-
-            var raw = text.trim();
-
-            if (raw.length === 0) {
-                root.statusText =
-                    "No wallpapers found in " +
-                    root.wallpaperDirectory;
-
-                root.clampSelection();
-
-                return;
-            }
-
-            var lines = raw.split("\n");
-
-            for (var i = 0; i < lines.length; i++) {
-                var fileName = lines[i].trim();
-
-                if (fileName.length === 0)
-                    continue;
-
-                wallpaperModel.append({
-                    fileName: fileName
-                });
-            }
-
-            if (
-                wallpaperModel.count > 0 &&
-                root.statusText.indexOf(
-                    "No wallpapers found"
-                ) === 0
-            ) {
-                root.statusText = "";
-            }
-
-            // Random wallpaper
-            if (
-                root.pendingRandom &&
-                wallpaperModel.count > 0
-            ) {
-                root.pendingRandom = false;
-
-                root.currentWallpaper =
-                    wallpaperModel.get(
-                        Math.floor(
-                            Math.random() *
-                            wallpaperModel.count
-                        )
-                    ).fileName;
-
-                return;
-            }
-
-            // Find current wallpaper
-            if (root.currentWallpaper.length > 0) {
-                for (
-                    var j = 0;
-                    j < wallpaperModel.count;
-                    j++
-                ) {
-                    if (
-                        wallpaperModel.get(j).fileName ===
-                        root.currentWallpaper
-                    ) {
-                        root.selectedIndex = j;
-                        root.carouselIndex = j;
-
-                        break;
-                    }
-                }
-            }
-
-            root.clampSelection();
-            root.recenterCarousel();
-        }
-    }
-
-    Process {
-        id: wallpaperScan
-
-        stdout: wallpaperScanOut
     }
 
     // -------------------------------------------------------------------------
@@ -532,7 +425,7 @@ Scope {
                         onCurrentIndexChanged: {
                             if (
                                 currentIndex < 0 ||
-                                wallpaperModel.count <= 0
+                                WallpaperService.wallpaperModel.count <= 0
                             )
                                 return;
 
@@ -546,11 +439,11 @@ Scope {
 
                             if (
                                 currentIndex <
-                                    wallpaperModel.count ||
+                                    WallpaperService.wallpaperModel.count ||
                                 currentIndex >=
                                     (
                                         root.virtualWallpaperCount -
-                                        wallpaperModel.count
+                                        WallpaperService.wallpaperModel.count
                                     )
                             ) {
                                 root.recenterCarousel();
@@ -592,8 +485,8 @@ Scope {
                                 root.wrappedIndex(index)
 
                             readonly property var wallpaperItem:
-                                wallpaperModel.count > 0
-                                    ? wallpaperModel.get(
+                                WallpaperService.wallpaperModel.count > 0
+                                    ? WallpaperService.wallpaperModel.get(
                                         wallpaperIndex
                                     )
                                     : null
@@ -674,8 +567,7 @@ Scope {
                                         root.preview_margin
 
                                     source:
-                                        Qt.resolvedUrl(
-                                            "../wallpapers/" +
+                                        WallpaperService.pathFor(
                                             wallpaper.fileName
                                         )
 

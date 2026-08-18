@@ -4,11 +4,10 @@ import QtQuick
 import Quickshell
 import Quickshell.Wayland
 import "../theme"
+import "../services"
 
 Scope {
     id: root
-
-    property string path: ""
 
     Variants {
         model: Quickshell.screens
@@ -33,7 +32,7 @@ Scope {
                 anchors.fill: parent
                 asynchronous: true
                 fillMode: Image.PreserveAspectCrop
-                source: root.path
+                source: WallpaperService.currentWallpaperPath
             }
         }
     }
