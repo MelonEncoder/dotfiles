@@ -17,8 +17,10 @@ Scope {
 
     property bool visible: false
     property int focusedIndex: -1
+    property int columnSpacing: 8
+    property int rowSpacing: 8
     readonly property int gridColumns: 5
-    readonly property int cellSize: 150
+    readonly property int cellSize: 140
 
     function open(): void {
         root.visible = true;
@@ -85,7 +87,7 @@ Scope {
             PopupSurface {
                 id: panel
                 anchors.centerIn: parent
-                width: root.cellSize * 5
+                width: (root.cellSize * root.gridColumns) + (root.columnSpacing * (root.gridColumns + 1))
                 height: panelContent.implicitHeight + (LayoutTheme.barWidgetPadding * 2)
                 clip: false
                 closedOffsetY: 0
@@ -132,8 +134,8 @@ Scope {
                     anchors.right: parent.right
                     anchors.margins: LayoutTheme.barWidgetPadding
                     columns: root.gridColumns
-                    rowSpacing: 4
-                    columnSpacing: 4
+                    rowSpacing: root.rowSpacing
+                    columnSpacing: root.columnSpacing
 
                     Text {
                         Layout.columnSpan: root.gridColumns
