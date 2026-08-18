@@ -86,7 +86,7 @@ Item {
         color: "transparent"
         exclusionMode: ExclusionMode.Ignore
         focusable: false
-        WlrLayershell.layer: WlrLayer.Overlay
+        WlrLayershell.layer: WlrLayer.Top
         WlrLayershell.namespace: "quickshell:screen-corners"
         mask: Region {}
 
