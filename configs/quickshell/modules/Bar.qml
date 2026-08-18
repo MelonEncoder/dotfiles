@@ -119,8 +119,9 @@ Scope {
                         BatteryStatus {
                             Layout.alignment: Qt.AlignVCenter
                         }
-                        SystemOptions {
+                        ControlPanel {
                             Layout.alignment: Qt.AlignVCenter
+                            screen: screenGroup.modelData
                         }
                     }
                 }

@@ -5,7 +5,6 @@ import "modules"
 
 ShellRoot {
     Bar {}
-    ControlPanel {}
     Launcher {}
     Lock {
         id: lock

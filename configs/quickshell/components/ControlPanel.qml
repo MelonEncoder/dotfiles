@@ -1,13 +1,24 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
+import Quickshell
 import Quickshell.Io
+import Quickshell.Hyprland
+import "popups"
 import "../theme"
 
 Rectangle {
     id: root
+    property bool expanded: false
     property bool hovered: clickArea.containsMouse
     property bool pressed: clickArea.pressed
+
+    // Bar.qml instantiates one ControlPanel per screen and passes its
+    // screen in here. The global shortcut and IPC target must be
+    // registered exactly once, so only the instance on the primary
+    // screen owns them.
+    required property var screen
+    readonly property bool isPrimaryScreen: Quickshell.screens.length > 0 && root.screen === Quickshell.screens[0]
 
     readonly property int iconSpacing: 4
     readonly property int slotSize: Math.max(1, LayoutTheme.barWidgetIconSize)
@@ -53,11 +64,40 @@ Rectangle {
         anchors.fill: parent
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
-        onClicked: openProcess.running = true
+        onClicked: root.expanded = !root.expanded
     }
 
-    Process {
-        id: openProcess
-        command: ["qs", "ipc", "call", "system-options", "open"]
+    HyprlandFocusGrab {
+        active: root.expanded
+        windows: [dropdown]
+        onCleared: root.expanded = false
+    }
+
+    ControlPanelPopup {
+        id: dropdown
+        anchorItem: root
+        expanded: root.expanded
+        onClose: root.expanded = false
+    }
+
+    Loader {
+        active: root.isPrimaryScreen
+
+        sourceComponent: Item {
+            GlobalShortcut {
+                appid: "quickshell"
+                name: "system-options"
+                description: "Open the system settings panel"
+                triggerDescription: "SUPER+SHIFT+O"
+                onPressed: root.expanded = !root.expanded
+            }
+
+            IpcHandler {
+                target: "system-options"
+                function open(): void {
+                    root.expanded = true;
+                }
+            }
+        }
     }
 }

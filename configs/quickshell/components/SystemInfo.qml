@@ -1,13 +1,10 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
-import QtQuick.Layouts
 import Quickshell.Io
-import Quickshell
 import Quickshell.Hyprland
 import "popups"
 import "../theme"
-import "../services"
 
 Rectangle {
     id: root
@@ -24,7 +21,6 @@ Rectangle {
     property string distroIcon: root.distroMeta.icon
     property string kernelDisplay: formatKernel(root.kernelInfo)
     property string versionDisplay: formatVersion(root.osVersionRaw)
-    readonly property int popupWidth: 310
     property string cpuRaw: ""
     property string ramRaw: ""
     property string gpuRaw: ""
@@ -133,42 +129,6 @@ Rectangle {
     border.width: Shape.borderWidth
     border.color: Colors.border
 
-    component HwRow: RowLayout {
-        required property string icon
-        required property string label
-        required property string value
-        Layout.fillWidth: true
-        spacing: 8
-        visible: value.length > 0
-
-        Text {
-            text: parent.icon
-            color: Colors.textSubtle
-            font.pixelSize: Typography.icon
-            font.family: Typography.iconFamily
-        }
-
-        Text {
-            text: parent.label
-            color: Colors.textSubtle
-            font.pixelSize: Typography.size
-            font.family: Typography.family
-        }
-
-        Item {
-            Layout.fillWidth: true
-        }
-
-        Text {
-            text: parent.value
-            color: Colors.text
-            font.pixelSize: Typography.size
-            font.family: Typography.family
-            Layout.maximumWidth: 200
-            elide: Text.ElideRight
-        }
-    }
-
     Behavior on color {
         ColorAnimation {
             duration: Animations.duration_hover
@@ -199,185 +159,19 @@ Rectangle {
         onCleared: root.expanded = false
     }
 
-    PopupWindow {
+    SystemInfoPopup {
         id: dropdown
-        anchor.item: root
-        visible: root.expanded
-        implicitWidth: dropdown.screen.width
-        implicitHeight: dropdown.screen.height
-        color: "transparent"
-
-        Backdrop {
-            expanded: root.expanded
-            onClose: root.expanded = false
-        }
-
-        Rectangle {
-            id: dropdownPanel
-            y: LayoutTheme.barWidgetHeight + (LayoutTheme.barPadding * 2)
-            width: root.popupWidth + (LayoutTheme.barWidgetPadding * 2)
-            height: popupContent.implicitHeight + (LayoutTheme.barWidgetPadding * 2)
-            radius: Shape.radiusBackground
-            color: Colors.background
-            border.width: Shape.borderWidth
-            border.color: Colors.border
-            clip: true
-            opacity: root.expanded ? 1 : 0
-            scale: root.expanded ? 1 : Animations.dropdownScaleClosed
-            transformOrigin: Item.Top
-            focus: root.expanded
-            Keys.onEscapePressed: root.expanded = false
-
-            Behavior on opacity {
-                NumberAnimation {
-                    duration: Animations.dropdown
-                    easing.type: Animations.easingEmphasized
-                }
-            }
-
-            Behavior on scale {
-                NumberAnimation {
-                    duration: Animations.dropdown
-                    easing.type: Animations.easingEmphasized
-                }
-            }
-
-            Behavior on y {
-                NumberAnimation {
-                    duration: Animations.dropdown
-                    easing.type: Animations.easingEmphasized
-                }
-            }
-
-            MouseArea {
-                anchors.fill: parent
-            }
-
-            ColumnLayout {
-                id: popupContent
-                anchors.fill: parent
-                anchors.margins: LayoutTheme.barWidgetPadding
-                spacing: 6
-                width: root.popupWidth
-
-                Text {
-                    Layout.fillWidth: true
-                    text: Strings.tr(Strings.keys.system)
-                    color: Colors.textSubtle
-                    font.pixelSize: Typography.xs
-                    font.family: Typography.family
-                    font.capitalization: Font.AllUppercase
-                    font.letterSpacing: 1
-                    leftPadding: 2
-                    bottomPadding: 2
-                }
-
-                Rectangle {
-                    Layout.fillWidth: true
-                    implicitHeight: 1
-                    color: Colors.borderSubtle
-                }
-
-                Rectangle {
-                    id: aboutItem
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: aboutContent.implicitHeight + (LayoutTheme.barWidgetPadding * 2)
-                    radius: Shape.radiusNormal
-                    color: Colors.surface
-
-                    ColumnLayout {
-                        id: aboutContent
-                        anchors.fill: parent
-                        anchors.margins: LayoutTheme.barWidgetPadding
-                        spacing: 2
-
-                        RowLayout {
-                            Layout.fillWidth: true
-                            spacing: 6
-
-                            ColumnLayout {
-                                Layout.fillWidth: true
-                                spacing: 2
-
-                                Text {
-                                    Layout.fillWidth: true
-                                    text: root.distroDisplay
-                                    elide: Text.ElideRight
-                                    color: Colors.text
-                                    font.pixelSize: Typography.title
-                                    font.family: Typography.family
-                                }
-
-                                Text {
-                                    Layout.fillWidth: true
-                                    text: root.kernelDisplay.length > 0 ? (Strings.tr(Strings.keys.kernel) + " " + root.kernelDisplay) : ""
-                                    visible: text.length > 0
-                                    color: Colors.textSubtle
-                                    font.pixelSize: Typography.size
-                                    font.family: Typography.family
-                                }
-
-                                Text {
-                                    Layout.fillWidth: true
-                                    text: root.versionDisplay.length > 0 ? (Strings.tr(Strings.keys.version) + " " + root.versionDisplay) : ""
-                                    visible: text.length > 0
-                                    color: Colors.textSubtle
-                                    font.pixelSize: Typography.size
-                                    font.family: Typography.family
-                                }
-                            }
-
-                            Text {
-                                text: root.distroIcon
-                                color: Colors.text
-                                font.pixelSize: Typography.iconLg
-                                font.family: Typography.iconFamily
-                            }
-                        }
-                    }
-                }
-
-                Rectangle {
-                    id: hwItem
-                    Layout.fillWidth: true
-                    implicitHeight: hwContent.implicitHeight + (LayoutTheme.barWidgetPadding * 2)
-                    radius: Shape.radiusNormal
-                    color: Colors.surface
-                    visible: root.cpuDisplay.length > 0 || root.gpuDisplay.length > 0 || root.ramDisplay.length > 0 || root.storageDisplay.length > 0
-
-                    ColumnLayout {
-                        id: hwContent
-                        anchors.fill: parent
-                        anchors.margins: LayoutTheme.barWidgetPadding
-                        spacing: 4
-
-                        HwRow {
-                            icon: "󰻠"
-                            label: Strings.tr(Strings.keys.cpu)
-                            value: root.cpuDisplay
-                        }
-
-                        HwRow {
-                            icon: "󰢮"
-                            label: Strings.tr(Strings.keys.gpu)
-                            value: root.gpuDisplay
-                        }
-
-                        HwRow {
-                            icon: "󰍛"
-                            label: Strings.tr(Strings.keys.ram)
-                            value: root.ramDisplay
-                        }
-
-                        HwRow {
-                            icon: "󰆼"
-                            label: Strings.tr(Strings.keys.storage)
-                            value: root.storageDisplay
-                        }
-                    }
-                }
-            }
-        }
+        anchorItem: root
+        expanded: root.expanded
+        distroDisplay: root.distroDisplay
+        distroIcon: root.distroIcon
+        kernelDisplay: root.kernelDisplay
+        versionDisplay: root.versionDisplay
+        cpuDisplay: root.cpuDisplay
+        gpuDisplay: root.gpuDisplay
+        ramDisplay: root.ramDisplay
+        storageDisplay: root.storageDisplay
+        onClose: root.expanded = false
     }
 
     StdioCollector {

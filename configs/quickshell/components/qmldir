@@ -2,6 +2,7 @@ BatteryStatus 1.0 BatteryStatus.qml
 Bluetooth 1.0 Bluetooth.qml
 Brightness 1.0 Brightness.qml
 Clock 1.0 Clock.qml
+ControlPanel 1.0 ControlPanel.qml
 CurrentWindow 1.0 CurrentWindow.qml
 IdleInhibitor 1.0 IdleInhibitor.qml
 MediaPlayer 1.0 MediaPlayer.qml
@@ -12,7 +13,6 @@ PrivacyIndicator 1.0 PrivacyIndicator.qml
 RoundedScreenCorners 1.0 RoundedScreenCorners.qml
 ScreenshotControls 1.0 ScreenshotControls.qml
 SystemInfo 1.0 SystemInfo.qml
-SystemOptions 1.0 SystemOptions.qml
 SystemTray 1.0 SystemTray.qml
 Volume 1.0 Volume.qml
 Wifi 1.0 Wifi.qml

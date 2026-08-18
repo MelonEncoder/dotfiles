@@ -1,1 +1,6 @@
 Backdrop 1.0 Backdrop.qml
+ClockPopup 1.0 ClockPopup.qml
+ControlPanelPopup 1.0 ControlPanelPopup.qml
+MediaPlayerPopup 1.0 MediaPlayerPopup.qml
+SystemInfoPopup 1.0 SystemInfoPopup.qml
+SystemTrayPopup 1.0 SystemTrayPopup.qml
