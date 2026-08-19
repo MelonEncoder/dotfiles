@@ -118,7 +118,7 @@ BarPopupSurface {
     // ── Playback controls ──────────────────────────────────────────
 
     Row {
-        anchors.horizontalCenter: parent.horizontalCenter
+        Layout.alignment: Qt.AlignHCenter
         spacing: 6
         bottomPadding: 2
 

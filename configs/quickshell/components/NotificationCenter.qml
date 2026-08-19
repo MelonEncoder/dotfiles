@@ -66,7 +66,7 @@ Item {
         onCleared: root.expanded = false
     }
 
-    NotificationBellPopup {
+    NotificationCenterPopup {
         id: dropdown
         anchorItem: root
         expanded: root.expanded

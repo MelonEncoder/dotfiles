@@ -83,7 +83,7 @@ Scope {
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.verticalCenter: parent.verticalCenter
                         spacing: root.widget_spacing
-                        NotificationBell {
+                        NotificationCenter {
                             Layout.alignment: Qt.AlignVCenter
                         }
                         Clock {

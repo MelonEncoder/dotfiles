@@ -27,7 +27,7 @@ Singleton {
         for (var i = 0; i < devices.length; i++) {
             var device = devices[i];
             if (device && device.connected) {
-                connected.push(devices);
+                connected.push(device);
             }
         }
 
@@ -46,10 +46,12 @@ Singleton {
 
             available.push(device);
         }
+
+        return available;
     }
 
     function startDiscovery(): void {
-        if (!adapter || !adapter.enable || adapter.discovering) {
+        if (!adapter || !adapter.enabled || adapter.discovering) {
             return;
         }
 
@@ -62,7 +64,7 @@ Singleton {
             return;
         }
 
-        adapter.discoving = false;
+        adapter.discovering = false;
         refresh();
     }
 
@@ -81,15 +83,19 @@ Singleton {
     Connections {
         target: root.adapter
 
-        function onDevicesChanged(): void {
-            root.refresh();
-        }
-
         function onEnabledChanged(): void {
             root.refresh();
         }
 
-        function onDiscoveryChanged(): void {
+        function onDiscoveringChanged(): void {
+            root.refresh();
+        }
+    }
+
+    Connections {
+        target: root.adapter ? root.adapter.devices : null
+
+        function onValuesChanged(): void {
             root.refresh();
         }
     }
