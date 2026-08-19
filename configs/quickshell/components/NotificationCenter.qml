@@ -43,7 +43,7 @@ Item {
         Text {
             id: bellIcon
             anchors.centerIn: parent
-            text: ""
+            text: "󰂚"
             color: Colors.text
             font.pixelSize: Typography.icon
             font.family: Typography.iconFamily
