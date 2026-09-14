@@ -2,9 +2,7 @@
 
 pacman_system=(
   accountsservice
-  audacity
   base-devel
-  blender
   blueman
   bluez
   bluez-utils
@@ -14,8 +12,6 @@ pacman_system=(
   cups
   curl
   ddcutil
-  decibels
-  discord
   docker
   dnsmasq
   flatpak
@@ -41,13 +37,9 @@ pacman_system=(
   hyprtoolkit
   hyprutils
   hyprwayland-scanner
-  inkscape
   iw
   iwd
   jdk-openjdk
-  krita
-  ktorrent
-  loupe
   man-db
   mesa
   meson
@@ -62,7 +54,6 @@ pacman_system=(
   nodejs
   npm
   nvidia-open
-  papers
   pavucontrol
   pipewire
   playerctl
@@ -72,7 +63,6 @@ pacman_system=(
   qt6ct
   quickshell
   rustup
-  showtime
   steam
   tmux
   upower
@@ -129,6 +119,14 @@ flatpak_pkgs=(
   com.obsproject.Studio
   com.spotify.Client
   io.github.kolunmi.Bazaar
+  org.audacityteam.Audacity
+  org.discord.Discord
   org.gimp.GIMP
+  org.gnome.Showtime
+  org.gnome.Papers
+  org.gnome.Loupe
+  org.gnome.Decibels
+  org.kde.krita
+  org.inkscape.Inkscape
   org.prismlauncher.PrismLauncher
 )
