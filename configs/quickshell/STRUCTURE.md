@@ -26,7 +26,6 @@ Top-level windows/surfaces assembled in `shell.qml`:
 - `Brightness.qml` — brightness OSD
 - `Clock.qml` — clock/calendar popup
 - `ControlPanel.qml` — quick-settings panel
-- `Launcher.qml` — app launcher
 - `Lock.qml` — lock screen
 - `NotificationCenter.qml` — notification history panel
 - `PowerOptions.qml` — power menu (shutdown/reboot/logout)
@@ -75,7 +74,7 @@ Singletons (declared via `singleton` in `qmldir`) exposing system state to the r
 Singleton design tokens consumed across modules/components:
 
 - `Colors.qml`, `Typography.qml`, `Shape.qml`, `Animations.qml`, `LayoutTheme.qml`
-- `CalendarTheme.qml`, `LauncherTheme.qml`, `LockScreenTheme.qml`, `NotificationTheme.qml`, `WallpaperTheme.qml`, `WorkspaceTheme.qml` — per-feature theme overrides
+- `CalendarTheme.qml`, `LockScreenTheme.qml`, `NotificationTheme.qml`, `WallpaperTheme.qml`, `WorkspaceTheme.qml` — per-feature theme overrides
 
 ## `scripts/`
 

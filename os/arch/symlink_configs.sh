@@ -28,6 +28,7 @@ echo "config: $config"
 
 mappings=(
   "$repo/configs/fcitx5|$config/fcitx5"
+  "$repo/configs/fuzzel|$config/fuzzel"
   "$repo/configs/gtk-3.0|$config/gtk-3.0"
   "$repo/configs/gtk-4.0|$config/gtk-4.0"
   "$repo/configs/hypr|$config/hypr"
