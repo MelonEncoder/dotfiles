@@ -200,7 +200,7 @@ Rectangle {
 
                 Text {
                     visible: root.showChevron
-                    text: root.expanded ? "" : ""
+                    text: root.expanded ? "\uf077" : "\uf078"
                     color: Colors.textSubtle
                     font.pixelSize: Typography.xs
                     font.family: Typography.iconFamily

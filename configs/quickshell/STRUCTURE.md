@@ -39,13 +39,13 @@ Widgets used inside `modules/` (and the control panel popup):
 
 - `BatteryStatus.qml`, `Volume.qml` — status indicators/controls for their respective system features
 - `WifiNetworks.qml`, `BluetoothDevices.qml` — network/device lists shown in the control panel's expandable Wi-Fi/Bluetooth sections
-- `TrayIcons.qml` — compact system tray icon row used in the control panel
+- `TrayItem.qml`, `TrayItems.qml` — system tray row and the control panel's "Background Apps" list
 - `CurrentWindow.qml` — active window title display
 - `IdleInhibitor.qml` — toggle to prevent idle/screen lock
 - `MediaPlayer.qml` — media player controls widget
 - `NotificationBell.qml`, `NotificationCard.qml` — notification bell icon and individual notification card
 - `PrivacyIndicator.qml` — mic/camera/screen-share in-use indicator
-- `SystemInfo.qml`, `SystemOptions.qml`, `SystemTray.qml` — system info popup, misc system options, and system tray
+- `SystemInfo.qml`, `SystemOptions.qml` — system info popup and misc system options
 - `Workspaces.qml` — workspace switcher
 
 ## `components/`
@@ -54,7 +54,7 @@ Shared building blocks, split into subdirectories (no types at the top level).
 
 ### `components/popups/`
 
-Bar-widget dropdown contents (e.g. `ClockPopup.qml`, `SystemInfoPopup.qml`, `SystemTrayPopup.qml`, `MediaPlayerPopup.qml`, `ControlPanelPopup.qml`, `NotificationCenterPopup.qml`).
+Bar-widget dropdown contents (e.g. `ClockPopup.qml`, `SystemInfoPopup.qml`, `MediaPlayerPopup.qml`, `ControlPanelPopup.qml`, `NotificationCenterPopup.qml`).
 
 ### `components/surfaces/`
 

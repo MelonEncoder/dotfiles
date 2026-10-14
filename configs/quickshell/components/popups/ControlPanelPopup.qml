@@ -15,9 +15,9 @@ import "../../services"
   Layout, top to bottom:
     1. power actions row (PowerService)
     2. brightness + volume sliders
-    3. 2-column grid of service tiles (toggle + dropdown); a tile's dropdown
-       opens a details section spanning both columns below the grid row
-    4. system tray icons
+    3. 2-column grid of service tiles (toggle + dropdown): Wi-Fi, Bluetooth,
+       Background Apps (system tray). A tile's dropdown opens a details
+       section spanning both columns below its grid row
 */
 
 BarPopupSurface {
@@ -27,7 +27,7 @@ BarPopupSurface {
 
     // Name of the tile whose details section is open ("" for none).
     property string openSection: ""
-    readonly property bool menuOpen: trayIcons.menuOpen
+    readonly property bool menuOpen: trayItems.menuOpen
 
     function toggleSection(name: string): void {
         root.openSection = root.openSection === name ? "" : name;
@@ -38,11 +38,14 @@ BarPopupSurface {
 
     panelX: root.width - panelWidth - LayoutTheme.barPadding
     panelY: LayoutTheme.barWidgetHeight + (LayoutTheme.barPadding * 2)
-    panelWidth: 360
+    panelWidth: 400
+    contentSpacing: 10
 
     onExpandedChanged: {
-        if (!root.expanded)
+        if (!root.expanded) {
             root.openSection = "";
+            volumeControl.expanded = false;
+        }
     }
 
     onOpenSectionChanged: {
@@ -54,7 +57,7 @@ BarPopupSurface {
     // Power actions
     RowLayout {
         Layout.fillWidth: true
-        spacing: 6
+        spacing: 8
 
         Repeater {
             model: PowerService.actions
@@ -64,8 +67,8 @@ BarPopupSurface {
                 required property var modelData
 
                 Layout.fillWidth: true
-                Layout.preferredHeight: LayoutTheme.barWidgetHeight * 1.5
-                size: LayoutTheme.barWidgetHeight * 1.5
+                Layout.preferredHeight: LayoutTheme.barWidgetHeight * 2
+                size: LayoutTheme.barWidgetHeight * 2
                 iconSize: Typography.xxl
                 iconName: powerButton.modelData.iconName
                 accentColor: Colors.accentPrimary
@@ -84,6 +87,7 @@ BarPopupSurface {
     }
 
     Volume {
+        id: volumeControl
         Layout.fillWidth: true
     }
 
@@ -91,13 +95,14 @@ BarPopupSurface {
     GridLayout {
         Layout.fillWidth: true
         columns: 2
-        columnSpacing: 6
-        rowSpacing: 6
+        columnSpacing: 8
+        rowSpacing: 8
 
         ToggleTile {
             // Equal preferred widths keep both columns the same size.
             Layout.fillWidth: true
             Layout.preferredWidth: 1
+            tileHeight: LayoutTheme.barWidgetHeight * 2
             icon: WifiService.enabled ? "󰖩" : "󰖪"
             title: Strings.tr(Strings.keys.wifi)
             subtitle: WifiService.status
@@ -110,6 +115,7 @@ BarPopupSurface {
         ToggleTile {
             Layout.fillWidth: true
             Layout.preferredWidth: 1
+            tileHeight: LayoutTheme.barWidgetHeight * 2
             icon: BluetoothService.enabled ? "󰂯" : "󰂲"
             title: Strings.tr(Strings.keys.bluetooth)
             subtitle: BluetoothService.status
@@ -136,11 +142,29 @@ BarPopupSurface {
                 Layout.fillWidth: true
             }
         }
-    }
 
-    // System tray
-    TrayIcons {
-        id: trayIcons
-        Layout.fillWidth: true
+        // Background apps (system tray). Nothing to toggle, so both halves
+        // of the tile open the list.
+        ToggleTile {
+            Layout.fillWidth: true
+            Layout.preferredWidth: 1
+            tileHeight: LayoutTheme.barWidgetHeight * 2
+            icon: "󰀻"
+            title: Strings.tr(Strings.keys.background_apps)
+            subtitle: Strings.tr(Strings.keys.apps_running).arg(trayItems.count)
+            expanded: root.openSection === "tray"
+            onToggled: root.toggleSection("tray")
+            onExpandClicked: root.toggleSection("tray")
+        }
+
+        ExpandSection {
+            Layout.columnSpan: 2
+            expanded: root.openSection === "tray"
+
+            TrayItems {
+                id: trayItems
+                Layout.fillWidth: true
+            }
+        }
     }
 }

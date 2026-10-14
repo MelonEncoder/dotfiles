@@ -15,7 +15,6 @@ Singleton {
         media:            { en: "Media",               ja: "メディア" },
         system:           { en: "System",               ja: "システム" },
         quick_settings:   { en: "Quick Settings",       ja: "クイック設定" },
-        system_tray:      { en: "System Tray",          ja: "システムトレイ" },
         calendar:         { en: "Calendar",             ja: "カレンダー" },
         notifications:    { en: "Notifications",        ja: "通知" },
         wallpaper:        { en: "Wallpaper",             ja: "壁紙" },
@@ -34,6 +33,10 @@ Singleton {
 
         // Volume
         output_devices:   { en: "Output Devices",        ja: "出力デバイス" },
+
+        // Background apps (system tray)
+        background_apps:  { en: "Background Apps",       ja: "バックグラウンドアプリ" },
+        apps_running:     { en: "%1 running",            ja: "%1 個実行中" },
 
         // Wi-Fi
         wifi:             { en: "Wi-Fi",                 ja: "Wi-Fi" },

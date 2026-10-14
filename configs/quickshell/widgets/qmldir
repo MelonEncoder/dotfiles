@@ -11,8 +11,8 @@ NotificationCenter 1.0 NotificationCenter.qml
 PrivacyIndicator 1.0 PrivacyIndicator.qml
 RoundedScreenCorners 1.0 RoundedScreenCorners.qml
 SystemInfo 1.0 SystemInfo.qml
-SystemTray 1.0 SystemTray.qml
-TrayIcons 1.0 TrayIcons.qml
+TrayItem 1.0 TrayItem.qml
+TrayItems 1.0 TrayItems.qml
 Volume 1.0 Volume.qml
 WifiNetworks 1.0 WifiNetworks.qml
 Workspaces 1.0 Workspaces.qml

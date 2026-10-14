@@ -113,9 +113,6 @@ Scope {
                         IdleInhibitor {
                             Layout.alignment: Qt.AlignVCenter
                         }
-                        SystemTray {
-                            Layout.alignment: Qt.AlignVCenter
-                        }
                         BatteryStatus {
                             Layout.alignment: Qt.AlignVCenter
                         }
