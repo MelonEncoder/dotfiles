@@ -2,75 +2,39 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Layouts
-import Quickshell.Hyprland
 import "../components/popups"
 import "../services"
 import "../theme"
 
-Item {
+BarButton {
     id: root
-    property bool expanded: false
-    implicitWidth: widget.implicitWidth
-    implicitHeight: LayoutTheme.barWidgetHeight
 
-    Rectangle {
-        id: widget
-        radius: Shape.radiusNormal
-        color: widgetMouse.pressed ? Colors.surfacePressed : (widgetMouse.containsMouse ? Colors.surfaceHover : Colors.surface)
-        border.width: Shape.borderWidth
-        border.color: Colors.border
-        implicitWidth: row.implicitWidth + (LayoutTheme.barWidgetPadding * 2)
-        implicitHeight: LayoutTheme.barWidgetHeight
+    implicitWidth: row.implicitWidth + (LayoutTheme.barWidgetPadding * 2)
+    popup: ClockPopup {}
 
-        Behavior on color {
-            ColorAnimation {
-                duration: Animations.duration_hover
-                easing.type: Animations.easingStandard
-            }
-        }
-
-        RowLayout {
-            id: row
-            anchors.centerIn: parent
-            spacing: LayoutTheme.barWidgetPadding
-
-            Text {
-                text: ClockService.date
-                color: Colors.textSubtle
-                font.pixelSize: Typography.size
-                font.family: Typography.family
-            }
-
-            Text {
-                text: ClockService.time
-                color: Colors.text
-                font.pixelSize: Typography.size
-                font.family: Typography.family
-            }
-        }
-
-        MouseArea {
-            id: widgetMouse
-            anchors.fill: parent
-            hoverEnabled: true
-            cursorShape: Qt.PointingHandCursor
-            onClicked: {
-                CalendarService.goToToday();
-                root.expanded = !root.expanded;
-            }
-        }
+    // Always open the calendar on the current month.
+    onExpandedChanged: {
+        if (root.expanded)
+            CalendarService.goToToday();
     }
 
-    HyprlandFocusGrab {
-        active: root.expanded
-        windows: [dropdown]
-        onCleared: root.expanded = false
-    }
+    RowLayout {
+        id: row
+        anchors.centerIn: parent
+        spacing: LayoutTheme.barWidgetPadding
 
-    ClockPopup {
-        id: dropdown
-        anchorItem: root
-        expanded: root.expanded
-        onClose: root.expanded = false
+        Text {
+            text: ClockService.date
+            color: Colors.textSubtle
+            font.pixelSize: Typography.size
+            font.family: Typography.family
+        }
+
+        Text {
+            text: ClockService.time
+            color: Colors.text
+            font.pixelSize: Typography.size
+            font.family: Typography.family
+        }
     }
 }

@@ -4,6 +4,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Widgets
+import "../components/ui"
 import "../theme"
 
 /*
@@ -15,13 +16,10 @@ import "../theme"
   `menuClosed` let the owning popup pause its focus grab while a menu shows.
 */
 
-Rectangle {
+HoverSurface {
     id: root
 
     required property var modelData
-
-    readonly property bool hovered: trayMouse.containsMouse
-    readonly property bool pressed: trayMouse.pressed
     readonly property string itemLabel: {
         if (!root.modelData)
             return "?";
@@ -38,17 +36,10 @@ Rectangle {
     }
 
     Layout.fillWidth: true
-    radius: Shape.radiusNormal
-    color: root.pressed ? Colors.surfacePressed : (root.hovered ? Colors.surfaceHover : "transparent")
+    baseColor: "transparent"
+    acceptedButtons: Qt.LeftButton | Qt.RightButton
     implicitWidth: trayRow.implicitWidth + (LayoutTheme.barWidgetPadding * 2)
     implicitHeight: trayRow.implicitHeight + (LayoutTheme.barWidgetPadding * 2)
-
-    Behavior on color {
-        ColorAnimation {
-            duration: Animations.duration_hover
-            easing.type: Animations.easingStandard
-        }
-    }
 
     RowLayout {
         id: trayRow
@@ -85,23 +76,16 @@ Rectangle {
         onClosed: root.menuClosed()
     }
 
-    MouseArea {
-        id: trayMouse
-        anchors.fill: parent
-        hoverEnabled: true
-        cursorShape: Qt.PointingHandCursor
-        acceptedButtons: Qt.LeftButton | Qt.RightButton
-        onClicked: function (mouse) {
-            if (!root.modelData)
-                return;
-            if (mouse.button === Qt.RightButton && root.modelData.hasMenu) {
+    onClicked: mouse => {
+        if (!root.modelData)
+            return;
+        if (mouse.button === Qt.RightButton && root.modelData.hasMenu) {
+            root.openMenu();
+        } else if (mouse.button === Qt.LeftButton) {
+            if (!root.modelData.onlyMenu)
+                root.modelData.activate();
+            else if (root.modelData.hasMenu)
                 root.openMenu();
-            } else if (mouse.button === Qt.LeftButton) {
-                if (!root.modelData.onlyMenu)
-                    root.modelData.activate();
-                else if (root.modelData.hasMenu)
-                    root.openMenu();
-            }
         }
     }
 }

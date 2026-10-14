@@ -11,15 +11,13 @@ import "../../services"
 BarPopupSurface {
     id: root
 
-    required property Item anchorItem
     readonly property var currentPlayer: MediaService.currentPlayer
     readonly property int popupContentWidth: 240
 
-    anchor.item: anchorItem
     text: Strings.tr(Strings.keys.media)
     contentSpacing: 8
 
-    panelX: anchorItem.mapToGlobal(anchorItem.width / 2, 0).x - panelWidth / 2
+    panelX: root.anchorItem ? root.anchorItem.mapToGlobal(root.anchorItem.width / 2, 0).x - panelWidth / 2 : 0
     panelY: LayoutTheme.barWidgetHeight + (LayoutTheme.barPadding * 2)
     panelWidth: root.popupContentWidth + (LayoutTheme.barWidgetPadding * 2)
 

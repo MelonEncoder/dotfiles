@@ -5,6 +5,7 @@ import QtQuick
 import QtQuick.Layouts
 import "../services"
 import "../widgets"
+import "../components/ui"
 import "../theme"
 
 Scope {
@@ -258,7 +259,7 @@ Scope {
                                             id: repeater
                                             model: notificationItem.visibleActions
 
-                                            delegate: Rectangle {
+                                            delegate: HoverSurface {
                                                 id: actionBtn
                                                 required property var modelData
 
@@ -269,14 +270,12 @@ Scope {
 
                                                 implicitWidth: actionBtnContent.implicitWidth + (root.padding * 2)
                                                 implicitHeight: root.action_height
-                                                radius: Shape.radiusNormal
-                                                color: actionMouse.pressed ? NotificationTheme.actionPressed : (actionMouse.containsMouse ? NotificationTheme.actionHover : NotificationTheme.action)
-
-                                                Behavior on color {
-                                                    ColorAnimation {
-                                                        duration: Animations.duration_hover
-                                                        easing.type: Animations.easingStandard
-                                                    }
+                                                baseColor: NotificationTheme.action
+                                                hoverColor: NotificationTheme.actionHover
+                                                pressedColor: NotificationTheme.actionPressed
+                                                onClicked: {
+                                                    actionBtn.action.invoke();
+                                                    actionBtn.parent.doClose();
                                                 }
 
                                                 RowLayout {
@@ -298,16 +297,6 @@ Scope {
                                                         color: Colors.text
                                                         font.pixelSize: Typography.size
                                                         font.family: Typography.family
-                                                    }
-                                                }
-
-                                                MouseArea {
-                                                    id: actionMouse
-                                                    anchors.fill: parent
-                                                    hoverEnabled: true
-                                                    onClicked: {
-                                                        actionBtn.action.invoke();
-                                                        parent.parent.doClose();
                                                     }
                                                 }
                                             }

@@ -80,69 +80,19 @@ ColumnLayout {
     ExpandSection {
         expanded: root.expanded
 
-        Text {
-            text: Strings.tr(Strings.keys.output_devices)
-            color: Colors.textSubtle
-            font.pixelSize: Typography.size
-            font.family: Typography.family
-            Layout.fillWidth: true
-            Layout.topMargin: 4
-        }
-
-        Repeater {
+        ListSection {
+            title: Strings.tr(Strings.keys.output_devices)
             model: AudioService.audioSinks
-
-            Rectangle {
-                id: deviceItem
+            delegate: ListRow {
+                id: deviceRow
                 required property var modelData
                 readonly property bool isDefault: !!AudioService.sink && modelData.id === AudioService.sink.id
-                property bool hovered: deviceMouse.containsMouse
-                property bool pressed: deviceMouse.pressed
 
-                Layout.fillWidth: true
-                Layout.preferredHeight: LayoutTheme.barWidgetHeight
-                radius: Shape.radiusNormal
-                color: deviceItem.pressed ? Colors.surfacePressed : (deviceItem.hovered || deviceItem.isDefault ? Colors.surfaceHover : "transparent")
-
-                Behavior on color {
-                    ColorAnimation {
-                        duration: Animations.duration_hover
-                        easing.type: Animations.easingStandard
-                    }
-                }
-
-                RowLayout {
-                    anchors.fill: parent
-                    anchors.leftMargin: 10
-                    anchors.rightMargin: 10
-                    spacing: 8
-
-                    Text {
-                        text: deviceItem.isDefault ? "\uf192" : "\uf10c"
-                        color: deviceItem.isDefault ? Colors.text : Colors.textSubtle
-                        font.pixelSize: Typography.sm
-                        font.family: Typography.iconFamily
-                        Layout.alignment: Qt.AlignVCenter
-                    }
-
-                    Text {
-                        text: deviceItem.modelData.description || deviceItem.modelData.nick || deviceItem.modelData.name || "Unknown"
-                        color: Colors.text
-                        font.pixelSize: Typography.size
-                        font.family: Typography.family
-                        elide: Text.ElideRight
-                        Layout.fillWidth: true
-                        Layout.alignment: Qt.AlignVCenter
-                    }
-                }
-
-                MouseArea {
-                    id: deviceMouse
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: root.setDefaultSink(deviceItem.modelData)
-                }
+                glyph: deviceRow.isDefault ? "\uf192" : "\uf10c"
+                glyphColor: deviceRow.isDefault ? Colors.text : Colors.textSubtle
+                text: modelData.description || modelData.nick || modelData.name || "Unknown"
+                active: deviceRow.isDefault
+                onClicked: root.setDefaultSink(deviceRow.modelData)
             }
         }
     }

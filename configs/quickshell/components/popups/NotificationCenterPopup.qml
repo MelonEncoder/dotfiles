@@ -10,7 +10,6 @@ import "../../services"
 BarPopupSurface {
     id: root
 
-    required property Item anchorItem
 
     // Reactive notification count — .length on a QML model list is not reactive,
     // but Repeater.count is updated by the model's own change signals.
@@ -20,7 +19,6 @@ BarPopupSurface {
         delegate: Item {}
     }
 
-    anchor.item: anchorItem
     anchor.rect.x: 0
     anchor.rect.y: LayoutTheme.barWidgetHeight + (LayoutTheme.barPadding * 2)
     contentSpacing: CalendarTheme.contentSpacing

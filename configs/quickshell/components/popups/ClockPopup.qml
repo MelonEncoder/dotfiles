@@ -10,10 +10,8 @@ import "../../services"
 BarPopupSurface {
     id: root
 
-    required property Item anchorItem
     readonly property int calendarWidth: CalendarTheme.cellWidth * 7
 
-    anchor.item: anchorItem
     anchor.rect.x: 0
     anchor.rect.y: LayoutTheme.barWidgetHeight + (LayoutTheme.barPadding * 2)
     text: Strings.tr(Strings.keys.calendar)

@@ -23,7 +23,6 @@ import "../../services"
 BarPopupSurface {
     id: root
 
-    required property Item anchorItem
 
     // Name of the tile whose details section is open ("" for none).
     property string openSection: ""
@@ -33,7 +32,6 @@ BarPopupSurface {
         root.openSection = root.openSection === name ? "" : name;
     }
 
-    anchor.item: anchorItem
     text: Strings.tr(Strings.keys.quick_settings)
 
     panelX: root.width - panelWidth - LayoutTheme.barPadding

@@ -38,14 +38,9 @@ Item {
     signal toggled()
     signal expandClicked()
 
-    // Fill for one half of the chip; both halves share the same base color.
-    function segmentColor(hovered: bool, pressed: bool, active: bool): color {
-        if (pressed)
-            return root.checked ? Qt.darker(root.baseColor, 1.15) : Colors.surfacePressed;
-        if (hovered || active)
-            return root.checked ? Qt.lighter(root.baseColor, 1.1) : Colors.surfaceHover;
-        return root.baseColor;
-    }
+    // Both halves share these, so the chip reads as one piece.
+    readonly property color hoverColor: root.checked ? Qt.lighter(root.baseColor, 1.1) : Colors.surfaceHover
+    readonly property color pressedColor: root.checked ? Qt.darker(root.baseColor, 1.15) : Colors.surfacePressed
 
     implicitWidth: chipRow.implicitWidth
     implicitHeight: root.tileHeight
@@ -55,21 +50,18 @@ Item {
         anchors.fill: parent
         spacing: 0
 
-        Rectangle {
+        HoverSurface {
             id: mainButton
 
             Layout.fillWidth: true
             Layout.fillHeight: true
+            radius: 0
             topLeftRadius: Shape.radiusNormal
             bottomLeftRadius: Shape.radiusNormal
-            color: root.segmentColor(mainMouse.containsMouse, mainMouse.pressed, false)
-
-            Behavior on color {
-                ColorAnimation {
-                    duration: Animations.duration_hover
-                    easing.type: Animations.easingStandard
-                }
-            }
+            baseColor: root.baseColor
+            hoverColor: root.hoverColor
+            pressedColor: root.pressedColor
+            onClicked: root.toggled()
 
             RowLayout {
                 anchors {
@@ -114,31 +106,21 @@ Item {
                     }
                 }
             }
-
-            MouseArea {
-                id: mainMouse
-                anchors.fill: parent
-                hoverEnabled: true
-                cursorShape: Qt.PointingHandCursor
-                onClicked: root.toggled()
-            }
         }
 
-        Rectangle {
+        HoverSurface {
             id: expandButton
 
             Layout.preferredWidth: LayoutTheme.barWidgetHeight + 4
             Layout.fillHeight: true
+            radius: 0
             topRightRadius: Shape.radiusNormal
             bottomRightRadius: Shape.radiusNormal
-            color: root.segmentColor(expandMouse.containsMouse, expandMouse.pressed, root.expanded)
-
-            Behavior on color {
-                ColorAnimation {
-                    duration: Animations.duration_hover
-                    easing.type: Animations.easingStandard
-                }
-            }
+            baseColor: root.baseColor
+            hoverColor: root.hoverColor
+            pressedColor: root.pressedColor
+            active: root.expanded
+            onClicked: root.expandClicked()
 
             Text {
                 anchors.centerIn: parent
@@ -146,14 +128,6 @@ Item {
                 color: root.checked || root.expanded ? Colors.text : Colors.textSubtle
                 font.pixelSize: Typography.sm
                 font.family: Typography.iconFamily
-            }
-
-            MouseArea {
-                id: expandMouse
-                anchors.fill: parent
-                hoverEnabled: true
-                cursorShape: Qt.PointingHandCursor
-                onClicked: root.expandClicked()
             }
         }
     }

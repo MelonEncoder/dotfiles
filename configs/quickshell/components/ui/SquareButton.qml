@@ -6,12 +6,12 @@ import "../../theme"
   SquareButton
 
   Large square button for icon-grid menus (e.g. the power options menu).
-  Shares LabelButton's hover/press/color-animation recipe, but lays out a
-  themed icon image above a text label instead of a single-line icon+text
-  row, and adds a keyboard-focus accent bar for grid navigation.
+  Built on HoverSurface like LabelButton, but lays out a themed icon image
+  above a text label, and highlights in the accent color on hover or
+  keyboard focus (for grid navigation).
 */
 
-Rectangle {
+HoverSurface {
     id: root
 
     property string iconName: ""
@@ -21,30 +21,17 @@ Rectangle {
     property int iconSize: 48
     property int labelSpacing: 8
 
-    property bool focused: false // keyboard-navigated focus, distinct from active/pressed
-    property color baseColor: Colors.surface
+    property bool focused: false // keyboard-navigated focus, distinct from pressed
     property color accentColor: Colors.accentPrimary
 
     readonly property bool hasIcon: root.iconName.length > 0
     readonly property bool hasText: root.text.length > 0
-    readonly property bool hovered: mouseArea.containsMouse
-    readonly property bool pressed: mouseArea.pressed
-
-    signal clicked()
-    signal entered()
 
     implicitWidth: root.size
     implicitHeight: root.size
-    radius: Shape.radiusNormal
-    color: root.pressed ? Colors.surfacePressed : ((root.hovered || root.focused) ? root.accentColor : root.baseColor)
+    hoverColor: root.accentColor
+    active: root.focused
     clip: true
-
-    Behavior on color {
-        ColorAnimation {
-            duration: Animations.duration_hover
-            easing.type: Animations.easingStandard
-        }
-    }
 
     ColumnLayout {
         anchors.centerIn: parent
@@ -66,14 +53,5 @@ Rectangle {
             font.pixelSize: Typography.size
             font.family: Typography.family
         }
-    }
-
-    MouseArea {
-        id: mouseArea
-        anchors.fill: parent
-        hoverEnabled: true
-        cursorShape: Qt.PointingHandCursor
-        onEntered: root.entered()
-        onClicked: root.clicked()
     }
 }

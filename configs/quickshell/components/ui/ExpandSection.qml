@@ -5,9 +5,10 @@ import "../../theme"
 /*
   ExpandSection
 
-  Surface that animates open/closed around its content (same height/opacity
-  animation as Dropdown's body). Children land in a ColumnLayout, so use
-  Layout.* attached properties on them:
+  Surface that animates open/closed around its content (height + opacity).
+  Children land in a ColumnLayout, so use Layout.* attached properties on
+  them. Opening/closing is an explicit "open" state with Transitions, so the
+  section is shown before it grows and only hidden after it has shrunk:
 
       ExpandSection {
           expanded: panel.openSection === "wifi"
@@ -24,27 +25,50 @@ Item {
     readonly property int sectionMargin: Math.round(LayoutTheme.barWidgetPadding / 2)
     readonly property int openHeight: column.implicitHeight + (root.sectionMargin * 2)
 
+    // Closed values; the "open" state overrides them.
     Layout.fillWidth: true
-    Layout.preferredHeight: root.expanded ? root.openHeight : 0
-    implicitHeight: root.expanded ? root.openHeight : 0
-
-    visible: root.expanded || opacity > 0.01
-    opacity: root.expanded ? 1 : 0
+    Layout.preferredHeight: 0
+    visible: false
+    opacity: 0
     clip: true
 
-    Behavior on Layout.preferredHeight {
-        NumberAnimation {
-            duration: Animations.dropdownSection
-            easing.type: Animations.easingEmphasized
+    states: State {
+        name: "open"
+        when: root.expanded
+
+        PropertyChanges {
+            root.visible: true
+            root.opacity: 1
+            root.Layout.preferredHeight: root.openHeight
         }
     }
 
-    Behavior on opacity {
-        NumberAnimation {
-            duration: Animations.dropdownSection
-            easing.type: Animations.easingEmphasized
+    transitions: [
+        Transition {
+            to: "open"
+
+            // `visible` isn't animated, so it flips to true right away.
+            NumberAnimation {
+                properties: "opacity,Layout.preferredHeight"
+                duration: Animations.dropdownSection
+                easing.type: Animations.easingEmphasized
+            }
+        },
+        Transition {
+            from: "open"
+
+            SequentialAnimation {
+                NumberAnimation {
+                    properties: "opacity,Layout.preferredHeight"
+                    duration: Animations.dropdownSection
+                    easing.type: Animations.easingEmphasized
+                }
+                PropertyAction {
+                    property: "visible"
+                }
+            }
         }
-    }
+    ]
 
     Rectangle {
         // Fixed to the open height so content doesn't reflow mid-animation.

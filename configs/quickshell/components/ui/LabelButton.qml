@@ -4,10 +4,8 @@ import "../../theme"
 /*
   LabelButton
 
-  Reusable icon button matching the bar's shared hover/press/color-animation
-  recipe (see the media transport controls, mute button, device toggle --
-  all previously hand-rolled versions of this same Rectangle+Text+MouseArea
-  combo).
+  Reusable icon (+ optional text) button built on HoverSurface, which
+  supplies the hover/press color, animation, and click handling.
 
   Uses Item's built-in `enabled` property: set it to control both whether
   clicks fire and (via the default iconColor binding) whether the icon reads
@@ -15,7 +13,7 @@ import "../../theme"
   dropdown arrow) that should look "pressed" while a related state is true.
 */
 
-Rectangle {
+HoverSurface {
     id: root
 
     // `icon` and `text` combine into a single centered label: icon-only
@@ -29,8 +27,6 @@ Rectangle {
     property int labelSpacing: 6
 
     property bool bordered: false
-    property bool active: false // e.g. checked/expanded visual state
-    property color baseColor: Colors.surface
     property color iconColor: root.enabled ? Colors.text : Colors.textSubtle
     property color textColor: root.iconColor
     property real iconSize: Typography.icon
@@ -38,24 +34,12 @@ Rectangle {
 
     readonly property bool hasIcon: root.icon.length > 0
     readonly property bool hasText: root.text.length > 0
-    readonly property bool hovered: mouseArea.containsMouse
-    readonly property bool pressed: mouseArea.pressed
-
-    signal clicked()
 
     implicitWidth: root.hasText ? label.implicitWidth + root.horizontalPadding * 2 : root.size
     implicitHeight: root.size
-    radius: Shape.radiusNormal
-    color: (root.active || root.pressed) ? Colors.surfacePressed : (root.hovered ? Colors.surfaceHover : root.baseColor)
+    activeColor: root.pressedColor
     border.width: root.bordered ? Shape.borderWidth : 0
     border.color: Colors.border
-
-    Behavior on color {
-        ColorAnimation {
-            duration: Animations.duration_hover
-            easing.type: Animations.easingStandard
-        }
-    }
 
     Row {
         id: label
@@ -77,13 +61,5 @@ Rectangle {
             font.pixelSize: root.textSize
             font.family: Typography.family
         }
-    }
-
-    MouseArea {
-        id: mouseArea
-        anchors.fill: parent
-        hoverEnabled: true
-        cursorShape: root.enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
-        onClicked: root.clicked()
     }
 }

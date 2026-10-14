@@ -1,18 +1,16 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
-import Quickshell.Hyprland
 import "../services"
 import "../components/popups"
 import "../theme"
 
-Item {
+BarButton {
     id: root
-    property bool expanded: false
 
-    implicitWidth: widget.implicitWidth
-    implicitHeight: LayoutTheme.barWidgetHeight
+    implicitWidth: bellIcon.implicitWidth + (LayoutTheme.barWidgetPadding * 2)
     visible: countRepeater.count > 0
+    popup: NotificationCenterPopup {}
 
     // Reactive notification count — .length on a QML model list is not reactive,
     // but Repeater.count is updated by the model's own change signals.
@@ -22,54 +20,12 @@ Item {
         delegate: Item {}
     }
 
-    // ── Bar widget ──────────────────────────────────────────────────────────
-
-    Rectangle {
-        id: widget
-        radius: Shape.radiusNormal
-        color: widgetMouse.pressed ? Colors.surfacePressed : (widgetMouse.containsMouse ? Colors.surfaceHover : Colors.surface)
-        border.width: Shape.borderWidth
-        border.color: Colors.border
-        implicitWidth: bellIcon.implicitWidth + (LayoutTheme.barWidgetPadding * 2)
-        implicitHeight: LayoutTheme.barWidgetHeight
-
-        Behavior on color {
-            ColorAnimation {
-                duration: Animations.duration_hover
-                easing.type: Animations.easingStandard
-            }
-        }
-
-        Text {
-            id: bellIcon
-            anchors.centerIn: parent
-            text: "󰂚"
-            color: Colors.text
-            font.pixelSize: Typography.icon
-            font.family: Typography.iconFamily
-        }
-
-        MouseArea {
-            id: widgetMouse
-            anchors.fill: parent
-            hoverEnabled: true
-            cursorShape: Qt.PointingHandCursor
-            onClicked: root.expanded = !root.expanded
-        }
-    }
-
-    // ── Notification history popup ──────────────────────────────────────────
-
-    HyprlandFocusGrab {
-        active: root.expanded
-        windows: [dropdown]
-        onCleared: root.expanded = false
-    }
-
-    NotificationCenterPopup {
-        id: dropdown
-        anchorItem: root
-        expanded: root.expanded
-        onClose: root.expanded = false
+    Text {
+        id: bellIcon
+        anchors.centerIn: parent
+        text: "󰂚"
+        color: Colors.text
+        font.pixelSize: Typography.icon
+        font.family: Typography.iconFamily
     }
 }

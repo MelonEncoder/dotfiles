@@ -37,6 +37,8 @@ Top-level windows/surfaces assembled in `shell.qml`:
 
 Widgets used inside `modules/` (and the control panel popup):
 
+- `BarButton.qml` — base for bar widgets that open a popup (button + focus grab + lazily created `popup` Component); used by `Clock`, `ControlPanel`, `MediaPlayer`, `NotificationCenter`, `SystemInfo`
+
 - `BatteryStatus.qml`, `Volume.qml` — status indicators/controls for their respective system features
 - `WifiNetworks.qml`, `BluetoothDevices.qml` — network/device lists shown in the control panel's expandable Wi-Fi/Bluetooth sections
 - `TrayItem.qml`, `TrayItems.qml` — system tray row and the control panel's "Background Apps" list
@@ -66,7 +68,7 @@ Shared low-level building blocks for popup/window surfaces:
 
 ### `components/ui/`
 
-Generic, app-agnostic controls: `Dropdown.qml`, `ExpandSection.qml`, `ProgressBar.qml`, `Slider.qml`, `LabelButton.qml`, `SquareButton.qml`, `ToggleTile.qml`
+Generic, app-agnostic controls: `HoverSurface.qml` (shared hover/press base for clickable items), `ExpandSection.qml`, `ListRow.qml`, `ListSection.qml` (titled row list with a `Component` row template), `ProgressBar.qml`, `Slider.qml`, `LabelButton.qml`, `SquareButton.qml`, `ToggleTile.qml`
 
 ## `services/`
 

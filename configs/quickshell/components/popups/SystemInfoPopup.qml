@@ -10,7 +10,6 @@ import "../../services"
 BarPopupSurface {
     id: root
 
-    required property Item anchorItem
     property string distroDisplay: ""
     property string distroIcon: ""
     property string kernelDisplay: ""
@@ -21,7 +20,6 @@ BarPopupSurface {
     property string storageDisplay: ""
     readonly property int popupWidth: 310
 
-    anchor.item: anchorItem
     text: Strings.tr(Strings.keys.system)
 
     panelY: LayoutTheme.barWidgetHeight + (LayoutTheme.barPadding * 2)

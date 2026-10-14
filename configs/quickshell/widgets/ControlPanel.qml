@@ -7,11 +7,8 @@ import Quickshell.Hyprland
 import "../components/popups"
 import "../theme"
 
-Rectangle {
+BarButton {
     id: root
-    property bool expanded: false
-    property bool hovered: clickArea.containsMouse
-    property bool pressed: clickArea.pressed
 
     // Bar.qml instantiates one ControlPanel per screen and passes its
     // screen in here. The global shortcut and IPC target must be
@@ -24,18 +21,9 @@ Rectangle {
     readonly property int slotSize: Math.max(1, LayoutTheme.barWidgetIconSize)
 
     implicitWidth: (slotSize * 3) + (iconSpacing * 2) + (LayoutTheme.barWidgetPadding * 2)
-    implicitHeight: LayoutTheme.barWidgetHeight
-    radius: Shape.radiusNormal
-    color: root.pressed ? Colors.surfacePressed : (root.hovered ? Colors.surfaceHover : Colors.surface)
-    border.width: Shape.borderWidth
-    border.color: Colors.border
-
-    Behavior on color {
-        ColorAnimation {
-            duration: Animations.duration_hover
-            easing.type: Animations.easingStandard
-        }
-    }
+    // ControlPanelPopup exposes menuOpen, which pauses BarButton's focus
+    // grab while a tray menu is open.
+    popup: ControlPanelPopup {}
 
     Row {
         anchors.centerIn: parent
@@ -59,27 +47,6 @@ Rectangle {
         }
     }
 
-    MouseArea {
-        id: clickArea
-        anchors.fill: parent
-        hoverEnabled: true
-        cursorShape: Qt.PointingHandCursor
-        onClicked: root.expanded = !root.expanded
-    }
-
-    HyprlandFocusGrab {
-        // Paused while a tray menu is open so the menu doesn't close the panel.
-        active: root.expanded && !dropdown.menuOpen
-        windows: [dropdown]
-        onCleared: root.expanded = false
-    }
-
-    ControlPanelPopup {
-        id: dropdown
-        anchorItem: root
-        expanded: root.expanded
-        onClose: root.expanded = false
-    }
 
     Loader {
         active: root.isPrimaryScreen
