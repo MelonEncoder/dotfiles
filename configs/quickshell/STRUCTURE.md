@@ -6,8 +6,9 @@ A [Quickshell](https://quickshell.org/) desktop shell configuration (Wayland/Hyp
 .
 ├── shell.qml           # Entry point — instantiates the top-level modules
 ├── modules/             # Top-level shell surfaces (windows/bars) shown in shell.qml
-├── components/          # Reusable widgets composed into modules
-│   ├── popups/          #   Shared popup helpers (e.g. click-outside backdrop)
+├── widgets/             # Bar/panel widgets composed into modules
+├── components/          # Shared building blocks used by widgets and modules
+│   ├── popups/          #   Bar-widget dropdown contents
 │   ├── surfaces/        #   Shared surface helpers
 │   └── ui/              #   Generic UI controls (buttons, sliders, dropdowns...)
 ├── services/            # Singleton services — system state & backend logic
@@ -16,7 +17,7 @@ A [Quickshell](https://quickshell.org/) desktop shell configuration (Wayland/Hyp
 └── wallpapers/          # Wallpaper image assets
 ```
 
-Each directory (other than `scripts/` and `wallpapers/`) has a `qmldir` file that declares its QML types, so imports elsewhere use `import "modules"`, `import "components"`, etc.
+Each directory (other than `scripts/` and `wallpapers/`) has a `qmldir` file that declares its QML types, so imports elsewhere use `import "modules"`, `import "../widgets"`, `import "../components/ui"`, etc.
 
 ## `modules/`
 
@@ -32,11 +33,13 @@ Top-level windows/surfaces assembled in `shell.qml`:
 - `Wallpaper.qml` — wallpaper window
 - `WallpaperPicker.qml` — wallpaper selection UI
 
-## `components/`
+## `widgets/`
 
-Widgets used inside `modules/`:
+Widgets used inside `modules/` (and the control panel popup):
 
-- `BatteryStatus.qml`, `Bluetooth.qml`, `Volume.qml`, `Wifi.qml` — status indicators/controls for their respective system features
+- `BatteryStatus.qml`, `Volume.qml` — status indicators/controls for their respective system features
+- `WifiNetworks.qml`, `BluetoothDevices.qml` — network/device lists shown in the control panel's expandable Wi-Fi/Bluetooth sections
+- `TrayIcons.qml` — compact system tray icon row used in the control panel
 - `CurrentWindow.qml` — active window title display
 - `IdleInhibitor.qml` — toggle to prevent idle/screen lock
 - `MediaPlayer.qml` — media player controls widget
@@ -44,6 +47,10 @@ Widgets used inside `modules/`:
 - `PrivacyIndicator.qml` — mic/camera/screen-share in-use indicator
 - `SystemInfo.qml`, `SystemOptions.qml`, `SystemTray.qml` — system info popup, misc system options, and system tray
 - `Workspaces.qml` — workspace switcher
+
+## `components/`
+
+Shared building blocks, split into subdirectories (no types at the top level).
 
 ### `components/popups/`
 
@@ -59,13 +66,13 @@ Shared low-level building blocks for popup/window surfaces:
 
 ### `components/ui/`
 
-Generic, app-agnostic controls: `Dropdown.qml`, `ProgressBar.qml`, `Slider.qml`, `LabelButton.qml`, `SquareButton.qml`
+Generic, app-agnostic controls: `Dropdown.qml`, `ExpandSection.qml`, `ProgressBar.qml`, `Slider.qml`, `LabelButton.qml`, `SquareButton.qml`, `ToggleTile.qml`
 
 ## `services/`
 
 Singletons (declared via `singleton` in `qmldir`) exposing system state to the rest of the shell:
 
-- `AudioService.qml`, `BluetoothService.qml`, `BrightnessService.qml`, `CalendarService.qml`, `ClockService.qml`, `LockService.qml`, `MediaService.qml`, `NotificationService.qml`, `PowerService.qml`, `SystemInfoService.qml`, `WallpaperService.qml`
+- `AudioService.qml`, `BluetoothService.qml`, `BrightnessService.qml`, `CalendarService.qml`, `ClockService.qml`, `LockService.qml`, `MediaService.qml`, `NotificationService.qml`, `PowerService.qml`, `SystemInfoService.qml`, `WallpaperService.qml`, `WifiService.qml`
 - `Strings.qml` — shared string constants
 
 ## `theme/`

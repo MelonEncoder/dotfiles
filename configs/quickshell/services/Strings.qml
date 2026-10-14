@@ -40,13 +40,15 @@ Singleton {
 
         // Bluetooth
         bluetooth:        { en: "Bluetooth",             ja: "Bluetooth" },
-        bt_on:            { en: "On",                    ja: "オン" },
-        bt_off:           { en: "Off",                   ja: "オフ" },
         bt_unavailable:   { en: "Bluetooth unavailable", ja: "Bluetooth 使用不可" },
         bt_disabled:      { en: "Bluetooth disabled",    ja: "Bluetooth 無効" },
         scanning:         { en: "Scanning...",           ja: "スキャン中..." },
 
         // Shared status strings
+        on:               { en: "On",                    ja: "オン" },
+        off:              { en: "Off",                   ja: "オフ" },
+        unavailable:      { en: "Unavailable",           ja: "使用不可" },
+        connecting:       { en: "Connecting...",         ja: "接続中..." },
         connected:        { en: "Connected",             ja: "接続済み" },
         available:        { en: "Available",             ja: "利用可能" },
         none_connected:   { en: "None connected",        ja: "未接続" },

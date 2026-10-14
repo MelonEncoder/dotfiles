@@ -4,7 +4,7 @@ import Quickshell.Services.Notifications
 import QtQuick
 import QtQuick.Layouts
 import "../services"
-import "../components"
+import "../widgets"
 import "../theme"
 
 Scope {

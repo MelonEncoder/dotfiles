@@ -10,3 +10,4 @@ singleton PowerService 1.0 PowerService.qml
 singleton Strings 1.0 Strings.qml
 singleton SystemInfoService 1.0 SystemInfoService.qml
 singleton WallpaperService 1.0 WallpaperService.qml
+singleton WifiService 1.0 WifiService.qml

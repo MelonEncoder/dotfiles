@@ -14,6 +14,27 @@ Singleton {
     readonly property bool enabled: adapter ? adapter.enabled : false
     readonly property bool discovering: adapter ? adapter.discovering : false
 
+    // One-line status for tiles/headers.
+    readonly property string status: {
+        if (!available)
+            return Strings.tr(Strings.keys.unavailable);
+        if (!enabled)
+            return Strings.tr(Strings.keys.off);
+        var connected = getConnectedDevices();
+        if (connected.length > 0)
+            return connected[0].name;
+        return Strings.tr(Strings.keys.on);
+    }
+
+    function setEnabled(on: bool): void {
+        if (adapter)
+            adapter.enabled = on;
+    }
+
+    function toggle(): void {
+        setEnabled(!enabled);
+    }
+
     function refresh(): void {
         if (!adapter) {
             return;

@@ -4,7 +4,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 import Quickshell.Hyprland
-import "popups"
+import "../components/popups"
 import "../theme"
 
 Rectangle {
@@ -68,7 +68,8 @@ Rectangle {
     }
 
     HyprlandFocusGrab {
-        active: root.expanded
+        // Paused while a tray menu is open so the menu doesn't close the panel.
+        active: root.expanded && !dropdown.menuOpen
         windows: [dropdown]
         onCleared: root.expanded = false
     }

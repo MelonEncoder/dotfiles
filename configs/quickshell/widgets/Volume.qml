@@ -4,7 +4,7 @@ import QtQuick
 import QtQuick.Layouts
 import "../theme"
 import "../services/"
-import "ui"
+import "../components/ui"
 
 Dropdown {
     id: root

@@ -2,55 +2,15 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Layouts
-import Quickshell.Networking
 import "../theme"
 import "../services"
-import "ui"
 
-Dropdown {
+// Wi-Fi network list (connected + available) for the control panel's
+// expandable Wi-Fi section. State lives in WifiService.
+ColumnLayout {
     id: root
 
-    readonly property var wifiDevice: {
-        var devs = Networking.devices.values;
-        for (var i = 0; i < devs.length; i++) {
-            if (devs[i].type === DeviceType.Wifi)
-                return devs[i];
-        }
-        return null;
-    }
-
-    readonly property var connectedNetworks: {
-        if (!root.wifiDevice) return [];
-        return root.wifiDevice.networks.values.filter(function(n) { return n.connected; });
-    }
-
-    readonly property var availableNetworks: {
-        if (!root.wifiDevice) return [];
-        return root.wifiDevice.networks.values.filter(function(n) { return !n.connected; });
-    }
-
-    function wifiName(network: var): string {
-        if (!network) return "Unknown Network";
-        if (network.name && network.name.length > 0) return network.name;
-        return "Hidden Network";
-    }
-
-    function currentWifiSubtitle(): string {
-        if (!root.wifiDevice) return "unavailable";
-        if (root.wifiDevice.state === ConnectionState.Connecting) return "connecting...";
-        if (root.connectedNetworks.length > 0) return root.wifiName(root.connectedNetworks[0]);
-        return "none connected";
-    }
-
-    onExpandedChanged: {
-        if (root.wifiDevice)
-            root.wifiDevice.scannerEnabled = root.expanded;
-    }
-
-    icon: "󰖩"
-    title: Strings.tr(Strings.keys.wifi)
-    subtitle: root.currentWifiSubtitle()
-    showChevron: true
+    spacing: 3
 
     Text {
         text: Strings.tr(Strings.keys.connected)
@@ -62,7 +22,7 @@ Dropdown {
     }
 
     Repeater {
-        model: root.connectedNetworks
+        model: WifiService.connectedNetworks
 
         Rectangle {
             id: connectedWifiItem
@@ -85,7 +45,7 @@ Dropdown {
                 anchors.left: parent.left
                 anchors.leftMargin: 10
                 anchors.verticalCenter: parent.verticalCenter
-                text: root.wifiName(connectedWifiItem.modelData)
+                text: WifiService.networkName(connectedWifiItem.modelData)
                 color: Colors.text
                 font.pixelSize: Typography.size
                 font.family: Typography.family
@@ -108,7 +68,7 @@ Dropdown {
         Layout.preferredHeight: LayoutTheme.barWidgetHeight
         radius: Shape.radiusNormal
         color: "transparent"
-        visible: root.connectedNetworks.length === 0
+        visible: WifiService.connectedNetworks.length === 0
 
         Text {
             anchors.left: parent.left
@@ -131,7 +91,7 @@ Dropdown {
     }
 
     Repeater {
-        model: root.availableNetworks
+        model: WifiService.availableNetworks
 
         Rectangle {
             id: availableWifiItem
@@ -154,7 +114,7 @@ Dropdown {
                 anchors.left: parent.left
                 anchors.leftMargin: 10
                 anchors.verticalCenter: parent.verticalCenter
-                text: root.wifiName(availableWifiItem.modelData)
+                text: WifiService.networkName(availableWifiItem.modelData)
                 color: Colors.text
                 font.pixelSize: Typography.size
                 font.family: Typography.family
@@ -177,7 +137,7 @@ Dropdown {
         Layout.preferredHeight: LayoutTheme.barWidgetHeight
         radius: Shape.radiusNormal
         color: "transparent"
-        visible: root.availableNetworks.length === 0
+        visible: WifiService.availableNetworks.length === 0
 
         Text {
             anchors.left: parent.left

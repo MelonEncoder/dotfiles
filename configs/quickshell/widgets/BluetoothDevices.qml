@@ -5,21 +5,13 @@ import QtQuick.Layouts
 import Quickshell
 import "../theme"
 import "../services"
-import "ui"
 
-Dropdown {
+// Bluetooth device list (connected + available) for the control panel's
+// expandable Bluetooth section. State lives in BluetoothService.
+ColumnLayout {
     id: root
 
-    icon: BluetoothService.enabled ? "󰂱" : "󰂲"
-    title: Strings.tr(Strings.keys.bluetooth)
-    subtitle: BluetoothService.enabled
-        ? Strings.tr(Strings.keys.bt_on)
-        : Strings.tr(Strings.keys.bt_off)
-
-    onToggled: expanded => {
-        if (expanded)
-            BluetoothService.discover();
-    }
+    spacing: 3
 
     Text {
         text: Strings.tr(Strings.keys.connected)

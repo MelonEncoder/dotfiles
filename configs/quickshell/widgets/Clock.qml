@@ -3,7 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Quickshell.Hyprland
-import "popups"
+import "../components/popups"
 import "../services"
 import "../theme"
 

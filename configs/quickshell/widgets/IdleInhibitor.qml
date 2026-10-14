@@ -4,7 +4,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Wayland as QsWayland
 import "../theme"
-import "ui"
+import "../components/ui"
 
 LabelButton {
     id: toggleButton
