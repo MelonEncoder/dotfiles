@@ -36,7 +36,7 @@ Top-level windows/surfaces assembled in `shell.qml`:
 
 Widgets used inside `modules/`:
 
-- `BatteryStatus.qml`, `Bluetooth.qml`, `PowerProfiles.qml`, `Volume.qml`, `Wifi.qml` — status indicators/controls for their respective system features
+- `BatteryStatus.qml`, `Bluetooth.qml`, `Volume.qml`, `Wifi.qml` — status indicators/controls for their respective system features
 - `CurrentWindow.qml` — active window title display
 - `IdleInhibitor.qml` — toggle to prevent idle/screen lock
 - `MediaPlayer.qml` — media player controls widget

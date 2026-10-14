@@ -50,9 +50,6 @@ Singleton {
         bt_disabled:      { en: "Bluetooth disabled",    ja: "Bluetooth 無効" },
         scanning:         { en: "Scanning...",           ja: "スキャン中..." },
 
-        // Power profiles
-        power_profiles:   { en: "Power Profiles",        ja: "電源プロファイル" },
-
         // Shared status strings
         connected:        { en: "Connected",             ja: "接続済み" },
         available:        { en: "Available",             ja: "利用可能" },

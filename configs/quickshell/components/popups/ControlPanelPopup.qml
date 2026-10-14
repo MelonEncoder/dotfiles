@@ -40,8 +40,4 @@ BarPopupSurface {
     Bluetooth {
         Layout.fillWidth: true
     }
-
-    PowerProfiles {
-        Layout.fillWidth: true
-    }
 }
