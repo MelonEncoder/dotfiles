@@ -55,8 +55,7 @@ Item {
             hoverEnabled: true
             cursorShape: Qt.PointingHandCursor
             onClicked: {
-                dropdown.calYear = new Date().getFullYear();
-                dropdown.calMonth = new Date().getMonth() + 1;
+                CalendarService.goToToday();
                 root.expanded = !root.expanded;
             }
         }

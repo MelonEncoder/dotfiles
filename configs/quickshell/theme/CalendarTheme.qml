@@ -5,11 +5,8 @@ import QtQuick
 
 Singleton {
     // Colors
-    readonly property color sunday:
-        Qt.rgba(0.878, 0.424, 0.455, 1)
-
-    readonly property color saturday:
-        Qt.rgba(0.380, 0.686, 0.937, 1)
+    readonly property color weekend: Colors.accentPrimary
+    readonly property color outsideMonth: Qt.rgba(1, 1, 1, 0.3)
 
     // Dimensions
     readonly property int cellWidth: 32

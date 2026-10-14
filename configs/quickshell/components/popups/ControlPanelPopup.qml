@@ -20,10 +20,6 @@ BarPopupSurface {
     panelY: LayoutTheme.barWidgetHeight + (LayoutTheme.barPadding * 2)
     panelWidth: 360
 
-    ScreenshotControls {
-        Layout.fillWidth: true
-    }
-
     Brightness {
         Layout.fillWidth: true
     }

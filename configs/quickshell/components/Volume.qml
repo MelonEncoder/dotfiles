@@ -9,16 +9,20 @@ import "ui"
 Dropdown {
     id: root
 
-    // Local mirror of VolumeService.volume so dragging feels instant and
-    // isn't fighting the (possibly slightly-lagged) Pipewire readback.
+    // Local mirror of AudioService.volume (as a 0-100 percent) so dragging
+    // feels instant and isn't fighting the slightly-lagged wpctl readback.
     property int currentVolume: 0
 
     function setDefaultSink(node: var): void {
-        VolumeService.setDefaultSink(node);
+        AudioService.setDefaultSink(node);
         root.expanded = false;
     }
 
-    Component.onCompleted: root.currentVolume = VolumeService.volume
+    function volumePercent(): int {
+        return Math.max(0, Math.min(100, Math.round(AudioService.volume * 100)));
+    }
+
+    Component.onCompleted: root.currentVolume = root.volumePercent()
 
     headerDelegate: Component {
         Item {
@@ -37,8 +41,8 @@ Dropdown {
                 LabelButton {
                     Layout.alignment: Qt.AlignVCenter
                     baseColor: "transparent"
-                    icon: !VolumeService.sink ? "" : (VolumeService.muted ? "" : "")
-                    onClicked: VolumeService.toggleMute()
+                    icon: !AudioService.sink ? "" : (AudioService.muted ? "" : "")
+                    onClicked: AudioService.toggleMute()
                 }
 
                 Slider {
@@ -48,14 +52,14 @@ Dropdown {
                     value: root.currentVolume
                     onMoved: function (percent) {
                         root.currentVolume = percent;
-                        VolumeService.setVolume(percent);
+                        AudioService.setVolume(percent / 100);
                     }
 
                     Connections {
-                        target: VolumeService
+                        target: AudioService
                         function onVolumeChanged() {
                             if (!volumeSlider.dragging)
-                                root.currentVolume = VolumeService.volume;
+                                root.currentVolume = root.volumePercent();
                         }
                     }
                 }
@@ -83,12 +87,12 @@ Dropdown {
     }
 
     Repeater {
-        model: VolumeService.audioSinks
+        model: AudioService.audioSinks
 
         Rectangle {
             id: deviceItem
             required property var modelData
-            readonly property bool isDefault: !!VolumeService.sink && modelData.id === VolumeService.sink.id
+            readonly property bool isDefault: !!AudioService.sink && modelData.id === AudioService.sink.id
             property bool hovered: deviceMouse.containsMouse
             property bool pressed: deviceMouse.pressed
 

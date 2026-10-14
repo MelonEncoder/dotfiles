@@ -1,6 +1,7 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
+import QtQuick.Layouts
 import Quickshell
 import "../surfaces"
 import "../../theme"
@@ -10,58 +11,7 @@ BarPopupSurface {
     id: root
 
     required property Item anchorItem
-    property int calYear: new Date().getFullYear()
-    property int calMonth: new Date().getMonth() + 1
     readonly property int calendarWidth: CalendarTheme.cellWidth * 7
-
-    function prevMonth(): void {
-        if (root.calMonth === 1) {
-            root.calMonth = 12;
-            root.calYear -= 1;
-        } else {
-            root.calMonth -= 1;
-        }
-    }
-
-    function nextMonth(): void {
-        if (root.calMonth === 12) {
-            root.calMonth = 1;
-            root.calYear += 1;
-        } else {
-            root.calMonth += 1;
-        }
-    }
-
-    function daysInMonth(year: int, month: int): int {
-        return new Date(year, month, 0).getDate();
-    }
-
-    function firstWeekday(year: int, month: int): int {
-        return new Date(year, month - 1, 1).getDay();
-    }
-
-    // Build flat array of cell objects for the calendar grid
-    readonly property var calCells: {
-        var cells = [];
-        var offset = root.firstWeekday(root.calYear, root.calMonth);
-        var total = root.daysInMonth(root.calYear, root.calMonth);
-        var today = new Date();
-        var todayDay = today.getDate();
-        var todayMonth = today.getMonth() + 1;
-        var todayYear = today.getFullYear();
-        var cellCount = Math.ceil((offset + total) / 7) * 7;
-        for (var i = 0; i < cellCount; i++) {
-            var day = i - offset + 1;
-            var isValid = i >= offset && day <= total;
-            cells.push({
-                day: isValid ? day : 0,
-                isValid: isValid,
-                isToday: isValid && day === todayDay && root.calMonth === todayMonth && root.calYear === todayYear,
-                weekCol: i % 7
-            });
-        }
-        return cells;
-    }
 
     anchor.item: anchorItem
     anchor.rect.x: 0
@@ -73,20 +23,34 @@ BarPopupSurface {
     panelY: LayoutTheme.barWidgetHeight + (LayoutTheme.barPadding * 2)
     panelWidth: root.calendarWidth + (LayoutTheme.barWidgetPadding * 2)
 
-    // Month navigation
-    Item {
-        width: parent.width
-        height: CalendarTheme.navigationHeight
+    // Month navigation: [Month+Year, spacer, ‹, ›]
+    RowLayout {
+        Layout.fillWidth: true
+        Layout.preferredHeight: CalendarTheme.navigationHeight
+        spacing: 4
+
+        Text {
+            Layout.alignment: Qt.AlignVCenter
+            leftPadding: 4
+            text: CalendarService.monthLabel
+            color: Colors.text
+            font.pixelSize: Typography.size
+            font.family: Typography.family
+        }
+
+        Item {
+            Layout.fillWidth: true
+        }
 
         Text {
             id: prevBtn
-            anchors.left: parent.left
-            anchors.verticalCenter: parent.verticalCenter
+            Layout.alignment: Qt.AlignVCenter
+            leftPadding: 4
+            rightPadding: 4
             text: "‹"
             color: prevMonthMouse.containsMouse ? Colors.text : Colors.textSubtle
             font.pixelSize: Typography.title
             font.family: Typography.family
-            leftPadding: 4
 
             Behavior on color {
                 ColorAnimation {
@@ -100,27 +64,19 @@ BarPopupSurface {
                 anchors.fill: parent
                 hoverEnabled: true
                 cursorShape: Qt.PointingHandCursor
-                onClicked: root.prevMonth()
+                onClicked: CalendarService.prevMonth()
             }
         }
 
         Text {
-            anchors.centerIn: parent
-            text: root.calYear + "年" + root.calMonth + "月"
-            color: Colors.text
-            font.pixelSize: Typography.size
-            font.family: Typography.family
-        }
-
-        Text {
             id: nextBtn
-            anchors.right: parent.right
-            anchors.verticalCenter: parent.verticalCenter
+            Layout.alignment: Qt.AlignVCenter
+            leftPadding: 4
+            rightPadding: 4
             text: "›"
             color: nextMonthMouse.containsMouse ? Colors.text : Colors.textSubtle
             font.pixelSize: Typography.title
             font.family: Typography.family
-            rightPadding: 4
 
             Behavior on color {
                 ColorAnimation {
@@ -134,7 +90,7 @@ BarPopupSurface {
                 anchors.fill: parent
                 hoverEnabled: true
                 cursorShape: Qt.PointingHandCursor
-                onClicked: root.nextMonth()
+                onClicked: CalendarService.nextMonth()
             }
         }
     }
@@ -145,7 +101,7 @@ BarPopupSurface {
         width: parent.width
 
         Repeater {
-            model: ["日", "月", "火", "水", "木", "金", "土"]
+            model: CalendarService.weekdays
             delegate: Text {
                 required property string modelData
                 required property int index
@@ -154,8 +110,8 @@ BarPopupSurface {
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
                 text: modelData
-                // Sunday red, Saturday blue
-                color: index === 0 ? CalendarTheme.sunday : (index === 6 ? CalendarTheme.saturday : Colors.textSubtle)
+                // Weekends in the accent color
+                color: index === 0 || index === 6 ? CalendarTheme.weekend : Colors.textSubtle
                 font.pixelSize: Typography.xs
                 font.family: Typography.family
             }
@@ -175,7 +131,7 @@ BarPopupSurface {
         bottomPadding: 2
 
         Repeater {
-            model: root.calCells
+            model: CalendarService.cells
             delegate: Item {
                 required property var modelData
 
@@ -194,16 +150,14 @@ BarPopupSurface {
 
                 Text {
                     anchors.centerIn: parent
-                    text: parent.modelData.isValid ? parent.modelData.day.toString() : ""
+                    text: parent.modelData.day.toString()
                     color: {
-                        if (!parent.modelData.isValid)
-                            return "transparent";
+                        if (!parent.modelData.inMonth)
+                            return CalendarTheme.outsideMonth;
                         if (parent.modelData.isToday)
                             return Colors.background;
-                        if (parent.modelData.weekCol === 0)
-                            return CalendarTheme.sunday;
-                        if (parent.modelData.weekCol === 6)
-                            return CalendarTheme.saturday;
+                        if (parent.modelData.weekCol === 0 || parent.modelData.weekCol === 6)
+                            return CalendarTheme.weekend;
                         return Colors.text;
                     }
                     font.pixelSize: Typography.xs

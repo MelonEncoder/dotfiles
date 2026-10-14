@@ -42,7 +42,6 @@ Widgets used inside `modules/`:
 - `MediaPlayer.qml` — media player controls widget
 - `NotificationBell.qml`, `NotificationCard.qml` — notification bell icon and individual notification card
 - `PrivacyIndicator.qml` — mic/camera/screen-share in-use indicator
-- `ScreenshotControls.qml` — screenshot action buttons
 - `SystemInfo.qml`, `SystemOptions.qml`, `SystemTray.qml` — system info popup, misc system options, and system tray
 - `Workspaces.qml` — workspace switcher
 
@@ -66,7 +65,7 @@ Generic, app-agnostic controls: `Dropdown.qml`, `ProgressBar.qml`, `Slider.qml`,
 
 Singletons (declared via `singleton` in `qmldir`) exposing system state to the rest of the shell:
 
-- `BluetoothService.qml`, `BrightnessService.qml`, `ClockService.qml`, `LockService.qml`, `MediaService.qml`, `NotificationService.qml`, `PowerService.qml`, `SystemInfoService.qml`, `VolumeService.qml`, `WallpaperService.qml`
+- `AudioService.qml`, `BluetoothService.qml`, `BrightnessService.qml`, `CalendarService.qml`, `ClockService.qml`, `LockService.qml`, `MediaService.qml`, `NotificationService.qml`, `PowerService.qml`, `SystemInfoService.qml`, `WallpaperService.qml`
 - `Strings.qml` — shared string constants
 
 ## `theme/`

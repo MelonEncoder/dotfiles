@@ -32,10 +32,6 @@ Singleton {
         ram:              { en: "RAM",                   ja: "RAM" },
         storage:          { en: "Storage",                ja: "ストレージ" },
 
-        // Screenshot buttons
-        fullscreen:       { en: "Fullscreen",            ja: "全画面" },
-        region:           { en: "Region",                ja: "範囲選択" },
-
         // Volume
         output_devices:   { en: "Output Devices",        ja: "出力デバイス" },
 
