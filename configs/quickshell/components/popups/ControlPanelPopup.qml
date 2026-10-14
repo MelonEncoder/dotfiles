@@ -26,7 +26,6 @@ BarPopupSurface {
 
     Brightness {
         Layout.fillWidth: true
-        panelScreenName: root.screen ? root.screen.name : ""
     }
 
     Volume {

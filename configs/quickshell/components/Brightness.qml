@@ -17,22 +17,6 @@ import "../services"
 
 Rectangle {
     id: root
-    property string panelScreenName: ""
-    property int ddcDisplay: 1
-
-    // Live handle into the service; re-resolved whenever the target screen
-    // (or its ddc display index) changes.
-    property var monitor: null
-    readonly property int brightnessPercent: monitor ? monitor.brightnessPercent : 50
-
-    function ensureMonitor(): void {
-        if (!root.panelScreenName) {
-            root.monitor = null;
-            return;
-        }
-        root.monitor = BrightnessService.monitorFor(root.panelScreenName, root.ddcDisplay);
-    }
-
     implicitWidth: 280
     implicitHeight: moduleRow.implicitHeight + (LayoutTheme.barWidgetHeight)
     width: implicitWidth
@@ -82,10 +66,9 @@ Rectangle {
             id: brightnessSlider
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignVCenter
-            value: root.brightnessPercent
+            value: Math.round(BrightnessService.brightness * 100)
             onMoved: function (percent) {
-                if (root.monitor)
-                    root.monitor.setBrightness(percent);
+                BrightnessService.setBrightness(percent / 100);
             }
         }
 
@@ -113,8 +96,4 @@ Rectangle {
             }
         }
     }
-
-    onPanelScreenNameChanged: ensureMonitor()
-    onDdcDisplayChanged: ensureMonitor()
-    Component.onCompleted: ensureMonitor()
 }
