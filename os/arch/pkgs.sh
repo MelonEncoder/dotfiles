@@ -15,6 +15,7 @@ pacman_system=(
   docker
   dnsmasq
   flatpak
+  fuzzel
   ghostty
   gimp
   git
