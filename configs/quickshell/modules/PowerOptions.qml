@@ -83,6 +83,10 @@ Scope {
                 onClose: root.close()
             }
 
+            PopupShadow {
+                target: panel
+            }
+
             PopupSurface {
                 id: panel
                 anchors.centerIn: parent

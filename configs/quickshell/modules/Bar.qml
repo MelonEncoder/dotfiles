@@ -2,6 +2,7 @@ pragma ComponentBehavior: Bound
 
 import Quickshell
 import QtQuick
+import QtQuick.Effects
 import QtQuick.Layouts
 import "../widgets"
 import "../theme"
@@ -19,7 +20,7 @@ Scope {
 
                 readonly property int section_margin: 12
                 readonly property int widget_spacing: 8
-                readonly property int inner_spacing: 6
+                readonly property int inner_spacing: 8
                 readonly property int popup_offset_y: LayoutTheme.barWidgetHeight + (LayoutTheme.barPadding * 2)
                 readonly property int tray_item_size: 22
     			readonly property int tray_icon_size: 16
@@ -32,10 +33,29 @@ Scope {
 
                 screen: screenGroup.modelData
                 color: "transparent"
-                implicitHeight: barContent.implicitHeight + (LayoutTheme.barPadding)
+                // Extra transparent space below the bar so widget shadows
+                // aren't cut off; it isn't reserved and doesn't take input.
+                implicitHeight: barContent.implicitHeight + LayoutTheme.barPadding + Shape.shadowBlur + Shape.shadowOffsetY
+                exclusiveZone: barContent.implicitHeight + LayoutTheme.barPadding
+                mask: Region {
+                    item: barContent
+                }
 
                 Item {
                     id: barContent
+
+                    // One shadow pass over the whole row, so every widget
+                    // casts the same shadow as the popups (see PopupShadow).
+                    layer.enabled: true
+                    layer.effect: MultiEffect {
+                        shadowEnabled: true
+                        shadowColor: Colors.shadow
+                        shadowBlur: 1.0
+                        blurMax: Shape.shadowBlur
+                        shadowVerticalOffset: Shape.shadowOffsetY
+                        shadowHorizontalOffset: 0
+                    }
+
                     anchors.top: parent.top
                     anchors.left: parent.left
                     anchors.right: parent.right

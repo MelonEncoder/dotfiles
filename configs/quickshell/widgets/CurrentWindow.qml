@@ -56,7 +56,7 @@ Rectangle {
     }
 
     radius: Shape.radiusNormal
-    color: Colors.surface
+    color: Colors.background
     border.width: Shape.borderWidth
     border.color: Colors.border
     implicitHeight: LayoutTheme.barWidgetHeight

@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import "../components/popups"
+import "../components/ui"
 import "../services"
 import "../theme"
 

@@ -2,6 +2,7 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import "../components/popups"
+import "../components/ui"
 import "../theme"
 import "../services"
 

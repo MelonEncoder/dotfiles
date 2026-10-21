@@ -1,33 +1,20 @@
 import QtQuick
-import "../../theme"
 
-// Full-screen darkening backdrop for popup windows.
-// Closes the popup when clicking outside or pressing ESC.
+// Invisible full-screen click catcher for popup windows: closes the popup
+// when clicking outside the panel. Pair it with a PopupShadow on the panel
+// rather than dimming the screen.
 //
 // Usage inside a PopupWindow:
 //   Backdrop {
 //       expanded: root.expanded
 //       onClose: root.expanded = false
 //   }
-Rectangle {
+MouseArea {
     id: root
     property bool expanded: false
     signal close
 
     anchors.fill: parent
-    color: Colors.overlayDark
-    opacity: root.expanded ? 1 : 0
-
-    Behavior on opacity {
-        NumberAnimation {
-            duration: Animations.duration_normal
-            easing.type: Animations.easingStandard
-        }
-    }
-
-    MouseArea {
-        anchors.fill: parent
-        enabled: root.expanded
-        onClicked: root.close()
-    }
+    enabled: root.expanded
+    onClicked: root.close()
 }

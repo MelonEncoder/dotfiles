@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import "../services"
 import "../components/popups"
+import "../components/ui"
 import "../theme"
 
 BarButton {

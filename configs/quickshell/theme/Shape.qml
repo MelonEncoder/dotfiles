@@ -10,5 +10,9 @@ Singleton {
     readonly property int radiusLarge: 16
 
     // Width
-    readonly property int borderWidth: 0
+    readonly property int borderWidth: 1
+
+    // Shadow
+    readonly property int shadowBlur: 16
+    readonly property int shadowOffsetY: 0
 }

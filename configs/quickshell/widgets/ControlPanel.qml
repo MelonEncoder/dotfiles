@@ -5,6 +5,7 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Hyprland
 import "../components/popups"
+import "../components/ui"
 import "../theme"
 
 BarButton {

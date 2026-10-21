@@ -7,7 +7,7 @@ import "../../theme"
 
 // Standardized dropdown surface for bar widgets (Clock, ControlPanel,
 // MediaPlayer, ...): a full-screen transparent PopupWindow
-// anchored to the triggering widget, with a dimming Backdrop and an
+// anchored to the triggering widget, with a click-outside Backdrop, a drop shadow and an
 // animated panel (background/border/radius, escape-to-close, and a
 // MouseArea that absorbs clicks so they don't reach the backdrop).
 //
@@ -61,6 +61,10 @@ PopupWindow {
     Backdrop {
         expanded: root.expanded
         onClose: root.close()
+    }
+
+    PopupShadow {
+        target: panel
     }
 
     Rectangle {
@@ -150,17 +154,11 @@ PopupWindow {
                 from: "open"
 
                 SequentialAnimation {
-                    ParallelAnimation {
-                        NumberAnimation {
-                            target: panel
-                            properties: "opacity,scale"
-                            duration: Animations.dropdown
-                            easing.type: Animations.easingEmphasized
-                        }
-                        // Backdrop fades on its own (duration_normal); wait for it.
-                        PauseAnimation {
-                            duration: Math.max(Animations.dropdown, Animations.duration_normal)
-                        }
+                    NumberAnimation {
+                        target: panel
+                        properties: "opacity,scale"
+                        duration: Animations.dropdown
+                        easing.type: Animations.easingEmphasized
                     }
                     PropertyAction {
                         target: root

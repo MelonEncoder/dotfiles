@@ -22,7 +22,7 @@ LabelButton {
         ? Colors.surfacePressed
         : (toggleButton.inhibited
             ? Colors.text
-            : (toggleButton.hovered ? Colors.surfaceHover : Colors.surface))
+            : (toggleButton.hovered ? Colors.surfaceHover : Colors.background))
 
     onClicked: toggleButton.inhibited = !toggleButton.inhibited
 

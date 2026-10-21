@@ -3,13 +3,13 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import Quickshell
 import Quickshell.Hyprland
-import "../components/ui"
-import "../theme"
+import "../../theme"
 
 /*
   BarButton
 
-  Base for bar widgets that open a popup: a bordered HoverSurface that
+  Base for bar widgets that open a popup: a bordered HoverSurface (on the bar's
+  background color) that
   toggles `expanded` on click, a focus grab that closes the popup when
   focus leaves it, and the popup itself.
 
@@ -39,6 +39,7 @@ HoverSurface {
     // the grab is only armed one event-loop turn after the popup exists.
     property bool grabReady: false
 
+    baseColor: Colors.background
     implicitHeight: LayoutTheme.barWidgetHeight
     border.width: Shape.borderWidth
     border.color: Colors.border

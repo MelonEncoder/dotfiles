@@ -7,7 +7,8 @@ import "../../theme"
   Base for anything clickable: a rounded Rectangle whose color follows
   hover/press (with the shared color animation) and a MouseArea filling it.
   Buttons, rows, and tiles build on this instead of hand-rolling the same
-  Rectangle + MouseArea + color ternary + Behavior.
+  Rectangle + MouseArea + color ternary + Behavior. Bar widgets use
+  BarButton, which builds on this with the bar's background color.
 
   Color precedence: pressed > active > hovered > base. `active` is for
   toggled/expanded/focused looks that should hold while the pointer is away.

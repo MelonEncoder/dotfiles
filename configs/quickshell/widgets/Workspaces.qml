@@ -9,7 +9,7 @@ import "../theme"
 Rectangle {
 	id: root
 	radius: Shape.radiusNormal
-	color: Colors.surface
+	color: Colors.background
 	border.width: Shape.borderWidth
 	border.color: Colors.border
 	implicitWidth: workspaceRow.implicitWidth

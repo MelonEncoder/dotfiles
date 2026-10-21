@@ -18,16 +18,19 @@ Singleton {
     readonly property color accentSecondary: "#06b6d4"
 
     // Base
-    readonly property color background: Qt.rgba(0, 0, 0, 1)
-    readonly property color surface: Qt.rgba(0.15, 0.15, 0.15, 0.9)
+    readonly property color background: Qt.rgba(0.05, 0.05, 0.05, 1)
+    readonly property color surface: Qt.rgba(0.16, 0.16, 0.16, 1)
     readonly property color surfaceHover: Qt.rgba(0.267, 0.267, 0.267, 1)
     readonly property color surfacePressed: Qt.rgba(0.227, 0.227, 0.227, 1)
 
-    // Borders / overlays
-    readonly property color border: Qt.rgba(1, 1, 1, 0.4)
+    // Broder
+    readonly property color border: Qt.rgba(0.3, 0.3, 0.3, 0.6)
     readonly property color borderSubtle: Qt.rgba(1, 1, 1, 0.25)
+
+    // Overlays
     readonly property color overlayLight: Qt.rgba(1, 1, 1, 0.2)
     readonly property color overlayDark: Qt.rgba(0, 0, 0, 0.2)
+    readonly property color shadow: Qt.rgba(0, 0, 0, 0.6)
 
     // Text
     readonly property color text: Qt.rgba(1, 1, 1, 1)
