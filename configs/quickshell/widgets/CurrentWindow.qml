@@ -1,4 +1,5 @@
 import QtQuick
+import Quickshell
 import Quickshell.Hyprland
 import "../theme"
 
@@ -8,62 +9,34 @@ Rectangle {
     readonly property var activeToplevel: Hyprland.activeToplevel
     readonly property bool focusedWorkspaceHasWindows: focusedWorkspace && focusedWorkspace.toplevels && focusedWorkspace.toplevels.values.length > 0
     readonly property bool activeOnFocusedWorkspace: focusedWorkspace && activeToplevel && activeToplevel.workspace.id === focusedWorkspace.id
+    // Names to use instead of the desktop entry name, keyed by lowercase app id.
+    readonly property var nameOverrides: ({
+            "app.zen_browser.zen": "Zen",
+            "zen": "Zen"
+        })
     readonly property string windowTitle: {
-        if (!focusedWorkspaceHasWindows)
-            return "[" + (focusedWorkspace ? focusedWorkspace.id : "?") + "]";
-        if (!activeOnFocusedWorkspace)
-            return "[" + (focusedWorkspace ? focusedWorkspace.id : "?") + "]";
+        var workspaceLabel = "[" + (focusedWorkspace ? focusedWorkspace.id : "?") + "]";
+        if (!focusedWorkspaceHasWindows || !activeOnFocusedWorkspace)
+            return workspaceLabel;
 
         var appId = activeToplevel.wayland && activeToplevel.wayland.appId ? activeToplevel.wayland.appId : "";
-        var title = activeToplevel.title ? activeToplevel.title : "";
-        var appName = simplifyAppId(appId);
-        var dynamicTitle = simplifyWindowTitle(title, appName);
-
-        if (dynamicTitle.length > 0)
-            return dynamicTitle;
-        if (appId.length > 0)
-            return appName;
-
-        return "[" + (focusedWorkspace ? focusedWorkspace.id : "?") + "]";
+        if (appId.length === 0)
+            return workspaceLabel;
+        return appName(appId);
     }
 
-    function simplifyWindowTitle(title: string, appName: string): string {
-        var raw = title.trim();
-        if (raw.length === 0)
-            return "";
+    function appName(appId: string): string {
+        var override = nameOverrides[appId.toLowerCase()];
+        if (override)
+            return override;
 
-        var parts = raw.split(/\s[-–—|:]\s/);
-        for (var i = 0; i < parts.length; i++) {
-            var candidate = parts[i].trim();
-            if (candidate.length === 0)
-                continue;
-            if (appName.length > 0 && candidate.toLowerCase() === appName.toLowerCase())
-                continue;
-            return normalizeDisplayName(candidate);
-        }
+        // Re-evaluate when the set of installed applications changes.
+        DesktopEntries.applications;
+        var entry = DesktopEntries.heuristicLookup(appId);
+        if (entry && entry.name && entry.name.length > 0)
+            return entry.name;
 
-        return normalizeDisplayName(raw);
-    }
-
-    function normalizeDisplayName(name: string): string {
-        var cleaned = name.trim().replace(/[_-]+/g, " ").replace(/\s+/g, " ");
-        if (cleaned.length === 0)
-            return "";
-        if (cleaned.toLowerCase() === "youtube" || cleaned.toLowerCase() === "youtube.com")
-            return "YouTube";
-
-        var isAllLower = cleaned === cleaned.toLowerCase();
-        var isAllUpper = cleaned === cleaned.toUpperCase();
-        if (!isAllLower && !isAllUpper)
-            return cleaned;
-
-        var words = cleaned.split(" ");
-        for (var i = 0; i < words.length; i++) {
-            if (words[i].length === 0)
-                continue;
-            words[i] = words[i].charAt(0).toUpperCase() + words[i].slice(1).toLowerCase();
-        }
-        return words.join(" ");
+        return simplifyAppId(appId);
     }
 
     function simplifyAppId(appId: string): string {
