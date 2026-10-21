@@ -37,7 +37,7 @@ Top-level windows/surfaces assembled in `shell.qml`:
 
 Widgets used inside `modules/` (and the control panel popup):
 
-- `BarButton.qml` — base for bar widgets that open a popup (button + focus grab + lazily created `popup` Component); used by `Clock`, `ControlPanel`, `MediaPlayer`, `NotificationCenter`, `SystemInfo`
+- `BarButton.qml` — base for bar widgets that open a popup (button + focus grab + lazily created `popup` Component); used by `Clock`, `ControlPanel`, `MediaPlayer`, `NotificationCenter`
 
 - `BatteryStatus.qml`, `Volume.qml` — status indicators/controls for their respective system features
 - `WifiNetworks.qml`, `BluetoothDevices.qml` — network/device lists shown in the control panel's expandable Wi-Fi/Bluetooth sections
@@ -47,7 +47,7 @@ Widgets used inside `modules/` (and the control panel popup):
 - `MediaPlayer.qml` — media player controls widget
 - `NotificationBell.qml`, `NotificationCard.qml` — notification bell icon and individual notification card
 - `PrivacyIndicator.qml` — mic/camera/screen-share in-use indicator
-- `SystemInfo.qml`, `SystemOptions.qml` — system info popup and misc system options
+- `SystemOptions.qml` — misc system options
 - `Workspaces.qml` — workspace switcher
 
 ## `components/`
@@ -56,7 +56,7 @@ Shared building blocks, split into subdirectories (no types at the top level).
 
 ### `components/popups/`
 
-Bar-widget dropdown contents (e.g. `ClockPopup.qml`, `SystemInfoPopup.qml`, `MediaPlayerPopup.qml`, `ControlPanelPopup.qml`, `NotificationCenterPopup.qml`).
+Bar-widget dropdown contents (e.g. `ClockPopup.qml`, `MediaPlayerPopup.qml`, `ControlPanelPopup.qml`, `NotificationCenterPopup.qml`).
 
 ### `components/surfaces/`
 

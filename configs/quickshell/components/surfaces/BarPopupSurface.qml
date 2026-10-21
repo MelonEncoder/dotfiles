@@ -6,7 +6,7 @@ import Quickshell
 import "../../theme"
 
 // Standardized dropdown surface for bar widgets (Clock, ControlPanel,
-// SystemInfo, MediaPlayer, ...): a full-screen transparent PopupWindow
+// MediaPlayer, ...): a full-screen transparent PopupWindow
 // anchored to the triggering widget, with a dimming Backdrop and an
 // animated panel (background/border/radius, escape-to-close, and a
 // MouseArea that absorbs clicks so they don't reach the backdrop).

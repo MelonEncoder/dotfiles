@@ -60,9 +60,6 @@ Scope {
                         anchors.left: parent.left
                         anchors.verticalCenter: parent.verticalCenter
                         spacing: root.widget_spacing
-                        SystemInfo {
-                            Layout.alignment: Qt.AlignVCenter
-                        }
                         Workspaces {
                             Layout.alignment: Qt.AlignVCenter
                         }

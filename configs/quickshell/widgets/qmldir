@@ -11,7 +11,6 @@ NotificationCard 1.0 NotificationCard.qml
 NotificationCenter 1.0 NotificationCenter.qml
 PrivacyIndicator 1.0 PrivacyIndicator.qml
 RoundedScreenCorners 1.0 RoundedScreenCorners.qml
-SystemInfo 1.0 SystemInfo.qml
 TrayItem 1.0 TrayItem.qml
 TrayItems 1.0 TrayItems.qml
 Volume 1.0 Volume.qml

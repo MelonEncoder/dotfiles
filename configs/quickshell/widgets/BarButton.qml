@@ -21,7 +21,7 @@ import "../theme"
 
       BarButton {
           implicitWidth: icon.implicitWidth + (LayoutTheme.barWidgetPadding * 2)
-          popup: SystemInfoPopup {}
+          popup: ClockPopup {}
 
           Text { id: icon; anchors.centerIn: parent; text: "..." }
       }
