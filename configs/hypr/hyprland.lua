@@ -60,7 +60,7 @@ hl.config({
     },
     decoration = {
         rounding = 8,
-        rounding_power = 4,
+        rounding_power = 3,
         active_opacity = 1.0,
         inactive_opacity = 1.0,
         -- screen_shader = "~/.config/hypr/shaders/example.frag"

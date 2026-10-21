@@ -19,7 +19,7 @@ Singleton {
 
     // Base
     readonly property color background: Qt.rgba(0, 0, 0, 1)
-    readonly property color surface: Qt.rgba(0.184, 0.184, 0.184, 1)
+    readonly property color surface: Qt.rgba(0.15, 0.15, 0.15, 0.9)
     readonly property color surfaceHover: Qt.rgba(0.267, 0.267, 0.267, 1)
     readonly property color surfacePressed: Qt.rgba(0.227, 0.227, 0.227, 1)
 
