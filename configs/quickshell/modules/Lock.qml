@@ -275,6 +275,17 @@ Item {
                                         Services.LockService.failedAttempt = false;
                                         Services.LockService.statusText = "";
                                     }
+
+                                    // Clear the rejected password so the next
+                                    // attempt starts from an empty field.
+                                    Connections {
+                                        target: Services.LockService
+
+                                        function onAuthFailed() {
+                                            passwordInput.clear();
+                                            passwordInput.forceActiveFocus();
+                                        }
+                                    }
                                 }
 
                                 Text {

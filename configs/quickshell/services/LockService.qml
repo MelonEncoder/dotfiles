@@ -17,6 +17,10 @@ Singleton {
     property string submittedSecret: ""
     property Component lockSurface: null
 
+    // Emitted when PAM rejects the submitted password (or errors out), so
+    // the lock surface can clear its input.
+    signal authFailed()
+
     readonly property string currentUser:
         (Quickshell.env("USER") || "") + ""
 
@@ -126,7 +130,9 @@ Singleton {
                 return;
             }
 
+            root.failedAttempt = true;
             root.statusText = result === PamResult.MaxTries ? "Too many failed attempts" : "Incorrect password";
+            root.authFailed();
         }
 
         onError: error => {
@@ -134,6 +140,7 @@ Singleton {
             root.failedAttempt = true;
             root.submittedSecret = "";
             root.statusText = PamError.toString(error);
+            root.authFailed();
         }
     }
 
