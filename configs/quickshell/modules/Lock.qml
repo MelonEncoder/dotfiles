@@ -341,7 +341,7 @@ Item {
 
                             Repeater {
                                 model: Services.PowerService.actions.filter(
-                                    a => a.action !== "lock"
+                                    a => (a.action !== "lock" && a.action !== "logout")
                                 )
 
                                 SquareButton {
@@ -349,9 +349,14 @@ Item {
                                     required property var modelData
 
                                     iconName: modelData.iconName
-                                    text: modelData.action
+                                    text: Services.Strings.tr("power_" + modelData.action)
 
                                     size: 100
+
+                                    onClicked:
+                                        Services.PowerService.runAction(
+                                            button.modelData.action
+                                        )
                                 }
                             }
                         }
