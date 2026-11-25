@@ -5,6 +5,7 @@ Clock 1.0 Clock.qml
 ControlPanel 1.0 ControlPanel.qml
 CurrentWindow 1.0 CurrentWindow.qml
 IdleInhibitor 1.0 IdleInhibitor.qml
+LanguagePicker 1.0 LanguagePicker.qml
 MediaPlayer 1.0 MediaPlayer.qml
 NotificationCard 1.0 NotificationCard.qml
 NotificationCenter 1.0 NotificationCenter.qml

@@ -9,10 +9,10 @@ Singleton {
 		Qt.formatDateTime(clock.date, "HH:mm")
 	}
 	readonly property string date: {
-		Qt.formatDateTime(clock.date, "MM月dd日")
+		Languages.formatDate(clock.date, Languages.keys.fmt_date)
 	}
 	readonly property string fullDate: {
-		Qt.formatDateTime(clock.date, "yyyy年MM月dd日")
+		Languages.formatDate(clock.date, Languages.keys.fmt_full_date)
 	}
 
 	SystemClock {

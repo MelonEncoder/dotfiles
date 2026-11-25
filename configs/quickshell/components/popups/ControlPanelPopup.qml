@@ -32,7 +32,7 @@ BarPopupSurface {
         root.openSection = root.openSection === name ? "" : name;
     }
 
-    text: Strings.tr(Strings.keys.quick_settings)
+    text: Languages.tr(Languages.keys.quick_settings)
 
     panelX: root.width - panelWidth - LayoutTheme.barPadding
     panelY: LayoutTheme.barWidgetHeight + (LayoutTheme.barPadding * 2)
@@ -102,7 +102,7 @@ BarPopupSurface {
             Layout.preferredWidth: 1
             tileHeight: LayoutTheme.barWidgetHeight * 2
             icon: WifiService.enabled ? "󰖩" : "󰖪"
-            title: Strings.tr(Strings.keys.wifi)
+            title: Languages.tr(Languages.keys.wifi)
             subtitle: WifiService.status
             checked: WifiService.enabled
             expanded: root.openSection === "wifi"
@@ -115,7 +115,7 @@ BarPopupSurface {
             Layout.preferredWidth: 1
             tileHeight: LayoutTheme.barWidgetHeight * 2
             icon: BluetoothService.enabled ? "󰂯" : "󰂲"
-            title: Strings.tr(Strings.keys.bluetooth)
+            title: Languages.tr(Languages.keys.bluetooth)
             subtitle: BluetoothService.status
             checked: BluetoothService.enabled
             expanded: root.openSection === "bluetooth"
@@ -148,11 +148,24 @@ BarPopupSurface {
             Layout.preferredWidth: 1
             tileHeight: LayoutTheme.barWidgetHeight * 2
             icon: "󰀻"
-            title: Strings.tr(Strings.keys.background_apps)
-            subtitle: Strings.tr(Strings.keys.apps_running).arg(trayItems.count)
+            title: Languages.tr(Languages.keys.background_apps)
+            subtitle: Languages.tr(Languages.keys.apps_running).arg(trayItems.count)
             expanded: root.openSection === "tray"
             onToggled: root.toggleSection("tray")
             onExpandClicked: root.toggleSection("tray")
+        }
+
+        // Language picker. Like the tray tile, both halves open the list.
+        ToggleTile {
+            Layout.fillWidth: true
+            Layout.preferredWidth: 1
+            tileHeight: LayoutTheme.barWidgetHeight * 2
+            icon: "󰗊"
+            title: Languages.tr(Languages.keys.language_label)
+            subtitle: Languages.languageName(Languages.language)
+            expanded: root.openSection === "language"
+            onToggled: root.toggleSection("language")
+            onExpandClicked: root.toggleSection("language")
         }
 
         ExpandSection {
@@ -161,6 +174,15 @@ BarPopupSurface {
 
             TrayItems {
                 id: trayItems
+                Layout.fillWidth: true
+            }
+        }
+
+        ExpandSection {
+            Layout.columnSpan: 2
+            expanded: root.openSection === "language"
+
+            LanguagePicker {
                 Layout.fillWidth: true
             }
         }

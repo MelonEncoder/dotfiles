@@ -34,14 +34,14 @@ Singleton {
     // One-line status for tiles/headers.
     readonly property string status: {
         if (!root.available)
-            return Strings.tr(Strings.keys.unavailable);
+            return Languages.tr(Languages.keys.unavailable);
         if (!root.enabled)
-            return Strings.tr(Strings.keys.off);
+            return Languages.tr(Languages.keys.off);
         if (root.connecting)
-            return Strings.tr(Strings.keys.connecting);
+            return Languages.tr(Languages.keys.connecting);
         if (root.connectedNetworks.length > 0)
             return root.networkName(root.connectedNetworks[0]);
-        return Strings.tr(Strings.keys.none_connected);
+        return Languages.tr(Languages.keys.none_connected);
     }
 
     function networkName(network: var): string {

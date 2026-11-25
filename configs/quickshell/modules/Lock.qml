@@ -291,7 +291,7 @@ Item {
 
                                     text:
                                         passwordInput.text.length === 0
-                                            ? "Input Password..."
+                                            ? Services.Languages.tr(Services.Languages.keys.input_password)
                                             : ""
 
                                     color: LockScreenTheme.placeholder
@@ -349,7 +349,7 @@ Item {
                                     required property var modelData
 
                                     iconName: modelData.iconName
-                                    text: Services.Strings.tr("power_" + modelData.action)
+                                    text: Services.Languages.tr("power_" + modelData.action)
 
                                     size: 100
 

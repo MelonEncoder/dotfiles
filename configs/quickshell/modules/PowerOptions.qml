@@ -143,7 +143,7 @@ Scope {
                     Text {
                         Layout.columnSpan: root.gridColumns
                         Layout.fillWidth: true
-                        text: Services.Strings.tr(Services.Strings.keys.system)
+                        text: Services.Languages.tr(Services.Languages.keys.system)
                         color: Colors.textSubtle
                         font.pixelSize: Typography.xs
                         font.family: Typography.family
@@ -173,7 +173,7 @@ Scope {
                             Layout.preferredHeight: root.cellSize
                             size: root.cellSize
                             iconName: optionItem.modelData.iconName
-                            text: Services.Strings.tr(Services.Strings.keys["power_" + optionItem.modelData.action])
+                            text: Services.Languages.tr(Services.Languages.keys["power_" + optionItem.modelData.action])
                             accentColor: Colors.accentPrimary
 
                             onEntered: root.focusedIndex = optionItem.index

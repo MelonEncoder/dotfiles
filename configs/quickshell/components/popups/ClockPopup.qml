@@ -14,7 +14,7 @@ BarPopupSurface {
 
     anchor.rect.x: 0
     anchor.rect.y: LayoutTheme.barWidgetHeight + (LayoutTheme.barPadding * 2)
-    text: Strings.tr(Strings.keys.calendar)
+    text: Languages.tr(Languages.keys.calendar)
     contentSpacing: CalendarTheme.contentSpacing
 
     panelX: (root.width - panelWidth) / 2
@@ -109,7 +109,7 @@ BarPopupSurface {
                 verticalAlignment: Text.AlignVCenter
                 text: modelData
                 // Weekends in the accent color
-                color: index === 0 || index === 6 ? CalendarTheme.weekend : Colors.textSubtle
+                color: CalendarService.isWeekend(CalendarService.weekdayOrder[index]) ? CalendarTheme.weekend : Colors.textSubtle
                 font.pixelSize: Typography.xs
                 font.family: Typography.family
             }
@@ -154,7 +154,7 @@ BarPopupSurface {
                             return CalendarTheme.outsideMonth;
                         if (parent.modelData.isToday)
                             return Colors.background;
-                        if (parent.modelData.weekCol === 0 || parent.modelData.weekCol === 6)
+                        if (parent.modelData.isWeekend)
                             return CalendarTheme.weekend;
                         return Colors.text;
                     }

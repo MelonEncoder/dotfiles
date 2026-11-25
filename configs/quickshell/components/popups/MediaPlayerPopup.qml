@@ -14,7 +14,7 @@ BarPopupSurface {
     readonly property var currentPlayer: MediaService.currentPlayer
     readonly property int popupContentWidth: 240
 
-    text: Strings.tr(Strings.keys.media)
+    text: Languages.tr(Languages.keys.media)
     contentSpacing: 8
 
     panelX: root.anchorItem ? root.anchorItem.mapToGlobal(root.anchorItem.width / 2, 0).x - panelWidth / 2 : 0
@@ -60,7 +60,7 @@ BarPopupSurface {
 
         Text {
             width: parent.width - parent.leftPadding
-            text: root.currentPlayer ? (root.currentPlayer.trackTitle || MediaService.playerLabel(root.currentPlayer)) : Strings.tr(Strings.keys.no_media)
+            text: root.currentPlayer ? (root.currentPlayer.trackTitle || MediaService.playerLabel(root.currentPlayer)) : Languages.tr(Languages.keys.no_media)
             color: Colors.text
             font.pixelSize: Typography.size
             font.family: Typography.family

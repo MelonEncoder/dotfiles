@@ -37,7 +37,7 @@ BarPopupSurface {
             spacing: 0
 
             Text {
-                text: Strings.tr(Strings.keys.notifications)
+                text: Languages.tr(Languages.keys.notifications)
                 color: Colors.textSubtle
                 font.pixelSize: Typography.xs
                 font.family: Typography.family
@@ -52,7 +52,7 @@ BarPopupSurface {
 
             Text {
                 visible: countRepeater.count > 0
-                text: Strings.tr(Strings.keys.clear_all)
+                text: Languages.tr(Languages.keys.clear_all)
                 color: clearMouse.containsMouse ? Colors.text : Colors.textSubtle
                 font.pixelSize: Typography.xs
                 font.family: Typography.family
@@ -104,7 +104,7 @@ BarPopupSurface {
             Text {
                 visible: countRepeater.count === 0
                 width: parent.width
-                text: Strings.tr(Strings.keys.no_notifications)
+                text: Languages.tr(Languages.keys.no_notifications)
                 color: Colors.textSubtle
                 font.pixelSize: Typography.sm
                 font.family: Typography.family

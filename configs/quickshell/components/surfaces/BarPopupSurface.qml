@@ -24,7 +24,7 @@ import "../../theme"
 //
 //   BarButton {
 //       popup: BarPopupSurface {
-//           text: Strings.tr(Strings.keys.media)
+//           text: Languages.tr(Languages.keys.media)
 //           panelWidth: 240 + (LayoutTheme.barWidgetPadding * 2)
 //
 //           Text { Layout.fillWidth: true; text: "..." }

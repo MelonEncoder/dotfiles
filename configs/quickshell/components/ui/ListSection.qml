@@ -11,9 +11,9 @@ import "../../theme"
   -- so callers just declare what a row looks like:
 
       ListSection {
-          title: Strings.tr(Strings.keys.available)
+          title: Languages.tr(Languages.keys.available)
           model: WifiService.availableNetworks
-          emptyText: Strings.tr(Strings.keys.none_available)
+          emptyText: Languages.tr(Languages.keys.none_available)
           delegate: ListRow {
               required property var modelData
               text: WifiService.networkName(modelData)

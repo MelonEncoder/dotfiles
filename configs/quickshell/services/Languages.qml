@@ -1,11 +1,60 @@
 pragma Singleton
 
 import Quickshell
+import Quickshell.Io
 import QtQuick
 
 Singleton {
     id: root
     property string language: "ja"
+
+    // Selectable languages, shown in their own language (not translated) so
+    // a user can always find theirs. Add an entry here when adding a code.
+    readonly property var available: [
+        { code: "en", name: "English" },
+        { code: "ja", name: "日本語" }
+    ]
+
+    function languageName(code) {
+        for (let i = 0; i < root.available.length; i++) {
+            if (root.available[i].code === code)
+                return root.available[i].name;
+        }
+        return code;
+    }
+
+    // Switches language and persists it; every tr()/qtLocale binding updates.
+    function setLanguage(code) {
+        if (code === root.language)
+            return;
+        root.language = code;
+        stateFile.setText(code);
+    }
+
+    // Persisted selection — survives shell restarts
+    FileView {
+        id: stateFile
+        path: Quickshell.statePath("language")
+        preload: true
+        printErrors: false
+
+        onLoaded: {
+            const saved = stateFile.text().trim();
+            if (saved.length > 0)
+                root.language = saved;
+        }
+    }
+
+    // Qt locale matching `language`, for formatting dates, day/month names
+    // and week layout. Add an entry here when adding a language code.
+    readonly property var _qtLocaleNames: ({ en: "en_US", ja: "ja_JP" })
+    readonly property var qtLocale: Qt.locale(root._qtLocaleNames[root.language] || "en_US")
+
+    // Formats `date` with the current Qt locale using the pattern stored
+    // under `formatKey` (e.g. keys.fmt_date), so names and order both localize.
+    function formatDate(date, formatKey) {
+        return root.qtLocale.toString(date, root.tr(formatKey));
+    }
 
     // All translations keyed by string key, each holding a map of language
     // code -> translation. Add a new language code (e.g. "ko") to an entry
@@ -66,14 +115,25 @@ Singleton {
         power_logout:     { en: "Log Out",               ja: "ログアウト" },
         power_suspend:    { en: "Sleep",                 ja: "スリープ" },
         power_reboot:     { en: "Restart",                ja: "再起動" },
-        power_poweroff:   { en: "Shut Down",              ja: "シャットダウン" }
+        power_poweroff:   { en: "Shut Down",              ja: "シャットダウン" },
+
+        // Language picker
+        language_label:   { en: "Language",              ja: "言語" },
+
+        // Lock screen
+        input_password:   { en: "Input Password...",     ja: "パスワードを入力..." },
+
+        // Date format patterns (Qt date format syntax), used with qtLocale
+        fmt_date:         { en: "MMM d",                 ja: "M月d日" },
+        fmt_full_date:    { en: "dddd, MMMM d, yyyy",    ja: "yyyy年M月d日 dddd" },
+        fmt_month_year:   { en: "MMMM yyyy",             ja: "yyyy年M月" }
     })
 
     // Constant map of valid key names, derived from _all so there's a single
     // source of truth. QML/JS has no real interface or compile-time type
     // system, so this can't be statically enforced like a TypeScript union —
     // but it gives you named, autocomplete-able constants, and a typo like
-    // Strings.keys.notifcations resolves to undefined instead of silently
+    // Languages.keys.notifcations resolves to undefined instead of silently
     // compiling as a valid-looking string literal.
     readonly property var keys: (function() {
         var map = {};
@@ -91,14 +151,14 @@ Singleton {
     function tr(key) {
         var entry = root._all[key];
         if (entry === undefined) {
-            console.warn("Strings.tr: unknown key \"" + key + "\"");
+            console.warn("Languages.tr: unknown key \"" + key + "\"");
             return key;
         }
         if (entry[root.language] !== undefined)
             return entry[root.language];
         if (entry.en !== undefined)
             return entry.en;
-        console.warn("Strings.tr: key \"" + key + "\" has no translation for \"" + root.language + "\" or \"en\"");
+        console.warn("Languages.tr: key \"" + key + "\" has no translation for \"" + root.language + "\" or \"en\"");
         return key;
     }
 }

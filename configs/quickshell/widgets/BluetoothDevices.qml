@@ -14,18 +14,18 @@ ColumnLayout {
     // Shown instead of an empty-list message when the adapter is missing/off.
     readonly property string adapterProblem: {
         if (!BluetoothService.available)
-            return Strings.tr(Strings.keys.bt_unavailable);
+            return Languages.tr(Languages.keys.bt_unavailable);
         if (!BluetoothService.enabled)
-            return Strings.tr(Strings.keys.bt_disabled);
+            return Languages.tr(Languages.keys.bt_disabled);
         return "";
     }
 
     spacing: 3
 
     ListSection {
-        title: Strings.tr(Strings.keys.connected)
+        title: Languages.tr(Languages.keys.connected)
         model: BluetoothService.getConnectedDevices()
-        emptyText: root.adapterProblem || Strings.tr(Strings.keys.none_connected)
+        emptyText: root.adapterProblem || Languages.tr(Languages.keys.none_connected)
         delegate: ListRow {
             required property var modelData
             iconSource: Quickshell.iconPath(modelData.icon)
@@ -35,9 +35,9 @@ ColumnLayout {
     }
 
     ListSection {
-        title: Strings.tr(Strings.keys.available)
+        title: Languages.tr(Languages.keys.available)
         model: BluetoothService.getAvailableDevices()
-        emptyText: root.adapterProblem || (BluetoothService.discovering ? Strings.tr(Strings.keys.scanning) : Strings.tr(Strings.keys.none_available))
+        emptyText: root.adapterProblem || (BluetoothService.discovering ? Languages.tr(Languages.keys.scanning) : Languages.tr(Languages.keys.none_available))
         delegate: ListRow {
             required property var modelData
             iconSource: Quickshell.iconPath(modelData.icon)

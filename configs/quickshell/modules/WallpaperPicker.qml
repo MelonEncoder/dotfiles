@@ -292,7 +292,7 @@ Scope {
 
                     Text {
                         Layout.fillWidth: true
-                        text: Strings.tr(Strings.keys.wallpaper)
+                        text: Languages.tr(Languages.keys.wallpaper)
                         color: Colors.textSubtle
                         font.pixelSize: Typography.xs
                         font.family: Typography.family

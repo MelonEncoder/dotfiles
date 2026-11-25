@@ -81,7 +81,7 @@ ColumnLayout {
         expanded: root.expanded
 
         ListSection {
-            title: Strings.tr(Strings.keys.output_devices)
+            title: Languages.tr(Languages.keys.output_devices)
             model: AudioService.audioSinks
             delegate: ListRow {
                 id: deviceRow

@@ -17,13 +17,13 @@ Singleton {
     // One-line status for tiles/headers.
     readonly property string status: {
         if (!available)
-            return Strings.tr(Strings.keys.unavailable);
+            return Languages.tr(Languages.keys.unavailable);
         if (!enabled)
-            return Strings.tr(Strings.keys.off);
+            return Languages.tr(Languages.keys.off);
         var connected = getConnectedDevices();
         if (connected.length > 0)
             return connected[0].name;
-        return Strings.tr(Strings.keys.on);
+        return Languages.tr(Languages.keys.on);
     }
 
     function setEnabled(on: bool): void {
